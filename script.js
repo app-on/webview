@@ -1,5 +1,11 @@
 if (!localStorage.getItem("ls-array-history")) {
-  localStorage.setItem("ls-array-history", "[]");
+  localStorage.setItem(
+    "ls-array-history",
+    JSON.stringify({
+      id: Date.now(),
+      url: "https://m-vnio.github.io/webview/",
+    })
+  );
 }
 
 const array = JSON.parse(localStorage.getItem("ls-array-history"));
