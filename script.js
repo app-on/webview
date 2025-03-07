@@ -1,16 +1,30 @@
 if (!localStorage.getItem("ls-array-history")) {
   localStorage.setItem(
     "ls-array-history",
-    JSON.stringify({
-      id: Date.now(),
-      url: "https://m-vnio.github.io/webview/",
-    })
+    JSON.stringify([
+      {
+        id: Date.now(),
+        url: "https://m-vnio.github.io/webview/",
+      },
+    ])
   );
 }
 
 const array = JSON.parse(localStorage.getItem("ls-array-history"));
 let $focus = null;
 let keydown = false;
+
+if (!Array.isArray(array)) {
+  localStorage.setItem(
+    "ls-array-history",
+    JSON.stringify([
+      {
+        id: Date.now(),
+        url: "https://m-vnio.github.io/webview/",
+      },
+    ])
+  );
+}
 
 const $ = function (query) {
   return document.querySelector(query);
