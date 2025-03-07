@@ -76,13 +76,11 @@ $("#itemTrue").innerHTML = array
   .join("");
 
 addEventListener("keydown", (e) => {
+  if (keydown) return;
+
   if (e.target.closest("[data-not-keydown]") != null && e.key != "ArrowDown") {
     return;
   }
-
-  e.preventDefault();
-
-  if (keydown) return;
 
   if (document.activeElement.getAttribute("data-key-focus") == null) {
     $focus.focus();
@@ -91,6 +89,8 @@ addEventListener("keydown", (e) => {
   }
 
   if (e.key == "Enter") {
+    e.preventDefault();
+
     keydown = true;
     const $a = $focus;
 
