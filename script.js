@@ -1,10 +1,15 @@
 if (!localStorage.getItem("ls-array-history")) {
+  const datetime = Date.now();
   localStorage.setItem(
     "ls-array-history",
     JSON.stringify([
       {
-        id: Date.now(),
+        id: datetime,
         url: "https://m-vnio.github.io/webview/",
+      },
+      {
+        id: datetime + 1,
+        url: "https://app-one.github.io/webview/streaming",
       },
     ])
   );
