@@ -218,9 +218,9 @@ var dataApp = () => {
     MyFunction: MyFunction,
 
     iptv: {
-      server: "http://goldfull.pro:8880",
-      username: "42u4T2H556",
-      password: "22cGAJMkBJUq",
+      server: "https://593zona.live:8443",
+      username: "CDSNJ7xstgS",
+      password: "gkwT7heDNq",
     },
   };
 
