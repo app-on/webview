@@ -46,11 +46,10 @@ svg {
     all: unset;
     flex: 1;
 
-    background: #1a1a1a;
     color: #fff;
 
     border-radius: 15px;
-    padding: 0 20px;
+    padding-left: 10px;
 
     &::-webkit-search-cancel-button {
       display: none;
@@ -63,35 +62,30 @@ svg {
     width: 40px;
     height: 40px;
 
-    background: #fff;
-    border-radius: 15px;
-
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
   & svg {
-    fill: #000;
+    fill: #fff;
   }
 }
 
 .div_dtxhy4m {
   flex: 1;
-  display: flex;
 
   overflow-y: auto;
   scrollbar-width: none;
 }
 
 .div_suhyjvh {
-  margin-bottom: auto;
+  /* margin-bottom: auto; */
 
   width: 100%;
-  border-radius: 15px;
 
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 100px), 1fr));
 
   padding: 10px;
   gap: 10px;
@@ -115,9 +109,23 @@ svg {
     background: rgb(255 255 255 / 0.3);
   }
 
+  & div {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255 255 255 / 0.3);
+
+    border-radius: 15px;
+  }
+
   & img {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
+
+    pointer-events: none;
   }
 
   & p {
@@ -130,4 +138,13 @@ svg {
 
     max-height: 40px;
   }
+}
+
+.hr_j8ry8nv {
+  background: rgb(255 255 255 / 0.3);
+  border: none;
+  margin: auto;
+
+  width: calc(100% - 20px);
+  height: 1.5px;
 }

@@ -1,18 +1,5 @@
 if (!localStorage.getItem("ls-array-history")) {
-  const datetime = Date.now();
-  localStorage.setItem(
-    "ls-array-history",
-    JSON.stringify([
-      {
-        id: datetime,
-        url: "https://m-vnio.github.io/webview/",
-      },
-      {
-        id: datetime + 1,
-        url: "https://app-one.github.io/webview/streaming",
-      },
-    ])
-  );
+  localStorage.setItem("ls-array-history", JSON.stringify([]));
 }
 
 const array = JSON.parse(localStorage.getItem("ls-array-history"));
@@ -20,20 +7,33 @@ let $focus = null;
 let keydown = false;
 
 if (!Array.isArray(array)) {
-  localStorage.setItem(
-    "ls-array-history",
-    JSON.stringify([
-      {
-        id: Date.now(),
-        url: "https://m-vnio.github.io/webview/",
-      },
-    ])
-  );
+  localStorage.setItem("ls-array-history", JSON.stringify([]));
 }
 
 const $ = function (query) {
   return document.querySelector(query);
 };
+
+const access = [
+  {
+    id: Date.now(),
+    icon: "./img/icon/movie.png",
+    url: "https://app-on.github.io/webview/streaming/",
+    name: "Movies",
+  },
+  {
+    id: Date.now(),
+    icon: "./img/icon/movie-tv.png",
+    url: "https://m-vnio.github.io/webview/",
+    name: "Movies TV",
+  },
+  {
+    id: Date.now(),
+    icon: "./img/icon/conexion.png",
+    url: "https://m-vnio.github.io/share-webview/",
+    name: "Conectar",
+  },
+];
 
 document.querySelector(".form_v823x1l").addEventListener("submit", (e) => {
   e.preventDefault();
@@ -77,6 +77,19 @@ $("#itemTrue").addEventListener("contextmenu", (e) => {
   }
 });
 
+$("#itemTrueBase").innerHTML = access
+  .map((object) => {
+    return `
+      <a href="${object.url}" class="div_f97rdbt" data-id="${object.id}" data-key-focus>
+        <div>
+          <img src="${object.icon}" alt="" >
+        </div>
+        <p>${object.name}</p>
+      </a>
+    `;
+  })
+  .join("");
+
 $("#itemTrue").innerHTML = array
   .map((object) => {
     const _ = {
@@ -87,12 +100,28 @@ $("#itemTrue").innerHTML = array
 
     return `
       <a href="${object.url}" class="div_f97rdbt" data-id="${object.id}" data-key-focus>
+        <div>
           <img src="${_.encodeUrl}" alt="">
-          <p>${object.url}</p>
+        </div>
+        <p>${object.url}</p>
       </a>
     `;
   })
   .join("");
+
+Array.from($("#itemTrue").children).forEach((child) => {
+  console.log(child.querySelector("img"));
+
+  child.querySelector("img").addEventListener(
+    "load",
+    (e) => {
+      if (e.target.naturalWidth == 16) {
+        e.target.src = "./img/icon/browser.png";
+      }
+    },
+    { once: true }
+  );
+});
 
 addEventListener("keydown", (e) => {
   if (keydown) return;
@@ -165,6 +194,10 @@ addEventListener("focusin", (e) => {
   if (e.target.closest("[data-key-focus]")) {
     $focus = e.target;
   }
+});
+
+addEventListener("contextmenu", (e) => {
+  e.preventDefault();
 });
 
 document.querySelector("[data-key-focus]").focus();
