@@ -5034,42 +5034,44 @@ var theme = () => {
         </div>
     `);
 
-  $element.querySelectorAll("[data-theme]").forEach((element) => {
-    element.addEventListener("change", () => {
-      const theme = ((theme) => {
-        if (theme == "light") return useThis.themes.light;
-        if (theme == "dark") return useThis.themes.dark;
-        if (theme == "system") {
-          if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-            return useThis.themes.light;
+  useThis.functions.updateTheme = () => {
+    $element.querySelectorAll("[data-theme]").forEach((element) => {
+      element.addEventListener("change", () => {
+        const theme = ((theme) => {
+          if (theme == "light") return useThis.themes.light;
+          if (theme == "dark") return useThis.themes.dark;
+          if (theme == "system") {
+            if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+              return useThis.themes.light;
+            }
+
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+              return useThis.themes.dark;
+            }
           }
 
-          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            return useThis.themes.dark;
-          }
-        }
+          return useThis.themes.light;
+        })(element.getAttribute("data-theme"));
 
-        return useThis.themes.light;
-      })(element.getAttribute("data-theme"));
+        Object.entries(theme).forEach((entries) => {
+          document.documentElement.style.setProperty(entries[0], entries[1]);
+        });
 
-      Object.entries(theme).forEach((entries) => {
-        document.documentElement.style.setProperty(entries[0], entries[1]);
+        useApp.elements.meta.color.setAttribute(
+          "content",
+          theme["--app-color-background"]
+        );
+
+        localStorage.setItem("theme", element.getAttribute("data-theme"));
+        Android.colorSystemBar(theme["--app-color-background"]);
       });
 
-      useApp.elements.meta.color.setAttribute(
-        "content",
-        theme["--app-color-background"]
-      );
-
-      localStorage.setItem("theme", element.getAttribute("data-theme"));
-      Android.colorSystemBar(theme["--app-color-background"]);
+      if (localStorage.getItem("theme") == element.getAttribute("data-theme")) {
+        element.checked = true;
+        element.dispatchEvent(new CustomEvent("change"));
+      }
     });
-
-    if (localStorage.getItem("theme") == element.getAttribute("data-theme")) {
-      element.checked = true;
-      element.dispatchEvent(new CustomEvent("change"));
-    }
-  });
+  };
 
   window
     .matchMedia("(prefers-color-scheme: light)")
@@ -5090,6 +5092,9 @@ var theme = () => {
       }
     });
 
+  addEventListener("hashchange", useThis.functions.updateTheme);
+
+  useThis.functions.updateTheme();
   //   $element.querySelectorAll("[data-color-custom]").forEach((element) => {
   //     element.value =
   //       useThis.values.themeCustom?.[element.getAttribute("data-color-custom")];
@@ -6268,16 +6273,16 @@ var routes = () => {
   }
 
   addEventListener("hashchange", (e) => {
-    try {
-      useApp.elements.meta.color.setAttribute(
-        "content",
-        localStorage.getItem("theme") == "light" ? "#F7F7F7" : "#000000"
-      );
+    // try {
+    //   useApp.elements.meta.color.setAttribute(
+    //     "content",
+    //     localStorage.getItem("theme") == "light" ? "#F7F7F7" : "#000000"
+    //   );
 
-      Android.colorSystemBar(
-        localStorage.getItem("theme") == "light" ? "#F7F7F7" : "#000000"
-      );
-    } catch (error) {}
+    //   Android.colorSystemBar(
+    //     localStorage.getItem("theme") == "light" ? "#F7F7F7" : "#000000"
+    //   );
+    // } catch (error) {}
 
     let uuid = history.state?.uuid ?? useApp.functions.generateUUID();
 
