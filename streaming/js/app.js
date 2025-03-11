@@ -519,6 +519,15 @@ var peliculaId = () => {
                 </div>
             </div>
         </div>
+
+        <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+          <div class="div_x8birmo">
+            <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+            <span>cargando...</span>
+          </div>
+
+        </div>
     </div>
   `);
 
@@ -696,6 +705,7 @@ var peliculaId = () => {
 
     if (["streamwish"].includes(host)) {
       MediaWebUrl.streamwish({ url: url }).then((res) => {
+        $elements.loaderVideo.style.display = "none";
         if (res.status) {
           Android.openWithDefault(res.url, "video/*");
           return;
@@ -826,8 +836,7 @@ var peliculaId = () => {
           return data[1]
             .map((video) => {
               if (video.result == "") return "";
-              if (!["doodstream", "streamwish"].includes(video.cyberlocker))
-                return "";
+              if (!["streamwish"].includes(video.cyberlocker)) return "";
 
               const visibility = show ? "" : "display:none";
               show = false;
@@ -928,12 +937,13 @@ var peliculaId = () => {
     if (button) {
       $elements.itemTrueOption.hidePopover();
 
+      $elements.loaderVideo.style.display = "";
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
         useThis.functions.getLinkServer(url);
       });
 
-      useApp.mediaPlayer.element().requestFullscreen();
-      useThis.functions.updateHistoryVideo();
+      // useApp.mediaPlayer.element().requestFullscreen();
+      // useThis.functions.updateHistoryVideo();
 
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -1104,6 +1114,15 @@ var serieId = () => {
                     <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
                 </div>
             </div>
+        </div>
+
+        <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+          <div class="div_x8birmo">
+            <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+            <span>cargando...</span>
+          </div>
+
         </div>
     </div>
 `);
@@ -1343,6 +1362,7 @@ var serieId = () => {
 
     if (["streamwish"].includes(host)) {
       MediaWebUrl.streamwish({ url: url }).then((res) => {
+        $elements.loaderVideo.style.display = "none";
         if (res.status) {
           Android.openWithDefault(res.url, "video/*");
           return;
@@ -1350,6 +1370,7 @@ var serieId = () => {
       });
     } else if (["voe"].includes(host)) {
       MediaWebUrl.voesx({ url: url }).then((res) => {
+        $elements.loaderVideo.style.display = "none";
         if (res.status) {
           Android.openWithDefault(res.url, "video/*");
           return;
@@ -1357,6 +1378,7 @@ var serieId = () => {
       });
     } else if (["doodstream"].includes(host)) {
       MediaWebUrl.doodstream({ url: url }).then((res) => {
+        $elements.loaderVideo.style.display = "none";
         if (res.body.status) {
           Android.openWithDefault(res.url, "video/*");
           return;
@@ -1506,8 +1528,7 @@ var serieId = () => {
             return data[1]
               .map((video) => {
                 if (video.result == "") return "";
-                if (!["doodstream", "streamwish"].includes(video.cyberlocker))
-                  return "";
+                if (!["streamwish"].includes(video.cyberlocker)) return "";
 
                 const visibility = show ? "" : "display:none";
                 show = false;
@@ -1639,8 +1660,8 @@ var serieId = () => {
       const [season, episode] = useThis.values.episode.split("-");
 
       $elements.itemTrueOption.hidePopover();
-      useApp.mediaPlayer.element().requestFullscreen();
-      useThis.functions.updateHistoryVideo();
+      // useApp.mediaPlayer.element().requestFullscreen();
+      // useThis.functions.updateHistoryVideo();
 
       useApp.mediaPlayer.info({
         title: useThis.values.dataInfo.props.pageProps.episode.title,
@@ -1654,6 +1675,8 @@ var serieId = () => {
           not: ["download"],
         },
       });
+
+      $elements.loaderVideo.style.display = "";
 
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
         useThis.functions.setLinkServer(url);
@@ -1847,6 +1870,15 @@ var animeId = () => {
                   </div>
               </div>
           </div>
+
+          <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+            <div class="div_x8birmo">
+              <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <span>cargando...</span>
+            </div>
+
+          </div>
       </div>
   `);
 
@@ -1998,6 +2030,7 @@ var animeId = () => {
 
     if (["streamwish"].includes(host)) {
       MediaWebUrl.streamwish({ url: url }).then((res) => {
+        $elements.loaderVideo.style.display = "none";
         if (res.status) {
           Android.openWithDefault(res.url, "video/*");
           return;
@@ -2197,7 +2230,7 @@ var animeId = () => {
             return data[1]
               .map((video, index) => {
                 if (index == 0) return "";
-                if (!["yu", "sw"].includes(video.server)) return "";
+                if (!["sw"].includes(video.server)) return "";
 
                 const visibility = show ? "" : "display:none";
                 show = false;
@@ -2324,13 +2357,17 @@ var animeId = () => {
   $elements.itemTrueOptionVideos.addEventListener("click", (e) => {
     const button = e.target.closest("button");
     if (button) {
+      $elements.loaderVideo.style.display = "";
+
       useThis.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
 
       $elements.itemTrueOption.hidePopover();
-      useThis.functions.setLinkServer(button.getAttribute("data-url"));
-      useApp.mediaPlayer.element().requestFullscreen();
+      setTimeout(() =>
+        useThis.functions.setLinkServer(button.getAttribute("data-url"))
+      );
 
-      useThis.functions.updateHistoryVideo();
+      // useApp.mediaPlayer.element().requestFullscreen();
+      // useThis.functions.updateHistoryVideo();
 
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -3128,7 +3165,7 @@ var searchType = () => {
         
                 <a 
                   class="a_t8K3Qpd" 
-                  href="#/${useThis.params.type}">
+                  href="#/">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-angle-left"><path d="M17.17,24a1,1,0,0,1-.71-.29L8.29,15.54a5,5,0,0,1,0-7.08L16.46.29a1,1,0,1,1,1.42,1.42L9.71,9.88a3,3,0,0,0,0,4.24l8.17,8.17a1,1,0,0,1,0,1.42A1,1,0,0,1,17.17,24Z"></path></svg>
                 </a>
                 <form id="form" class="form_r7mvBNn" autocomplete="off" >
@@ -5257,7 +5294,7 @@ var iptvPeliculaId = () => {
       //   })
       //   .join("/");
 
-      const duration = thisMovie.duration.split(":");
+      const duration = thisMovie.duration?.split?.(":");
 
       $elements.poster.src = useApp.url.img(thisMovie.movie_image);
 
@@ -5266,7 +5303,7 @@ var iptvPeliculaId = () => {
       $elements.genres.textContent = thisMovie.genre;
 
       $elements.duration.textContent = `${duration[0]}h ${duration[1]}min`;
-      $elements.date.textContent = thisMovie.releasedate.split("-")[0];
+      $elements.date.textContent = thisMovie.releasedate?.split?.("-")[0] ?? "";
 
       $elements.play.style.display = "";
       $elements.play.setAttribute("data-data", JSON.stringify(thisMovie));

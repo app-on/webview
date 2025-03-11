@@ -684,6 +684,29 @@ input {
   }
 }
 
+.div_uzuovb5 {
+  position: fixed;
+  inset: 0;
+
+  z-index: 999;
+  display: flex;
+
+  /* background: rgb(0 0 0 / 0.5); */
+  backdrop-filter: blur(15px);
+}
+
+.div_x8birmo {
+  margin: auto;
+
+  display: grid;
+  justify-items: center;
+  text-align: center;
+
+  width: 100%;
+  padding: 15px;
+  gap: 15px;
+}
+
 /* div_guZ6yID */
 
 /* ----- APP -- POPOVER.CSS ----- */
