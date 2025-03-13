@@ -2492,7 +2492,7 @@ var inicio = () => {
   const useApp = window.dataApp;
   const useThis = {
     params: useApp.routes.params(),
-
+ 
     oValues: {
       dataNull: useApp.MyFunction.observeValue(true),
       dataTrue: useApp.MyFunction.observeValue([]),
@@ -2517,25 +2517,19 @@ var inicio = () => {
     functions: {},
     promises: {
       genderPelicula: new Promise((resolve, reject) => {
-        fetch(
-          `${useApp.iptv.server}/player_api.php?username=${useApp.iptv.username}&password=${useApp.iptv.password}&action=get_vod_categories`
-        )
+        fetch("https://api.vniox.com/iptv/api.php?route=category-film")
           .then((res) => res.json())
           .then(resolve)
           .catch(reject);
       }),
       genderSerie: new Promise((resolve, reject) => {
-        fetch(
-          `${useApp.iptv.server}/player_api.php?username=${useApp.iptv.username}&password=${useApp.iptv.password}&action=get_series_categories`
-        )
+        fetch("https://api.vniox.com/iptv/api.php?route=category-serie")
           .then((res) => res.json())
           .then(resolve)
           .catch(reject);
       }),
       genderLive: new Promise((resolve, reject) => {
-        fetch(
-          `${useApp.iptv.server}/player_api.php?username=${useApp.iptv.username}&password=${useApp.iptv.password}&action=get_live_categories`
-        )
+        fetch("https://api.vniox.com/iptv/api.php?route=category-live")
           .then((res) => res.json())
           .then(resolve)
           .catch(reject);
@@ -2694,20 +2688,18 @@ var inicio = () => {
               string: string.category_name,
             };
           })
-          .filter((object) => !["53"].includes(object.value))
+          .filter((object) => !["298", "193"].includes(object.value))
       );
     }
 
     if (type == 5) {
       array.push(
-        ...(await useThis.promises.genderSerie)
-          .map((string) => {
-            return {
-              value: string.category_id,
-              string: string.category_name,
-            };
-          })
-          .filter((object) => !["429"].includes(object.value))
+        ...(await useThis.promises.genderSerie).map((string) => {
+          return {
+            value: string.category_id,
+            string: string.category_name,
+          };
+        })
       );
     }
 
@@ -2720,7 +2712,7 @@ var inicio = () => {
               string: string.category_name,
             };
           })
-          .filter((object) => !["12", "410", "413"].includes(object.value))
+          .filter((object) => !["484", "34", "486"].includes(object.value))
       );
     }
 
