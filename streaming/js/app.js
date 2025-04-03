@@ -2988,7 +2988,7 @@ var inicio = () => {
 
     $elements.itemTrue.append(
       ...array.map((data) => {
-        const url = useApp.url.img(data.stream_icon ?? data.cover);
+        const url = data.stream_icon ?? data.cover;
 
         const child = itemData({
           href: `#/${type}/${data.stream_id ?? data.series_id}`,
@@ -3019,7 +3019,7 @@ var inicio = () => {
 
     template.innerHTML = array
       .map((data) => {
-        const url = useApp.url.img(data.stream_icon ?? data.cover);
+        const url = data.stream_icon ?? data.cover;
 
         const dataInput = useApp.MyClass.EncodeTemplateString.toInput(
           JSON.stringify(data)
@@ -3306,7 +3306,7 @@ var searchTypeResult = () => {
       ]),
     },
     values: {
-      observes: [], 
+      observes: [],
     },
     function: {
       dataLoad: () => {},
@@ -3391,352 +3391,6 @@ var searchTypeResult = () => {
     "id",
     true
   );
-
-  // $elements.itemTrueLoad.addEventListener(
-  //   "_IntersectionObserver",
-  //   ({ detail }) => {
-  //     if (detail.entry.isIntersecting) {
-  //       detail.observer.unobserve(detail.entry.target);
-  //       useThis.functions.dataTrue();
-  //     }
-  //   }
-  // );
-
-  // $elements["form-filter-type"].addEventListener("change", () => {
-  //   $elements.itemTrue.innerHTML = "";
-  //   useThis.oValues.dataNull.value = true;
-
-  //   useThis.functions.dataTrue();
-  // });
-
-  // useThis.oValues.dataNull.observe((load) => {
-  //   const dataItem = $elements.itemTrue.querySelector("[data-item]");
-
-  //   const render = {
-  //     itemNull: load,
-  //     itemFalse: !load && !dataItem,
-  //     itemTrue: !load && !!dataItem,
-  //   };
-
-  //   Object.entries(render).forEach((entries) => {
-  //     $elements[entries[0]].style.display = entries[1] ? "" : "none";
-  //   });
-  // });
-
-  // useThis.oValues.dataTrue.observe((array) => {
-  //   if (array.length) {
-  //     const type = $elements["form-filter-type"].key.value;
-
-  //     if (["4", "5"].includes(type)) {
-  //       return useThis.functions.dataRenderIptv(array);
-  //     }
-
-  //     if (["2", "3"].includes(type)) {
-  //       return useThis.functions.dataRenderPeliculaSerie(array);
-  //     }
-
-  //     if (type == "1") {
-  //       return useThis.functions.dataRenderAnime(array);
-  //     }
-
-  //     if (type == "6") {
-  //       return useThis.functions.dataRenderIptvChannel(array);
-  //     }
-  //   }
-  // });
-
-  // useThis.functions.dataRenderAnime = (array) => {
-  //   const template = document.createElement("div");
-
-  //   template.innerHTML = array
-  //     .map((data) => {
-  //       const url = useApp.url.img(data.poster);
-  //       return `
-  //         <a
-  //           href="#/anime/${data.identifier}"
-  //           class="div_SQpqup7" data-item>
-  //             <div class="div_fMC1uk6">
-  //               <img src="" alt="" data-src="${url}" style="display:none">
-  //               <span>${data.type ?? ""}</span>
-  //             </div>
-  //             <div class="div_9nWIRZE">
-  //               <p>${data.title}</p>
-  //             </div>
-  //         </a>
-  //       `;
-  //     })
-  //     .join("");
-
-  //   $elements.itemTrue.append(
-  //     ...Array.from(template.children).map((child) => {
-  //       child.addEventListener("_IntersectionObserver", ({ detail }) => {
-  //         if (detail.entry.isIntersecting) {
-  //           detail.observer.unobserve(detail.entry.target);
-  //           const img = child.querySelector("img");
-  //           img.onload = () => (img.style.display = "");
-  //           img.src = img.dataset.src;
-  //         }
-  //       });
-
-  //       useApp.instances.IntersectionObserver.observe(child);
-  //       useThis.values.observes.push(child);
-
-  //       return child;
-  //     })
-  //   );
-
-  //   $elements.itemTrueLoad.remove();
-
-  //   if (array.length == 24) {
-  //     $elements.itemTrue.append($elements.itemTrueLoad);
-  //     useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-  //   }
-  // };
-
-  // useThis.functions.dataRenderPeliculaSerie = (array) => {
-  //   const template = document.createElement("div");
-
-  //   template.innerHTML = array
-  //     .map((data) => {
-  //       const type =
-  //         data.url.slug.split("/")[0] == "movies" ? "pelicula" : "serie";
-
-  //       if (data.images.poster == null) {
-  //         return '<div style="display:none"></div>';
-  //       }
-  //       const url = data.images.poster.replace("/original/", "/w185/");
-
-  //       return `
-  //         <a
-  //           href="#/${type}/${data.TMDbId}"
-  //           class="div_SQpqup7"
-  //           data-item>
-  //             <div class="div_fMC1uk6">
-  //               <img src="" alt="" data-src="${url}" style="display:none">
-  //               <span>${type}</span>
-  //             </div>
-  //             <div class="div_9nWIRZE">
-  //               <p>${data.titles.name}</p>
-  //             </div>
-  //         </a>
-  //       `;
-  //     })
-  //     .join("");
-
-  //   $elements.itemTrue.append(
-  //     ...Array.from(template.children).map((child) => {
-  //       if (child.tagName == "A") {
-  //         child.addEventListener("_IntersectionObserver", ({ detail }) => {
-  //           if (detail.entry.isIntersecting) {
-  //             detail.observer.unobserve(detail.entry.target);
-  //             const img = child.querySelector("img");
-  //             img.onload = () => (img.style.display = "");
-  //             img.src = img.dataset.src;
-  //           }
-  //         });
-
-  //         useApp.instances.IntersectionObserver.observe(child);
-  //         useThis.values.observes.push(child);
-  //       }
-
-  //       return child;
-  //     })
-  //   );
-
-  //   $elements.itemTrueLoad.remove();
-
-  //   // if (array.length == 24) {
-  //   //   $elements.itemTrue.append($elements.itemTrueLoad);
-  //   //   useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-  //   // }
-  // };
-
-  // useThis.functions.dataRenderIptv = (array) => {
-  //   const types = {
-  //     4: "pelicula-ii",
-  //     5: "serie-ii",
-  //   };
-
-  //   const type = types[$elements["form-filter-type"].key.value];
-  //   const template = document.createElement("div");
-
-  //   template.innerHTML = array
-  //     .map((data) => {
-  //       const url = useApp.url.img(data.stream_icon ?? data.cover);
-
-  //       // const episode = `episodio ${data.episode}`;
-  //       // const aspectRatio = type == "6" ? "aspect-ratio:1/1" : "";
-
-  //       return `
-  //         <a
-  //           href="#/${type}/${data.stream_id ?? data.series_id}"
-  //           class="div_SQpqup7" data-item>
-  //             <div class="div_fMC1uk6">
-  //               <img src="" alt="" data-src="${url}" style="display:none">
-  //               <span style="display:none"></span>
-  //             </div>
-  //             <div class="div_9nWIRZE">
-  //               <p>${data.name}</p>
-  //             </div>
-  //         </a>
-  //       `;
-  //     })
-  //     .join("");
-
-  //   $elements.itemTrue.append(
-  //     ...Array.from(template.children).map((child) => {
-  //       child.addEventListener("_IntersectionObserver", ({ detail }) => {
-  //         if (detail.entry.isIntersecting) {
-  //           detail.observer.unobserve(detail.entry.target);
-  //           const img = child.querySelector("img");
-  //           img.onload = () => (img.style.display = "");
-  //           img.src = img.dataset.src;
-  //         }
-  //       });
-
-  //       useApp.instances.IntersectionObserver.observe(child);
-  //       useThis.values.observes.push(child);
-
-  //       return child;
-  //     })
-  //   );
-
-  //   $elements.itemTrueLoad.remove();
-
-  //   if (array.length == 50) {
-  //     $elements.itemTrue.append($elements.itemTrueLoad);
-  //     useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-  //   }
-  // };
-
-  // useThis.functions.dataRenderIptvChannel = (array) => {
-  //   const template = document.createElement("div");
-
-  //   template.innerHTML = array
-  //     .map((data) => {
-  //       const url = useApp.url.img(data.stream_icon ?? data.cover);
-
-  //       const dataInput = useApp.MyClass.EncodeTemplateString.toInput(
-  //         JSON.stringify(data)
-  //       );
-
-  //       return `
-  //         <button
-  //           class="div_SQpqup7"
-  //           data-data="${dataInput}"
-  //           data-item>
-  //             <div class="div_fMC1uk6" style="aspect-ratio:1/1">
-  //               <img src="" alt="" data-src="${url}" style="display:none">
-  //               <span style="display:none"></span>
-  //             </div>
-  //             <div class="div_9nWIRZE">
-  //               <p>${data.name}</p>
-  //             </div>
-  //         </button>
-  //       `;
-  //     })
-  //     .join("");
-
-  //   $elements.itemTrue.append(
-  //     ...Array.from(template.children).map((child) => {
-  //       child.addEventListener("_IntersectionObserver", ({ detail }) => {
-  //         if (detail.entry.isIntersecting) {
-  //           detail.observer.unobserve(detail.entry.target);
-  //           const img = child.querySelector("img");
-  //           img.onload = () => (img.style.display = "");
-  //           img.src = img.dataset.src;
-  //         }
-  //       });
-
-  //       useApp.instances.IntersectionObserver.observe(child);
-  //       useThis.values.observes.push(child);
-
-  //       return child;
-  //     })
-  //   );
-
-  //   $elements.itemTrueLoad.remove();
-
-  //   if (array.length == 50) {
-  //     $elements.itemTrue.append($elements.itemTrueLoad);
-  //     useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-  //   }
-  // };
-
-  /** Nuevo */
-
-  // useThis.functions.dataTrueAnime = () => {
-  //   const page =
-  //     Math.floor(
-  //       $elements.itemTrue.querySelectorAll("[data-item]").length / 24
-  //     ) + 1;
-
-  //   ApiWebAnimeflv.search({
-  //     page,
-  //     search: decodeURIComponent(useThis.params.result),
-  //   }).then((array) => {
-  //     useThis.oValues.dataNull.value = true;
-  //     useThis.oValues.dataTrue.value = array;
-  //     useThis.oValues.dataNull.value = false;
-  //   });
-  // };
-
-  // useThis.functions.dataTruePelicula = () => {
-  //   ApiWebCuevana.search(decodeURIComponent(useThis.params.result)).then(
-  //     (datas) => {
-  //       useThis.oValues.dataNull.value = true;
-  //       useThis.oValues.dataTrue.value = datas?.props?.pageProps?.movies;
-  //       useThis.oValues.dataNull.value = false;
-  //     }
-  //   );
-  // };
-
-  // useThis.functions.dataTrueIptv = () => {
-  //   const types = {
-  //     4: "pelicula",
-  //     5: "serie",
-  //     6: "live",
-  //   };
-
-  //   // const gender = $elements.selectGender.value;
-  //   const type = types[$elements["form-filter-type"].key.value];
-
-  //   const length = $elements.itemTrue.querySelectorAll("[data-item]").length;
-
-  //   const encodeQueryString = useApp.MyFunction.encodeQueryObject({
-  //     route: type,
-  //     search: decodeURIComponent(useThis.params.result),
-  //     start: length,
-  //     end: 50,
-  //   });
-
-  //   fetch(`https://api.vniox.com/iptv/api.php?${encodeQueryString}`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       useThis.oValues.dataNull.value = true;
-  //       useThis.oValues.dataTrue.value = data ?? [];
-  //       useThis.oValues.dataNull.value = false;
-  //     });
-  // };
-
-  // useThis.functions.dataTrue = () => {
-  //   const type = $elements["form-filter-type"].key.value;
-
-  //   const types = {
-  //     1: useThis.functions.dataTrueAnime,
-  //     2: useThis.functions.dataTruePelicula,
-  //     3: useThis.functions.dataTruePelicula,
-  //     4: useThis.functions.dataTrueIptv,
-  //     5: useThis.functions.dataTrueIptv,
-  //     6: useThis.functions.dataTrueIptv,
-  //   };
-
-  //   types?.[type]?.();
-  // };
-
-  // useThis.functions.dataTrue();
-
-  /* -------------------------------------------------------------------------------- */
 
   useApp.events(
     $elements.itemTrueLoad,
@@ -3937,7 +3591,7 @@ var searchTypeResult = () => {
 
     $elements.itemTrue.append(
       ...array.map((data) => {
-        const url = useApp.url.img(data.stream_icon ?? data.cover);
+        const url = data.stream_icon ?? data.cover;
 
         const child = itemData({
           href: `#/${type}/${data.stream_id ?? data.series_id}`,
@@ -3968,7 +3622,7 @@ var searchTypeResult = () => {
 
     template.innerHTML = array
       .map((data) => {
-        const url = useApp.url.img(data.stream_icon ?? data.cover);
+        const url = data.stream_icon ?? data.cover;
 
         const dataInput = useApp.MyClass.EncodeTemplateString.toInput(
           JSON.stringify(data)
