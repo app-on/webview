@@ -3103,7 +3103,7 @@ var inicio = () => {
     useThis.oValues.dataNull.value = false;
   };
 
-  // useThis.get.dataTrue().then(useThis.set.dataTrue);
+  useThis.get.dataTrue().then(useThis.set.dataTrue);
 
   return $element;
 };
@@ -3706,7 +3706,7 @@ var searchTypeResult = () => {
     useThis.oValues.dataNull.value = false;
   };
 
-  // useThis.get.dataTrue().then(useThis.set.dataTrue);
+  useThis.get.dataTrue().then(useThis.set.dataTrue);
 
   return $element;
 };
