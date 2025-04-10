@@ -2161,20 +2161,6 @@ input {
   }
 }
 
-.div_lx7p9tx {
-  width: 100%;
-  display: flex;
-  padding: 10px;
-
-  & video {
-    width: 100%;
-    aspect-ratio: 16/9;
-
-    object-fit: contain;
-    background: #000;
-  }
-}
-
 /* ----- PAGE -- PELICULA_SERIE.CSS ----- */
 
 .div_eRsphYD {
