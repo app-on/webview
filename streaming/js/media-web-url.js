@@ -75,6 +75,7 @@ class MediaWebUrl {
           );
 
           const validate = (p, a, c, k, e, d) => {
+            console.log("entro aqui");
             while (c--)
               if (k[c]) {
                 p = p.replace(
@@ -83,13 +84,16 @@ class MediaWebUrl {
                 );
               }
 
-            const scriptFunction = new Function(
-              `return ${p.slice(p.indexOf("{"), p.indexOf(");"))}`
-            );
-            return scriptFunction();
+            return JSON.parse(`${p.slice(p.indexOf("{"), p.indexOf("}") + 1)}`);
+
+            // const scriptFunction = new Function(
+            //   `return ${p.slice(p.indexOf("{"), p.indexOf("}") + 1)}`
+            // );
+
+            // return scriptFunction();
           };
 
-          resolve({ status: true, url: validate(...final()).sources[0].file });
+          resolve({ status: true, url: validate(...final()).hls2 });
         })
         .catch(() => resolve({ status: false, url: null }));
     });

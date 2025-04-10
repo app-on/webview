@@ -35,8 +35,8 @@ class ApiWebCuevana {
       page = Math.max(1, page);
 
       const url = !genre
-        ? `https://cuevana.biz/peliculas/page/${page}`
-        : `https://cuevana.biz/genero/${genre}/page/${page}`;
+        ? `https://cuevana.is/peliculas/page/${page}`
+        : `https://cuevana.is/genero/${genre}/page/${page}`;
 
       this._fetchWebResolve(url, resolve);
     });
@@ -44,7 +44,7 @@ class ApiWebCuevana {
 
   static peliculaId(id) {
     return new Promise((resolve) => {
-      const url = `https://cuevana.biz/pelicula/${id}/${id}`;
+      const url = `https://cuevana.is/pelicula/${id}/${id}`;
       this._fetchWebResolve(url, resolve);
     });
   }
@@ -53,14 +53,14 @@ class ApiWebCuevana {
     return new Promise((resolve) => {
       page = Math.max(1, page);
 
-      const url = `https://cuevana.biz/series/page/${page}`;
+      const url = `https://cuevana.is/series/page/${page}`;
       this._fetchWebResolve(url, resolve);
     });
   }
 
   static serieId(id, season = null, chapter = null) {
     return new Promise((resolve) => {
-      let url = `https://cuevana.biz/serie/${id}/${id}`;
+      let url = `https://cuevana.is/serie/${id}/${id}`;
       url +=
         season && chapter ? `/temporada/${season}/episodio/${chapter}` : "";
 
@@ -70,7 +70,7 @@ class ApiWebCuevana {
 
   static search(search = "") {
     return new Promise((resolve) => {
-      let url = `https://cuevana.biz/search?q=${encodeURIComponent(search)}`;
+      let url = `https://cuevana.is/search?q=${encodeURIComponent(search)}`;
       this._fetchWebResolve(url, resolve);
     });
   }

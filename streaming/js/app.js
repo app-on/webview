@@ -245,46 +245,49 @@ var dataApp = () => {
 // import eleConfirm from "../includes/eleConfirm";
 
 var navigate = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    routes: new useApp.MyClass.RouteHashCallback(),
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myVal = {
+    routes: new mrc.RouteHashCallback(),
     element: {
       textNode: document.createTextNode(""),
     },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
         <div class="div_kpAeq7EQQSpIEGP" >
             <div class="div_AzB9StLbTItJbDG">
                 <div class="div_JJ29L3eoT4hcf1x">
                     <div id="links" class="div_ynsbf8jCYmc6NsK">
                         <a id="inicio" href="#/" class="button_vz3gd83JzdjM7pt">
-                          ${useApp.svgIcon("fi fi-rr-house-blank")}
+                          ${svg("fi fi-rr-house-blank")}
                         </a>
                         <a id="search" href="#/search" class="button_vz3gd83JzdjM7pt">
-                          ${useApp.svgIcon("fi fi-rr-search")}
-                        </a>
-                        <a id="favorite" href="#/favorite" class="button_vz3gd83JzdjM7pt">
+                          ${svg("fi fi-rr-search")}
+                        </a> 
+                        <a id="collection" href="#/collection" class="button_vz3gd83JzdjM7pt">
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-books"><path d="M23.786,19.492L16.713,1.836c-.624-1.529-2.376-2.269-3.911-1.645l-.925,.378c-.249,.102-.472,.244-.68,.402-.548-.594-1.326-.972-2.196-.972H3C1.346,0,0,1.346,0,3V21c0,1.654,1.346,3,3,3h6c1.654,0,3-1.346,3-3V8.895l5.304,13.242c.625,1.543,2.417,2.26,3.909,1.641l.926-.378c1.505-.574,2.286-2.434,1.647-3.907ZM13.574,7.446l2.778-1.132,4.171,10.412-2.778,1.132L13.574,7.446Zm-.942-5.025l.925-.378c.496-.206,1.097,.031,1.302,.543l.75,1.871-2.777,1.132-.747-1.866c-.208-.51,.038-1.095,.549-1.303ZM2,7h3v10H2V7Zm5,0h3v10h-3V7Zm3-4v2h-3V2h2c.551,0,1,.448,1,1ZM3,2h2v3H2V3c0-.552,.449-1,1-1Zm-1,19v-2h3v3H3c-.551,0-1-.448-1-1Zm7,1h-2v-3h3v2c0,.552-.449,1-1,1Zm12.929-.991c-.104,.247-.297,.438-.544,.539h0l-.926,.378c-.511,.206-1.095-.037-1.3-.54l-.669-1.671,2.778-1.132,.665,1.661c.102,.247,.101,.52-.003,.766Z"></path></svg>
                         </a>
                         <a id="profile" href="#/setting" class="button_vz3gd83JzdjM7pt">
-                          ${useApp.svgIcon("fi fi-rr-user")}
+                          ${svg("fi fi-rr-user")}
                         </a>
                     </div>
                 </div>
             </div>
         </div>    
     `);
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.routes.set([
+  myVal.routes.set([
     { hash: "/", callback: () => $elements.inicio },
-    { hash: "/favorite", callback: () => $elements.favorite },
-    { hash: "/historial", callback: () => $elements.favorite },
+    { hash: "/collection", callback: () => $elements.collection },
+    { hash: "/historial", callback: () => $elements.collection },
     { hash: "/search/*", callback: () => $elements.search },
     { hash: "/profile/*", callback: () => $elements.profile },
     { hash: "/setting/*", callback: () => $elements.profile },
@@ -297,52 +300,52 @@ var navigate = () => {
     Array.from($elements.links.querySelectorAll("a.active")).forEach((a) =>
       a.classList.remove("active")
     );
-    (useThis.routes.get() || document.createElement("a")).classList.add(
-      "active"
-    );
+    (myVal.routes.get() || document.createElement("a")).classList.add("active");
   });
 
   return $element;
 };
 
 var navigateBottom = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    routes: new useApp.MyClass.RouteHashCallback(),
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    routes: new myApp.MyClass.RouteHashCallback(),
     element: {
       textNode: document.createTextNode(""),
     },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = myApp.MyFunction.createNodeElement(`
         <div class="div_U1rCCk1">
             <div id="links" class="div_ZnL3gfK">
                 <a id="inicio" href="#/">
-                  ${useApp.svgIcon("fi fi-rr-house-blank")}
+                  ${svg("fi fi-rr-house-blank")}
                 </a>
                 <a id="search" href="#/search" class="button_vz3gd83JzdjM7pt">
-                  ${useApp.svgIcon("fi fi-rr-search")}
+                  ${svg("fi fi-rr-search")}
                 </a>
-                <a id="favorite" href="#/favorite" class="button_vz3gd83JzdjM7pt">
+                <a id="collection" href="#/collection" class="button_vz3gd83JzdjM7pt">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-books"><path d="M23.786,19.492L16.713,1.836c-.624-1.529-2.376-2.269-3.911-1.645l-.925,.378c-.249,.102-.472,.244-.68,.402-.548-.594-1.326-.972-2.196-.972H3C1.346,0,0,1.346,0,3V21c0,1.654,1.346,3,3,3h6c1.654,0,3-1.346,3-3V8.895l5.304,13.242c.625,1.543,2.417,2.26,3.909,1.641l.926-.378c1.505-.574,2.286-2.434,1.647-3.907ZM13.574,7.446l2.778-1.132,4.171,10.412-2.778,1.132L13.574,7.446Zm-.942-5.025l.925-.378c.496-.206,1.097,.031,1.302,.543l.75,1.871-2.777,1.132-.747-1.866c-.208-.51,.038-1.095,.549-1.303ZM2,7h3v10H2V7Zm5,0h3v10h-3V7Zm3-4v2h-3V2h2c.551,0,1,.448,1,1ZM3,2h2v3H2V3c0-.552,.449-1,1-1Zm-1,19v-2h3v3H3c-.551,0-1-.448-1-1Zm7,1h-2v-3h3v2c0,.552-.449,1-1,1Zm12.929-.991c-.104,.247-.297,.438-.544,.539h0l-.926,.378c-.511,.206-1.095-.037-1.3-.54l-.669-1.671,2.778-1.132,.665,1.661c.102,.247,.101,.52-.003,.766Z"></path></svg>
                 </a>
                 <a id="profile" href="#/setting" class="button_vz3gd83JzdjM7pt">
-                  ${useApp.svgIcon("fi fi-rr-user")}
+                  ${svg("fi fi-rr-user")}
                 </a>
             </div>
         </div>
     `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = myApp.MyFunction.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.routes.set([
+  myVal.routes.set([
     { hash: "/", callback: () => $elements.inicio },
-    { hash: "/favorite", callback: () => $elements.favorite },
-    { hash: "/historial", callback: () => $elements.favorite },
+    { hash: "/collection", callback: () => $elements.collection },
+    { hash: "/historial", callback: () => $elements.collection },
     { hash: "/search/*", callback: () => $elements.search },
     { hash: "/profile/*", callback: () => $elements.profile },
     { hash: "/setting/*", callback: () => $elements.profile },
@@ -355,9 +358,7 @@ var navigateBottom = () => {
     Array.from($elements.links.querySelectorAll("a.active")).forEach((a) =>
       a.classList.remove("active")
     );
-    (useThis.routes.get() || document.createElement("a")).classList.add(
-      "active"
-    );
+    (myVal.routes.get() || document.createElement("a")).classList.add("active");
   });
 
   return $element;
@@ -392,12 +393,12 @@ var auth = () => {
 };
 
 var routesPrivate = (page = "") => {
-  const useApp = window.dataApp;
+  const myApp = window.dataApp;
   const $node = document.createTextNode("");
 
   auth().then((result) => {
     if (result?.status) {
-      useApp.MyClass.Cookie.set(useApp.auth, result.token, {
+      myApp.MyClass.Cookie.set(myApp.auth, result.token, {
         lifetime: 60 * 60 * 24 * 7,
       });
       return $node.replaceWith(page());
@@ -410,12 +411,12 @@ var routesPrivate = (page = "") => {
 };
 
 var routesPublic = (page = "") => {
-  const useApp = window.dataApp;
+  const myApp = window.dataApp;
   const $node = document.createTextNode("");
 
   auth().then((result) => {
     if (!result?.status) {
-      useApp.MyClass.Cookie.remove(useApp.auth, {});
+      myApp.MyClass.Cookie.remove(myApp.auth, {});
       return $node.replaceWith(page());
     }
 
@@ -425,20 +426,39 @@ var routesPublic = (page = "") => {
   return $node;
 };
 
+var getMediaWeb = (url, resolve) => {
+  const newURL = new URL(url);
+  const hostSplit = newURL.host.split(".");
+  const host = hostSplit.length == 3 ? hostSplit[1] : hostSplit[0];
+
+  if (["streamwish"].includes(host)) {
+    MediaWebUrl.streamwish({ url: url }).then(resolve);
+  } else if (["voe"].includes(host)) {
+    MediaWebUrl.voesx({ url: url }).then(resolve);
+  } else if (["doodstream"].includes(host)) {
+    MediaWebUrl.doodstream({ url: url }).then(resolve);
+  } else if (["yourupload"].includes(host)) {
+    MediaWebUrl.yourupload({ url: url }).then(resolve);
+  } else {
+    resolve({
+      status: true,
+      url: url,
+    });
+  }
+};
+
 var peliculaId = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
-    // reactivity: {
-    //   isFavorite: defineVal(false),
-    //   isView: defineVal(false),
-    //   load: defineVal(true),
-    //   data: defineVal({}),
-    // },
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
     functions: {},
-    oValues: {
-      favorite: useApp.MyFunction.observeValue(false),
-      view: useApp.MyFunction.observeValue(false),
+    signals: {
+      favorite: mrf.observeValue(false),
+      view: mrf.observeValue(false),
     },
     values: {
       isConnected: false,
@@ -450,20 +470,20 @@ var peliculaId = () => {
     },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
     <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
          
         <header class="header_K0hs3I0 header_RtX3J1X">
 
             <div class="div_uNg74XS">
                 <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                  ${svg("fi fi-rr-angle-small-left")}
                 </a>  
             </div>
             <h2 id="textTitle" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
             <div id="divButton" class="div_x0cH0Hq">
                 <button id="favorite" class="button_lvV6qZu" data-action="0">
-                  ${useApp.svgIcon("fi fi-rr-heart")}
+                  ${svg("fi fi-rr-heart")}
                 </button>
             </div>
 
@@ -471,7 +491,7 @@ var peliculaId = () => {
         <div id="item" class="div_guZ6yID div_DtSQApy">
             <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
             <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${useApp.svgIcon("fi fi-rr-search-alt")}
+                ${svg("fi fi-rr-search-alt")}
                 <h3>La pelicula no existe</h3>
             </div> 
             <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
@@ -546,29 +566,27 @@ var peliculaId = () => {
     </div>
   `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.oValues.favorite.observe((boolean) => {
-    $elements.favorite.innerHTML = useApp.svgIcon(
+  myVal.signals.favorite.observe((boolean) => {
+    $elements.favorite.innerHTML = svg(
       boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
     );
 
     $elements.favorite.setAttribute("data-action", boolean ? 1 : 0);
   });
 
-  useThis.oValues.view.observe((boolean) => {
+  myVal.signals.view.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
 
-  useThis.functions.dataRenderTrue = (data) => {
+  myVal.functions.dataRenderTrue = (data) => {
     const thisMovie = data.props.pageProps.thisMovie;
-    const fromSecondsToTime = useApp.MyFunction.fromSecondsToTime(
-      thisMovie.runtime * 60
-    );
+    const fromSecondsToTime = mrf.fromSecondsToTime(thisMovie.runtime * 60);
 
     const slug = thisMovie.url.slug
       .split("/")
@@ -581,7 +599,7 @@ var peliculaId = () => {
       })
       .join("/");
 
-    $elements.poster.src = useApp.url.img(
+    $elements.poster.src = myApp.url.img(
       thisMovie.images.poster.replace("/original/", "/w342/")
     );
 
@@ -598,29 +616,29 @@ var peliculaId = () => {
     $elements.play.setAttribute("data-data", JSON.stringify(thisMovie));
     $elements.play.setAttribute("data-slug", `https://cuevana.biz/${slug}`);
 
-    useApp.mediaPlayer.info({
+    myApp.mediaPlayer.info({
       title: thisMovie.titles.name,
       description: thisMovie.genres.map((genre) => genre.name).join(", "),
     });
 
-    useApp.mediaPlayer.controls({
+    myApp.mediaPlayer.controls({
       options: {
         not: ["download"],
       },
     });
 
-    useApp.MyClass.MyImage.canvas($elements.poster.src).then((result) => {
+    mrc.MyImage.canvas($elements.poster.src).then((result) => {
       const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
       const r = pixelData[0];
       const g = pixelData[1];
       const b = pixelData[2];
 
-      const color = useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 50);
+      const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
 
       $elements.itemTrueOptionVideos.parentElement.style.background =
-        useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 60);
+        mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
 
-      useApp.elements.meta.color.setAttribute("content", color);
+      myApp.elements.meta.color.setAttribute("content", color);
       $element.style.background = color;
 
       Android.colorSystemBar(color);
@@ -664,16 +682,16 @@ var peliculaId = () => {
       })
       .join("");
 
-    useThis.functions.dataTrueInfo(thisMovie);
+    myVal.functions.dataTrueInfo(thisMovie);
 
     $elements.itemNull.style.display = "none";
     $elements.itemTrue.style.display = "";
   };
 
-  useThis.functions.dataTrueInfo = (data) => {
-    useThis.values.data_id = data.TMDbId;
+  myVal.functions.dataTrueInfo = (data) => {
+    myVal.values.data_id = data.TMDbId;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "favorites-one",
       data_id: data.TMDbId,
       type: 2,
@@ -693,97 +711,58 @@ var peliculaId = () => {
     };
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "POST",
         body: JSON.stringify(body),
       })
     )
       .then((res) => res.json())
       .then((data) => {
-        useThis.values.streaming = data;
+        myVal.values.streaming = data;
         $elements.favorite.style.visibility = "";
-        useThis.values.isConnected = Boolean(data);
+        myVal.values.isConnected = Boolean(data);
 
-        if (useThis.values.isConnected) {
-          useThis.oValues.favorite.value = Boolean(data?.favorite);
-          useThis.oValues.view.value = Boolean(data?.view);
+        if (myVal.values.isConnected) {
+          myVal.signals.favorite.value = Boolean(data?.favorite);
+          myVal.signals.view.value = Boolean(data?.view);
         }
       });
   };
 
-  useThis.functions.getLinkServer = (url) => {
-    const newURL = new URL(url);
-    const hostSplit = newURL.host.split(".");
-    const host = hostSplit.length == 3 ? hostSplit[1] : hostSplit[0];
-    const mediaPlayer = useApp.mediaPlayer;
-
-    if (["streamwish"].includes(host)) {
-      MediaWebUrl.streamwish({ url: url }).then((res) => {
-        $elements.loaderVideo.style.display = "none";
-        if (res.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["voe"].includes(host)) {
-      MediaWebUrl.voesx({ url: url }).then((res) => {
-        if (res.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["doodstream"].includes(host)) {
-      MediaWebUrl.doodstream({ url: url }).then((res) => {
-        if (res.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["yourupload"].includes(host)) {
-      MediaWeb.yourupload({ url: url }).then((res) => {
-        if (res.body.status) {
-          mediaPlayer.video((video) => {
-            video.src = res.body.url;
-          });
-        } else alert("Video no disponible");
-      });
-    }
-  };
-
-  useThis.functions.dataTrue = () => {
-    ApiWebCuevana.peliculaId(useThis.params.id).then((data) => {
-      useThis.values.data = data;
-      useThis.values.thisMovie = data.props.pageProps.thisMovie;
-      useThis.functions.dataRenderTrue(data);
+  myVal.functions.dataTrue = () => {
+    ApiWebCuevana.peliculaId(myVal.params.id).then((data) => {
+      myVal.values.data = data;
+      myVal.values.thisMovie = data.props.pageProps.thisMovie;
+      myVal.functions.dataRenderTrue(data);
     });
   };
 
-  useThis.functions.updateHistory = (currentTime, duration = 0) => {
+  myVal.functions.updateHistory = (currentTime, duration = 0) => {
     console.log("visto");
-    console.log(useThis.values.isConnected);
-    if (useThis.values.isConnected) {
-      const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    console.log(myVal.values.isConnected);
+    if (myVal.values.isConnected) {
+      const encodeQueryString = mrf.encodeQueryObject({
         route: "update-history-view",
-        episode: useThis.values.episode,
+        episode: myVal.values.episode,
         time_view: currentTime,
         time_duration: duration,
         datetime: Date.now(),
-        data_id: useThis.values.data_id,
+        data_id: myVal.values.data_id,
         type: 2,
       });
 
       fetch(
-        useApp.url.server(`/api.php?${encodeQueryString}`),
-        useApp.fetchOptions({
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
           method: "GET",
         })
       );
     }
   };
 
-  useThis.functions.updateHistoryVideo = () => {
-    useApp.mediaPlayer.video((video) => {
+  myVal.functions.updateHistoryVideo = () => {
+    myApp.mediaPlayer.video((video) => {
       let times = {};
       let status = false;
 
@@ -795,8 +774,7 @@ var peliculaId = () => {
 
         const currentTime =
           parseInt(
-            useThis.values.streaming?.episodes?.[useThis.values.episode]
-              ?.time_view
+            myVal.values.streaming?.episodes?.[myVal.values.episode]?.time_view
           ) || 0;
 
         video.currentTime = currentTime;
@@ -808,17 +786,14 @@ var peliculaId = () => {
 
           if (num > 0 && num % 15 == 0 && !times[num]) {
             times[num] = true;
-            useThis.functions.updateHistory(
-              num,
-              Math.ceil(video.duration) || 0
-            );
+            myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
           }
         }
       };
 
       video.onseeked = () => {
         const currentTime = Math.floor(video.currentTime);
-        useThis.functions.updateHistory(
+        myVal.functions.updateHistory(
           currentTime,
           Math.ceil(video.duration) || 0
         );
@@ -883,21 +858,21 @@ var peliculaId = () => {
   });
 
   $elements.favorite.addEventListener("click", () => {
-    // if (!useThis.values.isConnected) {
+    // if (!myVal.values.isConnected) {
     //   return (location.hash = "#/login");
     // }
-    useThis.oValues.favorite.value = !useThis.oValues.favorite.value;
+    myVal.signals.favorite.value = !myVal.signals.favorite.value;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-favorites",
-      data_id: useThis.values.thisMovie.TMDbId,
+      data_id: myVal.values.thisMovie.TMDbId,
       type: 2,
       action: $elements.favorite.dataset.action,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -909,28 +884,28 @@ var peliculaId = () => {
         }
 
         if (data?.status) {
-          useThis.oValues.favorite.value = data.type == 1;
+          myVal.signals.favorite.value = data.type == 1;
         }
       });
   });
 
   $elements.inputView.addEventListener("change", () => {
-    // if (!useThis.values.isConnected) {
+    // if (!myVal.values.isConnected) {
     //   return (location.hash = "#/login");
     // }
 
-    // useThis.oValues.view.value = !useThis.oValues.view.value;
+    // myVal.signals.view.value = !myVal.signals.view.value;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-views",
-      data_id: useThis.values.thisMovie.TMDbId,
+      data_id: myVal.values.thisMovie.TMDbId,
       type: 2,
       action: $elements.inputView.checked ? 1 : 0,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -954,11 +929,20 @@ var peliculaId = () => {
 
       $elements.loaderVideo.style.display = "";
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
-        useThis.functions.getLinkServer(url);
+        setTimeout(() => {
+          getMediaWeb(url, (res) => {
+            $elements.loaderVideo.style.display = "none";
+            if (res.status) {
+              Android.openWithDefault(res.url, "video/*");
+            } else {
+              alert("El video no esta disponible");
+            }
+          });
+        });
       });
 
-      // useApp.mediaPlayer.element().requestFullscreen();
-      // useThis.functions.updateHistoryVideo();
+      // myApp.mediaPlayer.element().requestFullscreen();
+      // myVal.functions.updateHistoryVideo();
 
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -996,25 +980,31 @@ var peliculaId = () => {
     });
   });
 
-  useApp.elements.meta.color.setAttribute("content", "#000000");
-  useThis.functions.dataTrue();
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.functions.dataTrue();
 
-  useApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
 
-  Android.colorSystemBar("#000000");
+  mrf.callbackTryCatch(() => {
+    Android.colorSystemBar("#000000");
+  });
 
   return $element;
 };
 
 var serieId = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
     functions: {},
-    oValues: {
-      isFavorite: useApp.MyFunction.observeValue(false),
-      isView: useApp.MyFunction.observeValue(false),
-      episodes: useApp.MyFunction.observeValue([]),
+    signals: {
+      isFavorite: mrf.observeValue(false),
+      isView: mrf.observeValue(false),
+      episodes: mrf.observeValue([]),
     },
     values: {
       dataInfo: null,
@@ -1028,19 +1018,19 @@ var serieId = () => {
     },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
     <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
         <header class="header_K0hs3I0 header_XpmKRuK header_RtX3J1X">
 
             <div class="div_uNg74XS">
                 <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                  ${svg("fi fi-rr-angle-small-left")}
                 </a>
             </div>
             <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
             <div class="div_x0cH0Hq">
                 <button id="favorite" class="button_lvV6qZu" data-action="0">
-                  ${useApp.svgIcon("fi fi-rr-heart")}
+                  ${svg("fi fi-rr-heart")}
                 </button>
             </div>
 
@@ -1049,7 +1039,7 @@ var serieId = () => {
         <div id="item" class="div_guZ6yID div_DtSQApy" >
             <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
             <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${useApp.svgIcon("fi fi-rr-search-alt")}
+                ${svg("fi fi-rr-search-alt")}
                 <h3>La pelicula no existe</h3>
             </div>
             <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
@@ -1142,26 +1132,26 @@ var serieId = () => {
     </div>
 `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.oValues.isFavorite.observe((boolean) => {
-    $elements.favorite.innerHTML = useApp.svgIcon(
+  myVal.signals.isFavorite.observe((boolean) => {
+    $elements.favorite.innerHTML = svg(
       boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
     );
   });
 
-  useThis.oValues.isView.observe((boolean) => {
+  myVal.signals.isView.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
 
-  useThis.functions.dataRenderTrue = (data) => {
+  myVal.functions.dataRenderTrue = (data) => {
     const thisSerie = data.props.pageProps.thisSerie;
 
-    $elements.poster.src = useApp.url.img(
+    $elements.poster.src = myApp.url.img(
       thisSerie.images.poster.replace("/original/", "/w342/")
     );
 
@@ -1225,35 +1215,35 @@ var serieId = () => {
       })
       .join("");
 
-    useThis.functions.renderSeason();
+    myVal.functions.renderSeason();
 
-    useApp.MyClass.MyImage.canvas($elements.poster.src).then((result) => {
+    mrc.MyImage.canvas($elements.poster.src).then((result) => {
       const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
       const r = pixelData[0];
       const g = pixelData[1];
       const b = pixelData[2];
 
-      const color = useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 50);
+      const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
 
       $elements.itemTrueOptionVideos.parentElement.style.background =
-        useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 60);
+        mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
 
-      useApp.elements.meta.color.setAttribute("content", color);
+      myApp.elements.meta.color.setAttribute("content", color);
       $element.style.background = color;
 
       Android.colorSystemBar(color);
     });
 
-    useThis.functions.dataTrueInfo(thisSerie);
+    myVal.functions.dataTrueInfo(thisSerie);
 
     $elements.itemNull.style.display = "none";
     $elements.itemTrue.style.display = "";
   };
 
-  useThis.functions.dataTrueInfo = (data) => {
-    useThis.values.data_id = data.TMDbId;
+  myVal.functions.dataTrueInfo = (data) => {
+    myVal.values.data_id = data.TMDbId;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "favorites-one",
       data_id: data.TMDbId,
       type: 3,
@@ -1273,29 +1263,29 @@ var serieId = () => {
     };
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "POST",
         body: JSON.stringify(body),
       })
     )
       .then((res) => res.json())
       .then((data) => {
-        useThis.values.streaming = data;
+        myVal.values.streaming = data;
         $elements.favorite.style.visibility = "";
-        useThis.values.isConnected = Boolean(data);
+        myVal.values.isConnected = Boolean(data);
 
-        if (useThis.values.isConnected) {
-          useThis.oValues.isFavorite.value = Boolean(data?.favorite);
-          useThis.oValues.isView.value = Boolean(data?.view);
+        if (myVal.values.isConnected) {
+          myVal.signals.isFavorite.value = Boolean(data?.favorite);
+          myVal.signals.isView.value = Boolean(data?.view);
 
-          useThis.functions.renderSeason();
+          myVal.functions.renderSeason();
         }
       });
   };
 
-  useThis.functions.renderSeason = (index = 0) => {
-    const seasons = useThis.values.thisSerie.seasons.filter(
+  myVal.functions.renderSeason = (index = 0) => {
+    const seasons = myVal.values.thisSerie.seasons.filter(
       (season) => season.episodes.length
     );
 
@@ -1307,14 +1297,14 @@ var serieId = () => {
     $elements.episodes.innerHTML = array
       .map((episode) => {
         const episodeInfo =
-          useThis.values.streaming?.episodes?.[`${season}-${episode.number}`];
+          myVal.values.streaming?.episodes?.[`${season}-${episode.number}`];
 
-        const dataData = useApp.MyClass.EncodeTemplateString.toInput(
+        const dataData = mrc.EncodeTemplateString.toInput(
           JSON.stringify(episode)
         );
 
         const checked = episodeInfo != undefined ? "checked" : "";
-        const displayInput = useThis.values.isConnected ? "" : "display:none";
+        const displayInput = myVal.values.isConnected ? "" : "display:none";
 
         return `
           <div data-episode="${episode.number}" class="div_eGwK6I1">
@@ -1332,14 +1322,14 @@ var serieId = () => {
                   ${
                     parseInt(episodeInfo?.time_view)
                       ? "visto ".concat(
-                          useApp.functions.formatTime(episodeInfo.time_view)
+                          myApp.functions.formatTime(episodeInfo.time_view)
                         )
                       : ""
                   }
                   ${
                     parseInt(episodeInfo?.time_duration)
                       ? "de ".concat(
-                          useApp.functions.formatTime(episodeInfo.time_duration)
+                          myApp.functions.formatTime(episodeInfo.time_duration)
                         )
                       : ""
                   }
@@ -1360,7 +1350,7 @@ var serieId = () => {
       $elements.episodes.innerHTML = `
         <div class="div_Qm4cPUn">
           <div id="itemFalse" class="div_b14S3dH">
-            ${useApp.svgIcon("fi fi-rr-search-alt")}
+            ${svg("fi fi-rr-search-alt")}
             <h3>No hay capitulos</h3>
           </div>
         </div>
@@ -1368,80 +1358,38 @@ var serieId = () => {
     }
   };
 
-  useThis.functions.setLinkServer = (url) => {
-    const newURL = new URL(url);
-    const hostSplit = newURL.host.split(".");
-    const host = hostSplit.length == 3 ? hostSplit[1] : hostSplit[0];
+  myVal.functions.dataTrue = () => {
+    ApiWebCuevana.serieId(myVal.params.id).then((data) => {
+      myVal.values.data = data;
+      myVal.values.thisSerie = data.props.pageProps.thisSerie;
 
-    const mediaPlayer = useApp.mediaPlayer;
-
-    if (["streamwish"].includes(host)) {
-      MediaWebUrl.streamwish({ url: url }).then((res) => {
-        $elements.loaderVideo.style.display = "none";
-        if (res.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["voe"].includes(host)) {
-      MediaWebUrl.voesx({ url: url }).then((res) => {
-        $elements.loaderVideo.style.display = "none";
-        if (res.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["doodstream"].includes(host)) {
-      MediaWebUrl.doodstream({ url: url }).then((res) => {
-        $elements.loaderVideo.style.display = "none";
-        if (res.body.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["yourupload"].includes(host)) {
-      MediaWeb.yourupload({ url: url }).then((res) => {
-        if (res.body.status) {
-          mediaPlayer.video((video) => {
-            video.src = res.body.url;
-          });
-        } else alert("Video no disponible");
-      });
-    }
-  };
-
-  useThis.functions.dataTrue = () => {
-    ApiWebCuevana.serieId(useThis.params.id).then((data) => {
-      useThis.values.data = data;
-      useThis.values.thisSerie = data.props.pageProps.thisSerie;
-
-      useThis.functions.dataRenderTrue(data);
+      myVal.functions.dataRenderTrue(data);
     });
   };
 
-  useThis.functions.unobserve = () => {
-    for (const observe of useThis.values.observes) {
-      useApp.instances.IntersectionObserver.unobserve(observe);
+  myVal.functions.unobserve = () => {
+    for (const observe of myVal.values.observes) {
+      myApp.instances.IntersectionObserver.unobserve(observe);
     }
 
-    useThis.values.observes = [];
+    myVal.values.observes = [];
   };
 
-  useThis.functions.updateHistory = (currentTime, duration = 0) => {
-    if (useThis.values.isConnected) {
-      const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+  myVal.functions.updateHistory = (currentTime, duration = 0) => {
+    if (myVal.values.isConnected) {
+      const encodeQueryString = mrf.encodeQueryObject({
         route: "update-history-view",
-        episode: useThis.values.episode,
+        episode: myVal.values.episode,
         time_view: currentTime,
         time_duration: duration,
         datetime: Date.now(),
-        data_id: useThis.values.data_id,
+        data_id: myVal.values.data_id,
         type: 3,
       });
 
       fetch(
-        useApp.url.server(`/api.php?${encodeQueryString}`),
-        useApp.fetchOptions({
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
           method: "GET",
         })
       )
@@ -1449,15 +1397,15 @@ var serieId = () => {
         .then((data) => {
           if (data?.status) {
             if (document.body.contains($element)) {
-              useThis.functions.dataTrueInfo(useThis.values.thisSerie);
+              myVal.functions.dataTrueInfo(myVal.values.thisSerie);
             }
           }
         });
     }
   };
 
-  useThis.functions.updateHistoryVideo = () => {
-    useApp.mediaPlayer.video((video) => {
+  myVal.functions.updateHistoryVideo = () => {
+    myApp.mediaPlayer.video((video) => {
       let times = {};
       let status = false;
 
@@ -1469,8 +1417,7 @@ var serieId = () => {
 
         const currentTime =
           parseInt(
-            useThis.values.streaming?.episodes?.[useThis.values.episode]
-              ?.time_view
+            myVal.values.streaming?.episodes?.[myVal.values.episode]?.time_view
           ) || 0;
 
         video.currentTime = currentTime;
@@ -1482,17 +1429,14 @@ var serieId = () => {
 
           if (num > 0 && num % 15 == 0 && !times[num]) {
             times[num] = true;
-            useThis.functions.updateHistory(
-              num,
-              Math.ceil(video.duration) || 0
-            );
+            myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
           }
         }
       };
 
       video.onseeked = () => {
         const currentTime = Math.floor(video.currentTime);
-        useThis.functions.updateHistory(
+        myVal.functions.updateHistory(
           currentTime,
           Math.ceil(video.duration) || 0
         );
@@ -1506,7 +1450,7 @@ var serieId = () => {
   };
 
   $elements.selectSeason.addEventListener("change", () => {
-    useThis.functions.renderSeason($elements.selectSeason.value);
+    myVal.functions.renderSeason($elements.selectSeason.value);
   });
 
   $elements.buttonSeasonOrder.addEventListener("click", () => {
@@ -1529,11 +1473,11 @@ var serieId = () => {
         '<div class="loader-i m-auto g-col-full" style="--color:#fff; padding: 20px 0"></div>';
 
       ApiWebCuevana.serieId(
-        useThis.params.id,
+        myVal.params.id,
         item.getAttribute("data-season"),
         item.getAttribute("data-episode")
       ).then((response) => {
-        useThis.values.dataInfo = response;
+        myVal.values.dataInfo = response;
         $elements.itemTrueOptionVideos.innerHTML = Object.entries(
           response.props.pageProps.episode.videos
         )
@@ -1575,18 +1519,18 @@ var serieId = () => {
     }
 
     if (input) {
-      const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+      const encodeQueryString = mrf.encodeQueryObject({
         route: "toggle-history-view",
         episode: `${input.dataset.season}-${input.dataset.episode}`,
         datetime: Date.now(),
-        data_id: useThis.values.data_id,
+        data_id: myVal.values.data_id,
         type: 3,
         action: input.checked ? 1 : 0,
       });
 
       fetch(
-        useApp.url.server(`/api.php?${encodeQueryString}`),
-        useApp.fetchOptions({
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
           method: "GET",
         })
       )
@@ -1605,22 +1549,22 @@ var serieId = () => {
       $elements.favorite.getAttribute("data-action") != 0 ? 0 : 1
     );
 
-    // if (!useThis.values.isConnected) {
+    // if (!myVal.values.isConnected) {
     //   return (location.hash = "#/login");
     // }
 
-    useThis.oValues.isFavorite.value = !useThis.oValues.isFavorite.value;
+    myVal.signals.isFavorite.value = !myVal.signals.isFavorite.value;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-favorites",
-      data_id: useThis.values.thisSerie.TMDbId,
+      data_id: myVal.values.thisSerie.TMDbId,
       type: 3,
       action: $elements.favorite.dataset.action,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -1632,26 +1576,26 @@ var serieId = () => {
         }
 
         if (data?.status) {
-          useThis.oValues.isFavorite.value = data.type == 1;
+          myVal.signals.isFavorite.value = data.type == 1;
         }
       });
   });
 
   $elements.inputView.addEventListener("click", () => {
-    // if (!useThis.values.isConnected) {
+    // if (!myVal.values.isConnected) {
     //   return (location.hash = "#/login");
     // }
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-views",
-      data_id: useThis.values.thisSerie.TMDbId,
+      data_id: myVal.values.thisSerie.TMDbId,
       type: 3,
       action: $elements.inputView.checked ? 1 : 0,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -1671,21 +1615,21 @@ var serieId = () => {
   $elements.itemTrueOptionVideos.addEventListener("click", (e) => {
     const button = e.target.closest("button");
     if (button) {
-      useThis.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
-      const [season, episode] = useThis.values.episode.split("-");
+      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
+      const [season, episode] = myVal.values.episode.split("-");
 
       $elements.itemTrueOption.hidePopover();
-      // useApp.mediaPlayer.element().requestFullscreen();
-      // useThis.functions.updateHistoryVideo();
+      // myApp.mediaPlayer.element().requestFullscreen();
+      // myVal.functions.updateHistoryVideo();
 
-      useApp.mediaPlayer.info({
-        title: useThis.values.dataInfo.props.pageProps.episode.title,
-        description: useThis.values.dataInfo.props.pageProps.serie.genres
+      myApp.mediaPlayer.info({
+        title: myVal.values.dataInfo.props.pageProps.episode.title,
+        description: myVal.values.dataInfo.props.pageProps.serie.genres
           .map((genre) => genre.name)
           .join(", "),
       });
 
-      useApp.mediaPlayer.controls({
+      myApp.mediaPlayer.controls({
         options: {
           not: ["download"],
         },
@@ -1694,7 +1638,16 @@ var serieId = () => {
       $elements.loaderVideo.style.display = "";
 
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
-        useThis.functions.setLinkServer(url);
+        setTimeout(() => {
+          getMediaWeb(url, (res) => {
+            $elements.loaderVideo.style.display = "none";
+            if (res.status) {
+              Android.openWithDefault(res.url, "video/*");
+            } else {
+              alert("El video no esta disponible");
+            }
+          });
+        });
       });
 
       if ("mediaSession" in navigator) {
@@ -1737,29 +1690,35 @@ var serieId = () => {
   addEventListener(
     "hashchange",
     () => {
-      useThis.functions.unobserve();
+      myVal.functions.unobserve();
     },
     { once: true }
   );
 
-  useApp.elements.meta.color.setAttribute("content", "#000000");
-  useThis.functions.dataTrue();
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.functions.dataTrue();
 
-  useApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
 
-  Android.colorSystemBar("#000000");
+  mrf.callbackTryCatch(() => {
+    Android.colorSystemBar("#000000");
+  });
 
   return $element;
 };
 
 var animeId = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
-    oValues: {
-      isFavorite: useApp.MyFunction.observeValue(false),
-      isView: useApp.MyFunction.observeValue(false),
-      episodes: useApp.MyFunction.observeValue([]),
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+    signals: {
+      isFavorite: mrf.observeValue(false),
+      isView: mrf.observeValue(false),
+      episodes: mrf.observeValue([]),
     },
     functions: {},
     values: {
@@ -1776,16 +1735,18 @@ var animeId = () => {
         return `https://fetch.vniox.com/get.php?url=${encodeURIComponent(url)}`;
       },
     },
+    get: {},
+    set: {},
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
     <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
 
           <header class="header_K0hs3I0 header_RtX3J1X">
 
               <div class="div_uNg74XS">
                   <a href="#" class="button_lvV6qZu" data-history-back>
-                    ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                    ${svg("fi fi-rr-angle-small-left")}
                   </a>
               </div>
 
@@ -1793,7 +1754,7 @@ var animeId = () => {
 
               <div class="div_x0cH0Hq">
                   <button id="favorite" class="button_lvV6qZu">
-                    ${useApp.svgIcon("fi fi-rr-heart")}
+                    ${svg("fi fi-rr-heart")}
                   </button>
               </div>
 
@@ -1802,7 +1763,7 @@ var animeId = () => {
           <div class="div_guZ6yID div_DtSQApy">
               <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
               <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                  ${useApp.svgIcon("fi fi-rr-search-alt")}
+                  ${svg("fi fi-rr-search-alt")}
                   <h3>La pelicula no existe</h3>
               </div>
 
@@ -1897,269 +1858,123 @@ var animeId = () => {
       </div>
   `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.oValues.isFavorite.observe((boolean) => {
-    $elements.favorite.innerHTML = useApp.svgIcon(
+  myVal.signals.isFavorite.observe((boolean) => {
+    $elements.favorite.innerHTML = svg(
       boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
     );
 
     $elements.favorite.setAttribute("data-action", boolean ? 1 : 0);
   });
 
-  useThis.oValues.isView.observe((boolean) => {
+  myVal.signals.isView.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
 
-  useThis.oValues.episodes.observe((array) => {
-    $elements.episodes.innerHTML = array
-      .map((episode) => {
-        const episodeInfo = useThis.values.streaming?.episodes?.[episode];
+  // myVal.functions.dataRenderTrue = (data) => {
+  //   const episode_length = data.episodes;
 
-        const checked = episodeInfo != undefined ? "checked" : "";
+  //   $elements.poster.src = myApp.url.img(data.poster);
+  //   $elements.title.textContent = data.title;
+  //   $elements.overview.textContent = data.overview;
 
-        const displayInput = useThis.values.isConnected ? "" : "display:none";
+  //   $elements.genres.textContent = data.genres.map((genre) => genre).join(", ");
+  //   $elements.duration.textContent = `${episode_length} episodios`;
+  //   $elements.date.textContent = data.status;
+  //   $elements.nextEpisode.innerHTML = data.nextEpisode
+  //     ? `(nuevo episodio el <b>${data.nextEpisode}<b>)`
+  //     : "";
 
-        return `
-          <div data-episode="${episode}" class="div_eGwK6I1">
-            <button 
-              class="button_fk0VHgU" 
-              data-slug="${useThis.params.id}-${episode}" 
-              data-title="${useThis.params.id}" 
-              data-description="episodio ${episode}" 
-              data-episode="${episode}"
-              data-item>
-                <span>Episodio ${episode}</span>
-                <small>
-                  ${
-                    parseInt(episodeInfo?.time_view)
-                      ? "visto ".concat(
-                          useApp.functions.formatTime(episodeInfo.time_view)
-                        )
-                      : ""
-                  }
-                  ${
-                    parseInt(episodeInfo?.time_duration)
-                      ? "de ".concat(
-                          useApp.functions.formatTime(episodeInfo.time_duration)
-                        )
-                      : ""
-                  }
-                </small>
-            </button>
-            <label class="label_zjZIMnZ" style="${displayInput}">
-              <input type="checkbox" data-episode="${episode}" ${checked}>
-              <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
-            </label>
-          </div>
-        `;
-      })
-      .join("");
-  });
+  //   $elements.selectSeason.innerHTML = Array(
+  //     Math.floor(episode_length / 50) + 1
+  //   )
+  //     .fill(null)
+  //     .map((_, index, array) => {
+  //       const end =
+  //         array[index + 1] !== undefined ? index * 50 + 50 : episode_length;
+  //       const start = index * 50 + 1;
+  //       return `
+  //           <option value="${start}-${end || 50}">
+  //             ${start} - ${end || 50}
+  //           </option>
+  //         `;
+  //     })
+  //     .join("");
 
-  useThis.functions.dataRenderTrue = (data) => {
-    const episode_length = data.episodes;
+  //   $elements.similar.innerHTML = data.related
+  //     .map((data) => {
+  //       const url = myApp.url.img(data.poster);
+  //       return `
+  //           <a
+  //             href="#/anime/${data.identifier}"
+  //             class="div_SQpqup7" data-item>
+  //               <div class="div_fMC1uk6">
+  //                 <img src="${url}" alt="">
+  //                 <span>${data.type ?? ""}</span>
+  //               </div>
+  //               <div class="div_9nWIRZE">
+  //                 <p>${data.title}</p>
+  //               </div>
+  //           </a>
+  //         `;
+  //     })
+  //     .join("");
 
-    $elements.poster.src = useApp.url.img(data.poster);
-    $elements.title.textContent = data.title;
-    $elements.overview.textContent = data.overview;
+  //   myVal.signals.episodes.value = Array(Math.min(50, data.episodes))
+  //     .fill()
+  //     .map((_, i) => i + 1);
 
-    $elements.genres.textContent = data.genres.map((genre) => genre).join(", ");
-    $elements.duration.textContent = `${episode_length} episodios`;
-    $elements.date.textContent = data.status;
-    $elements.nextEpisode.innerHTML = data.nextEpisode
-      ? `(nuevo episodio el <b>${data.nextEpisode}<b>)`
-      : "";
+  //   mrc.MyImage.canvas($elements.poster.src).then((result) => {
+  //     const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
+  //     const r = pixelData[0];
+  //     const g = pixelData[1];
+  //     const b = pixelData[2];
 
-    $elements.selectSeason.innerHTML = Array(
-      Math.floor(episode_length / 50) + 1
-    )
-      .fill(null)
-      .map((_, index, array) => {
-        const end =
-          array[index + 1] !== undefined ? index * 50 + 50 : episode_length;
-        const start = index * 50 + 1;
-        return `
-            <option value="${start}-${end || 50}">
-              ${start} - ${end || 50}
-            </option>
-          `;
-      })
-      .join("");
+  //     const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
 
-    $elements.similar.innerHTML = data.related
-      .map((data) => {
-        const url = useApp.url.img(data.poster);
-        return `
-            <a
-              href="#/anime/${data.identifier}"
-              class="div_SQpqup7" data-item>
-                <div class="div_fMC1uk6">
-                  <img src="${url}" alt="">
-                  <span>${data.type ?? ""}</span>
-                </div>
-                <div class="div_9nWIRZE">
-                  <p>${data.title}</p>
-                </div>
-            </a>
-          `;
-      })
-      .join("");
+  //     $elements.itemTrueOptionVideos.parentElement.style.background =
+  //       mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
 
-    useThis.oValues.episodes.value = Array(Math.min(50, data.episodes))
-      .fill()
-      .map((_, i) => i + 1);
+  //     myApp.elements.meta.color.setAttribute("content", color);
+  //     $element.style.background = color;
 
-    useApp.MyClass.MyImage.canvas($elements.poster.src).then((result) => {
-      const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
-      const r = pixelData[0];
-      const g = pixelData[1];
-      const b = pixelData[2];
+  //     Android.colorSystemBar(color);
+  //   });
 
-      const color = useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 50);
+  //   myVal.functions.dataTrueInfo(data);
 
-      $elements.itemTrueOptionVideos.parentElement.style.background =
-        useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 60);
+  //   $elements.itemNull.style.display = "none";
+  //   $elements.itemTrue.style.display = "";
+  // };
 
-      useApp.elements.meta.color.setAttribute("content", color);
-      $element.style.background = color;
-
-      Android.colorSystemBar(color);
-    });
-
-    useThis.functions.dataTrueInfo(data);
-
-    $elements.itemNull.style.display = "none";
-    $elements.itemTrue.style.display = "";
-  };
-
-  useThis.functions.setLinkServer = (url) => {
-    const newURL = new URL(url);
-    const hostSplit = newURL.host.split(".");
-    const host = hostSplit.length == 3 ? hostSplit[1] : hostSplit[0];
-    useApp.mediaPlayer;
-
-    if (["streamwish"].includes(host)) {
-      MediaWebUrl.streamwish({ url: url }).then((res) => {
-        $elements.loaderVideo.style.display = "none";
-        if (res.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["voe"].includes(host)) {
-      MediaWebUrl.voesx({ url: url }).then((res) => {
-        if (res.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["doodstream"].includes(host)) {
-      MediaWebUrl.doodstream({ url: url }).then((res) => {
-        if (res.body.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    } else if (["yourupload"].includes(host)) {
-      MediaWeb.yourupload({ url: url }).then((res) => {
-        if (res.body.status) {
-          Android.openWithDefault(res.url, "video/*");
-          return;
-        } else alert("Video no disponible");
-      });
-    }
-  };
-
-  useThis.functions.dataTrue = () => {
-    ApiWebAnimeflv.identifier(useThis.params.id).then((data) => {
-      useThis.values.data = data;
-      useThis.values.thisAnime = data;
-      useThis.functions.dataRenderTrue(data);
-    });
-  };
-
-  useThis.functions.dataTrueInfo = (data) => {
-    const data_id = parseInt(data.poster.split("/").pop());
-    useThis.values.data_id = data_id;
-
-    const body = {
-      data_id: data_id,
-      data_json: JSON.stringify(
-        Object.entries(data).reduce(
-          (prev, curr) => {
-            if (["identifier", "title", "poster", "type"].includes(curr[0])) {
-              prev[curr[0]] = curr[1];
-            }
-            return prev;
-          },
-          {
-            id: data_id,
-          }
-        )
-      ),
-      type: 1,
-    };
-
-    fetch(
-      useApp.url.server(
-        `/api.php?route=favorites-one&type=1&data_id=${data_id}`
-      ),
-      useApp.fetchOptions({
-        method: "POST",
-        body: JSON.stringify(body),
-      })
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        useThis.values.streaming = data;
-        $elements.favorite.style.visibility = "";
-        useThis.values.isConnected = Boolean(data);
-
-        if (useThis.values.isConnected) {
-          useThis.oValues.isFavorite.value = Boolean(data?.favorite);
-          useThis.oValues.isView.value = Boolean(data?.view);
-
-          useThis.oValues.episodes.value = [...useThis.oValues.episodes.value];
-        }
-      });
-  };
-
-  useThis.functions.updateHistory = (currentTime, duration = 0) => {
-    if (useThis.values.isConnected) {
-      const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+  myVal.functions.updateHistory = (currentTime, duration = 0) => {
+    if (myVal.values.isConnected) {
+      const encodeQueryString = mrf.encodeQueryObject({
         route: "update-history-view",
-        episode: useThis.values.episode,
+        episode: myVal.values.episode,
         time_view: currentTime,
         time_duration: duration,
         datetime: Date.now(),
-        data_id: useThis.values.data_id,
+        data_id: myVal.values.data_id,
         type: 1,
       });
 
       fetch(
-        useApp.url.server(`/api.php?${encodeQueryString}`),
-        useApp.fetchOptions({
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
           method: "GET",
         })
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data?.status) {
-            if (document.body.contains($element)) {
-              useThis.functions.dataTrueInfo(useThis.values.thisAnime);
-            }
-          }
-        });
+      );
     }
   };
 
-  useThis.functions.updateHistoryVideo = () => {
-    useApp.mediaPlayer.video((video) => {
+  myVal.functions.updateHistoryVideo = () => {
+    myApp.mediaPlayer.video((video) => {
       let times = {};
       let status = false;
 
@@ -2171,12 +1986,10 @@ var animeId = () => {
 
         const currentTime =
           parseInt(
-            useThis.values.streaming?.episodes?.[useThis.values.episode]
-              ?.time_view
+            myVal.values.streaming?.episodes?.[myVal.values.episode]?.time_view
           ) || 0;
 
         video.currentTime = currentTime;
-        useThis.functions.dataTrueInfo(useThis.values.thisAnime);
       };
 
       video.ontimeupdate = (e) => {
@@ -2185,17 +1998,14 @@ var animeId = () => {
 
           if (num > 0 && num % 30 == 0 && !times[num]) {
             times[num] = true;
-            useThis.functions.updateHistory(
-              num,
-              Math.ceil(video.duration) || 0
-            );
+            myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
           }
         }
       };
 
       video.onseeked = () => {
         const currentTime = Math.floor(video.currentTime);
-        useThis.functions.updateHistory(
+        myVal.functions.updateHistory(
           currentTime,
           Math.ceil(video.duration) || 0
         );
@@ -2208,7 +2018,7 @@ var animeId = () => {
     });
   };
 
-  $elements.episodes.addEventListener("click", (e) => {
+  myApp.events($elements.episodes, "click", (e) => {
     const item = e.target.closest("[data-item]");
     const input = e.target.closest("input");
 
@@ -2223,19 +2033,19 @@ var animeId = () => {
       $elements.itemTrueOptionVideos.innerHTML =
         '<div class="loader-i m-auto g-col-full" style="--color:#fff; padding: 20px 0"></div>';
 
-      useApp.mediaPlayer.info({
+      myApp.mediaPlayer.info({
         title: item.getAttribute("data-title").split("-").join(" "),
         description: item.getAttribute("data-description"),
       });
 
-      useApp.mediaPlayer.controls({
+      myApp.mediaPlayer.controls({
         options: {
           not: ["download"],
         },
       });
 
       ApiWebAnimeflv.identifier(
-        useThis.params.id,
+        myVal.params.id,
         item.getAttribute("data-episode")
       ).then((videos) => {
         $elements.itemTrueOptionVideos.innerHTML = Object.entries(videos)
@@ -2277,20 +2087,20 @@ var animeId = () => {
     }
 
     if (input) {
-      // useThis.values.episode = input.dataset.episode;
+      // myVal.values.episode = input.dataset.episode;
 
-      const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+      const encodeQueryString = mrf.encodeQueryObject({
         route: "toggle-history-view",
         episode: input.dataset.episode,
         datetime: Date.now(),
-        data_id: useThis.values.data_id,
+        data_id: myVal.values.data_id,
         type: 1,
         action: input.checked ? 1 : 0,
       });
 
       fetch(
-        useApp.url.server(`/api.php?${encodeQueryString}`),
-        useApp.fetchOptions({
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
           method: "GET",
         })
       )
@@ -2303,23 +2113,19 @@ var animeId = () => {
     }
   });
 
-  $elements.favorite.addEventListener("click", () => {
-    // if (!useThis.values.isConnected) {
-    //   return (location.hash = "#/login");
-    // }
+  myApp.events($elements.favorite, "click", () => {
+    myVal.signals.isFavorite.value = !myVal.signals.isFavorite.value;
 
-    useThis.oValues.isFavorite.value = !useThis.oValues.isFavorite.value;
-
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-favorites",
-      data_id: useThis.values.data_id,
+      data_id: myVal.values.data_id,
       type: 1,
       action: $elements.favorite.dataset.action,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -2331,28 +2137,22 @@ var animeId = () => {
         }
 
         if (data?.status) {
-          useThis.oValues.isFavorite.value = data.type == 1;
+          myVal.signals.isFavorite.value = data.type == 1;
         }
       });
   });
 
-  $elements.inputView.addEventListener("change", () => {
-    // if (!useThis.values.isConnected) {
-    //   return (location.hash = "#/login");
-    // }
-
-    // useThis.oValues.isFavorite.value = !useThis.oValues.isFavorite.value;
-
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+  myApp.events($elements.inputView, "change", () => {
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-views",
-      data_id: useThis.values.data_id,
+      data_id: myVal.values.data_id,
       type: 1,
       action: $elements.inputView.checked ? 1 : 0,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -2364,30 +2164,38 @@ var animeId = () => {
         }
 
         if (data?.status) {
-          useThis.oValues.isView.value = data.type == 1;
+          myVal.signals.isView.value = data.type == 1;
         }
       });
   });
 
-  $elements.itemTrueOptionVideos.addEventListener("click", (e) => {
+  myApp.events($elements.itemTrueOptionVideos, "click", (e) => {
     const button = e.target.closest("button");
     if (button) {
       $elements.loaderVideo.style.display = "";
 
-      useThis.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
+      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
 
       $elements.itemTrueOption.hidePopover();
-      setTimeout(() =>
-        useThis.functions.setLinkServer(button.getAttribute("data-url"))
-      );
 
-      // useApp.mediaPlayer.element().requestFullscreen();
-      // useThis.functions.updateHistoryVideo();
+      setTimeout(() => {
+        getMediaWeb(button.getAttribute("data-url"), (res) => {
+          $elements.loaderVideo.style.display = "none";
+          if (res.status) {
+            Android.openWithDefault(res.url, "video/*");
+          } else {
+            alert("El video no esta disponible");
+          }
+        });
+      });
+
+      // myApp.mediaPlayer.element().requestFullscreen();
+      // myVal.functions.updateHistoryVideo();
 
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: $elements.title.textContent,
-          artist: `Episodio ${useThis.values.episode}`,
+          artist: `Episodio ${myVal.values.episode}`,
           album: "Anime",
           artwork: [
             {
@@ -2401,13 +2209,13 @@ var animeId = () => {
     }
   });
 
-  $elements.itemTrueOption.addEventListener("click", (e) => {
+  myApp.events($elements.itemTrueOption, "click", (e) => {
     if (e.target === e.currentTarget) {
       $elements.itemTrueOption.hidePopover();
     }
   });
 
-  $elements["form-filter-type"].addEventListener("change", () => {
+  myApp.events($elements["form-filter-type"], "change", () => {
     const value = $elements["form-filter-type"].key.value;
 
     const elements = {
@@ -2421,26 +2229,231 @@ var animeId = () => {
     });
   });
 
-  $elements.selectSeason.addEventListener("change", () => {
+  myApp.events($elements.selectSeason, "change", () => {
     const [start, end] = $elements.selectSeason.value
       .split("-")
       .map((str) => parseInt(str));
 
-    useThis.oValues.episodes.value = useApp.MyClass.MyArray.range(start, end);
+    //myVal.signals.episodes.value = mrc.MyArray.range(start, end);
+    myVal.set.dataTrueEpisodes(mrc.MyArray.range(start, end));
   });
 
-  $elements.buttonSeasonOrder.addEventListener("click", () => {
+  myApp.events($elements.buttonSeasonOrder, "click", () => {
     $elements.episodes.append(
       ...Array.from($elements.episodes.children).reverse()
     );
   });
 
-  useApp.elements.meta.color.setAttribute("content", "#000000");
-  useThis.functions.dataTrue();
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      ApiWebAnimeflv.identifier(myVal.params.id).then((data) => {
+        resolve(data);
 
-  useApp.functions.historyBack($element.querySelector("[data-history-back]"));
+        // myVal.values.data = data;
+        // myVal.values.thisAnime = data;
+        // myVal.functions.dataRenderTrue(data);
+      });
+    });
+  };
 
-  Android.colorSystemBar("#000000");
+  myVal.get.dataTrueInfo = (data) => {
+    return new Promise((resolve, reject) => {
+      const data_id = parseInt(data.poster.split("/").pop());
+      myVal.values.data_id = data_id;
+
+      const body = {
+        data_id: data_id,
+        data_json: JSON.stringify(
+          Object.entries(data).reduce(
+            (prev, curr) => {
+              if (["identifier", "title", "poster", "type"].includes(curr[0])) {
+                prev[curr[0]] = curr[1];
+              }
+              return prev;
+            },
+            {
+              id: data_id,
+            }
+          )
+        ),
+        type: 1,
+      };
+
+      fetch(
+        myApp.url.server(
+          `/api.php?route=favorites-one&type=1&data_id=${data_id}`
+        ),
+        myApp.fetchOptions({
+          method: "POST",
+          body: JSON.stringify(body),
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrue = (data) => {
+    const episodesLength = data.episodes;
+
+    myVal.values.data = data;
+
+    $elements.itemNull.style.display = "none";
+    $elements.itemTrue.style.display = "";
+
+    // renderInfo
+    mrf.callbackTryCatch(() => {
+      $elements.poster.src = myApp.url.img(data.poster);
+      $elements.title.textContent = data.title;
+      $elements.overview.textContent = data.overview;
+
+      $elements.genres.textContent = data.genres
+        .map((genre) => genre)
+        .join(", ");
+      $elements.duration.textContent = `${episodesLength} episodios`;
+      $elements.date.textContent = data.status;
+      $elements.nextEpisode.innerHTML = data.nextEpisode
+        ? `(nuevo episodio el <b>${data.nextEpisode}<b>)`
+        : "";
+    });
+
+    // renderSeason
+    mrf.callbackTryCatch(() => {
+      $elements.selectSeason.innerHTML = Array(
+        Math.floor(episodesLength / 50) + 1
+      )
+        .fill(null)
+        .map((_, index, array) => {
+          const end =
+            array[index + 1] !== undefined ? index * 50 + 50 : episodesLength;
+          const start = index * 50 + 1;
+          return `
+              <option value="${start}-${end || 50}">
+                ${start} - ${end || 50}
+              </option>
+            `;
+        })
+        .join("");
+    });
+
+    // renderSimiliar
+    mrf.callbackTryCatch(() => {
+      $elements.similar.innerHTML = data.related
+        .map((data) => {
+          const url = myApp.url.img(data.poster);
+          return `
+            <a
+              href="#/anime/${data.identifier}"
+              class="div_SQpqup7" data-item>
+                <div class="div_fMC1uk6">
+                  <img src="${url}" alt="">
+                  <span>${data.type ?? ""}</span>
+                </div>
+                <div class="div_9nWIRZE">
+                  <p>${data.title}</p>
+                </div>
+            </a>
+          `;
+        })
+        .join("");
+    });
+
+    // renderPosterColor
+    mrf.callbackTryCatch(() => {
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
+        const r = pixelData[0];
+        const g = pixelData[1];
+        const b = pixelData[2];
+
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
+
+        $elements.itemTrueOptionVideos.parentElement.style.background =
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
+
+        myApp.elements.meta.color.setAttribute("content", color);
+        $element.style.background = color;
+
+        Android.colorSystemBar(color);
+      });
+    });
+
+    myVal.set.dataTrueEpisodes(
+      Array(Math.min(50, data.episodes))
+        .fill()
+        .map((_, i) => i + 1)
+    );
+
+    mrf.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
+  };
+
+  myVal.set.dataTrueInfo = (data) => {
+    myVal.values.streaming = data;
+    $elements.favorite.style.visibility = "";
+    myVal.values.isConnected = Boolean(data);
+
+    if (myVal.values.isConnected) {
+      myVal.signals.isFavorite.value = Boolean(data?.favorite);
+      myVal.signals.isView.value = Boolean(data?.view);
+      myVal.set.dataTrueEpisodes(myVal.signals.episodes.value);
+    }
+  };
+
+  myVal.set.dataTrueEpisodes = (array) => {
+    $elements.episodes.innerHTML = array
+      .map((episode) => {
+        const episodeInfo = myVal.values.streaming?.episodes?.[episode];
+
+        const checked = episodeInfo != undefined ? "checked" : "";
+
+        const displayInput = myVal.values.isConnected ? "" : "display:none";
+
+        return `
+          <div data-episode="${episode}" class="div_eGwK6I1">
+            <button 
+              class="button_fk0VHgU" 
+              data-slug="${myVal.params.id}-${episode}" 
+              data-title="${myVal.params.id}" 
+              data-description="episodio ${episode}" 
+              data-episode="${episode}"
+              data-item>
+                <span>Episodio ${episode}</span>
+                <small>
+                  ${
+                    parseInt(episodeInfo?.time_view)
+                      ? "visto ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_view)
+                        )
+                      : ""
+                  }
+                  ${
+                    parseInt(episodeInfo?.time_duration)
+                      ? "de ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_duration)
+                        )
+                      : ""
+                  }
+                </small>
+            </button>
+            <label class="label_zjZIMnZ" style="${displayInput}">
+              <input type="checkbox" data-episode="${episode}" ${checked}>
+              <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
+            </label>
+          </div>
+        `;
+      })
+      .join("");
+  };
+
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
+
+  mrf.callbackTryCatch(() => {
+    Android.colorSystemBar("#000000");
+  });
 
   return $element;
 };
@@ -2506,6 +2519,8 @@ var gendersPelicula = [
 var itemData = (p = {}) => {
   const f = window.MyResourceFunction;
 
+  const myApp = window.dataApp;
+
   const $element = f.createNodeElement(`
     <a
       href="${p.href}"
@@ -2535,22 +2550,26 @@ var itemData = (p = {}) => {
         img.src = img.dataset.src;
       }
     });
+
+    myApp.instances.IntersectionObserver.observe($element);
   }
 
   return $element;
 };
 
 var inicio = () => {
-  const f = window.MyResourceFunction;
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
 
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
 
-    oValues: {
-      dataNull: f.observeValue(true),
-      dataTrue: f.observeValue([]),
-      dataTrueGender: f.observeValue([
+    signals: {
+      dataNull: mrf.observeValue(true),
+      dataTrue: mrf.observeValue([]),
+      dataTrueGender: mrf.observeValue([
         { value: "", string: "Todos" },
         { value: "-1", string: "Ultimos episodios" },
         { value: "-2", string: "Ultimos animes" },
@@ -2594,7 +2613,7 @@ var inicio = () => {
     set: {},
   };
 
-  const $element = f.createNodeElement(
+  const $element = mrf.createNodeElement(
     ((_) => `
 
       <div class="div_Xu02Xjh">
@@ -2611,7 +2630,7 @@ var inicio = () => {
             <div class="div_x0cH0Hq">
               <div class="div_klylpyg">
                 <small>
-                  ${useApp.svgIcon("fi fi-rr-filter")}
+                  ${svg("fi fi-rr-filter")}
                 </small>
                 <select id="selectGender">
                   <option selected>Todos</option>
@@ -2660,7 +2679,7 @@ var inicio = () => {
         <div class="div_IsTCHpN">
             <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
             <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${useApp.svgIcon("fi fi-rr-search-alt")}
+                ${svg("fi fi-rr-search-alt")}
                 <h3>sin resultados</h3>
             </div>
             <div id="itemTrue" class="div_qsNmfP3" style="display:none">
@@ -2673,50 +2692,43 @@ var inicio = () => {
       </div>
 
   `)({
-      href: ["#", "search", useThis.params.type, useThis.params.result].join(
-        "/"
-      ),
+      href: ["#", "search", myVal.params.type, myVal.params.result].join("/"),
       title: "Inicio" ,
-      description: useThis.params.type,
+      description: myVal.params.type,
       hidden: "display:none",
     })
   );
 
-  const $elements = f.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  // $elements.itemTrueLoad.addEventListener(
-  //   "_IntersectionObserver",
-  //   ({ detail }) => {}
-  // );
-
-  useApp.events(
+  myApp.events(
     $elements.itemTrueLoad,
     "_IntersectionObserver",
     ({ detail }) => {
       if (detail.entry.isIntersecting) {
         detail.observer.unobserve(detail.entry.target);
-        useThis.get.dataTrue().then(useThis.set.dataTrue);
+        myVal.get.dataTrue().then(myVal.set.dataTrue);
       }
     }
   );
 
-  useApp.events($elements.selectGender, "change", () => {
+  myApp.events($elements.selectGender, "change", () => {
     $elements.itemTrue.innerHTML = "";
-    useThis.oValues.dataNull.value = true;
+    myVal.signals.dataNull.value = true;
     $elements.genderText.textContent =
       $elements.selectGender.selectedOptions[0].innerText;
-    useThis.get.dataTrue().then(useThis.set.dataTrue);
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
   });
 
-  useApp.events($elements["form-filter-type"], "change", async () => {
+  myApp.events($elements["form-filter-type"], "change", async () => {
     const type = $elements["form-filter-type"].key.value;
 
     $elements.itemTrue.innerHTML = "";
-    useThis.oValues.dataNull.value = true;
+    myVal.signals.dataNull.value = true;
 
     const array = [{ value: "", string: "Todos" }];
 
@@ -2746,7 +2758,7 @@ var inicio = () => {
 
     if (type == 4) {
       array.push(
-        ...(await useThis.promises.genderPelicula)
+        ...(await myVal.promises.genderPelicula)
           .map((string) => {
             return {
               value: string.category_id,
@@ -2759,7 +2771,7 @@ var inicio = () => {
 
     if (type == 5) {
       array.push(
-        ...(await useThis.promises.genderSerie).map((string) => {
+        ...(await myVal.promises.genderSerie).map((string) => {
           return {
             value: string.category_id,
             string: string.category_name,
@@ -2770,7 +2782,7 @@ var inicio = () => {
 
     if (type == 6) {
       array.push(
-        ...(await useThis.promises.genderLive)
+        ...(await myVal.promises.genderLive)
           .map((string) => {
             return {
               value: string.category_id,
@@ -2781,23 +2793,23 @@ var inicio = () => {
       );
     }
 
-    useThis.oValues.dataTrueGender.value = array;
-    useThis.get.dataTrue().then(useThis.set.dataTrue);
+    myVal.signals.dataTrueGender.value = array;
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
   });
 
-  useApp.events($elements.itemTrue, "click", (e) => {
+  myApp.events($elements.itemTrue, "click", (e) => {
     const button = e.target.closest("button");
 
     if (button) {
       const data = JSON.parse(button.getAttribute("data-data"));
       Android.openWithDefault(
-        `${useApp.iptv.server}/live/${useApp.iptv.username}/${useApp.iptv.password}/${data.stream_id}.m3u8`,
+        `${myApp.iptv.server}/live/${myApp.iptv.username}/${myApp.iptv.password}/${data.stream_id}.m3u8`,
         "video/*"
       );
     }
   });
 
-  useThis.oValues.dataNull.observe((boolean) => {
+  myVal.signals.dataNull.observe((boolean) => {
     const dataItem = Boolean($elements.itemTrue.querySelector("[data-item]"));
 
     const render = {
@@ -2811,7 +2823,7 @@ var inicio = () => {
     });
   });
 
-  useThis.oValues.dataTrueGender.observe((array) => {
+  myVal.signals.dataTrueGender.observe((array) => {
     $elements.selectGender.innerHTML = array
       .map((object) => {
         return `<option value="${object.value}">${object.string}</option>`;
@@ -2823,7 +2835,7 @@ var inicio = () => {
   });
 
   /** GET */
-  useThis.get.dataTrueAnime = () => {
+  myVal.get.dataTrueAnime = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
@@ -2840,10 +2852,10 @@ var inicio = () => {
 
       if (["-1", "-2"].includes(genreString)) {
         return ApiWebAnimeflv.home().then((object) => {
-          useThis.oValues.dataNull.value = true;
-          useThis.oValues.dataTrue.value =
+          myVal.signals.dataNull.value = true;
+          myVal.signals.dataTrue.value =
             genreString == "-1" ? object.episodes : object.animes;
-          useThis.oValues.dataNull.value = false;
+          myVal.signals.dataNull.value = false;
         });
       }
 
@@ -2853,7 +2865,7 @@ var inicio = () => {
     });
   };
 
-  useThis.get.dataTruePelicula = () => {
+  myVal.get.dataTruePelicula = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
@@ -2868,7 +2880,7 @@ var inicio = () => {
     });
   };
 
-  useThis.get.dataTrueSerie = () => {
+  myVal.get.dataTrueSerie = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
@@ -2881,7 +2893,7 @@ var inicio = () => {
     });
   };
 
-  useThis.get.dataTrueIptv = () => {
+  myVal.get.dataTrueIptv = () => {
     return new Promise((resolve, reject) => {
       const types = {
         4: "pelicula",
@@ -2894,7 +2906,7 @@ var inicio = () => {
 
       const length = $elements.itemTrue.querySelectorAll("[data-item]").length;
 
-      const encodeQueryString = f.encodeQueryObject({
+      const encodeQueryString = mrf.encodeQueryObject({
         route: type,
         category: gender,
         start: length,
@@ -2910,10 +2922,10 @@ var inicio = () => {
   };
 
   /** SET */
-  useThis.set.dataTrueAnime = (array) => {
+  myVal.set.dataTrueAnime = (array) => {
     $elements.itemTrue.append(
       ...array.map((data) => {
-        const url = useApp.url.img(data.poster);
+        const url = data.poster;
         const episode = `episodio ${data.episode}`;
 
         const aspectRatio = data.episode ? "aspect-ratio:3/2" : "";
@@ -2927,8 +2939,7 @@ var inicio = () => {
           intersectionObserver: true,
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -2938,11 +2949,11 @@ var inicio = () => {
 
     if (array.length == 24) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.set.dataTruePeliculaSerie = (array) => {
+  myVal.set.dataTruePeliculaSerie = (array) => {
     const type =
       $elements["form-filter-type"].key.value == "2" ? "pelicula" : "serie";
 
@@ -2963,8 +2974,7 @@ var inicio = () => {
           intersectionObserver: true,
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -2974,11 +2984,11 @@ var inicio = () => {
 
     if (array.length == 24) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.set.dataTrueIptv = (array) => {
+  myVal.set.dataTrueIptv = (array) => {
     const types = {
       4: "pelicula-ii",
       5: "serie-ii",
@@ -2999,8 +3009,7 @@ var inicio = () => {
           intersectionObserver: true,
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3010,18 +3019,18 @@ var inicio = () => {
 
     if (array.length == 50) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.set.dataTrueIptvChannel = (array) => {
+  myVal.set.dataTrueIptvChannel = (array) => {
     const template = document.createElement("div");
 
     template.innerHTML = array
       .map((data) => {
         const url = data.stream_icon ?? data.cover;
 
-        const dataInput = useApp.MyClass.EncodeTemplateString.toInput(
+        const dataInput = mrc.EncodeTemplateString.toInput(
           JSON.stringify(data)
         );
 
@@ -3053,8 +3062,8 @@ var inicio = () => {
           }
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myApp.instances.IntersectionObserver.observe(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3064,46 +3073,50 @@ var inicio = () => {
 
     if (array.length == 50) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.get.dataTrue = () => {
+  myVal.get.dataTrue = () => {
     return new Promise((resolve, reject) => {
       const type = $elements["form-filter-type"].key.value;
 
       const types = {
-        1: useThis.get.dataTrueAnime,
-        2: useThis.get.dataTruePelicula,
-        3: useThis.get.dataTrueSerie,
-        4: useThis.get.dataTrueIptv,
-        5: useThis.get.dataTrueIptv,
-        6: useThis.get.dataTrueIptv,
+        1: myVal.get.dataTrueAnime,
+        2: myVal.get.dataTruePelicula,
+        3: myVal.get.dataTrueSerie,
+        4: myVal.get.dataTrueIptv,
+        5: myVal.get.dataTrueIptv,
+        6: myVal.get.dataTrueIptv,
       };
 
       types?.[type]?.()?.then(resolve);
     });
   };
 
-  useThis.set.dataTrue = (array) => {
+  myVal.set.dataTrue = (array) => {
     const type = $elements["form-filter-type"].key.value;
 
     const types = {
-      1: useThis.set.dataTrueAnime,
-      2: useThis.set.dataTruePeliculaSerie,
-      3: useThis.set.dataTruePeliculaSerie,
-      4: useThis.set.dataTrueIptv,
-      5: useThis.set.dataTrueIptv,
-      6: useThis.set.dataTrueIptvChannel,
+      1: myVal.set.dataTrueAnime,
+      2: myVal.set.dataTruePeliculaSerie,
+      3: myVal.set.dataTruePeliculaSerie,
+      4: myVal.set.dataTrueIptv,
+      5: myVal.set.dataTrueIptv,
+      6: myVal.set.dataTrueIptvChannel,
     };
 
     types?.[type]?.(array);
 
-    useThis.oValues.dataNull.value = true;
-    useThis.oValues.dataNull.value = false;
+    myVal.signals.dataNull.value = true;
+    myVal.signals.dataNull.value = false;
   };
 
-  useThis.get.dataTrue().then(useThis.set.dataTrue);
+  try {
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
+  } catch (error) {
+    console.log(error.message);
+  }
 
   return $element;
 };
@@ -3135,12 +3148,16 @@ var searchType = () => {
     localStorage.setItem("search_history", "[]");
   }
 
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
-    oValues: {
-      dataNull: useApp.MyFunction.observeValue(true),
-      dataTrue: useApp.MyFunction.observeValue([]),
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+    signals: {
+      dataNull: mrf.observeValue(true),
+      dataTrue: mrf.observeValue([]),
     },
     function: {
       dataLoad: () => {},
@@ -3148,7 +3165,7 @@ var searchType = () => {
     functions: {},
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
 
         <div class="div_Xu02Xjh">
 
@@ -3163,8 +3180,8 @@ var searchType = () => {
                     <input 
                       type="search" 
                       name="search" 
-                      value="${useApp.MyClass.EncodeTemplateString.toInput(
-                        decodeURIComponent(useApp.routes.params("result") || "")
+                      value="${mrc.EncodeTemplateString.toInput(
+                        decodeURIComponent(myApp.routes.params("result") || "")
                       )}" 
                       placeholder="buscar">
                     <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-arrow-right"><path d="M23.12,9.91,19.25,6a1,1,0,0,0-1.42,0h0a1,1,0,0,0,0,1.41L21.39,11H1a1,1,0,0,0-1,1H0a1,1,0,0,0,1,1H21.45l-3.62,3.61a1,1,0,0,0,0,1.42h0a1,1,0,0,0,1.42,0l3.87-3.88A3,3,0,0,0,23.12,9.91Z"></path></svg></button>
@@ -3174,7 +3191,7 @@ var searchType = () => {
             <div class="div_IsTCHpN" style="padding:10px">
                 <div id="itemNull" class="loader-i" style="--color:var(--color-letter)"></div>
                 <div id="itemFalse" class="div_b14S3dH">
-                    ${useApp.svgIcon("fi fi-rr-search-alt")}
+                    ${svg("fi fi-rr-search-alt")}
                     <h3></h3>
                 </div>
                 <div id="itemTrue" class="div_C2otGmQ"></div>
@@ -3184,13 +3201,13 @@ var searchType = () => {
 
     `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.oValues.dataNull.observe((boolean) => {
+  myVal.signals.dataNull.observe((boolean) => {
     const dataItem = $elements.itemTrue.querySelector("[data-item]");
 
     const render = {
@@ -3204,7 +3221,7 @@ var searchType = () => {
     });
   });
 
-  useThis.oValues.dataTrue.observe((array) => {
+  myVal.signals.dataTrue.observe((array) => {
     $elements.itemTrue.innerHTML = array
       .map((data) => {
         const search = encodeURIComponent(data.search);
@@ -3222,7 +3239,7 @@ var searchType = () => {
                     <p>${data.search}</p>
                     <span>${new Date(data.id).toLocaleString()}</span>
                 </div>
-                ${useApp.svgIcon("fi fi-rr-angle-small-right")}
+                ${svg("fi fi-rr-angle-small-right")}
             </a>
         </div>
       `;
@@ -3230,12 +3247,12 @@ var searchType = () => {
       .join("");
   });
 
-  useThis.functions.dataTrue = () => {
-    useThis.oValues.dataNull.value = true;
-    useThis.oValues.dataTrue.value = JSON.parse(
+  myVal.functions.dataTrue = () => {
+    myVal.signals.dataNull.value = true;
+    myVal.signals.dataTrue.value = JSON.parse(
       localStorage.getItem("search_history")
     );
-    useThis.oValues.dataNull.value = false;
+    myVal.signals.dataNull.value = false;
   };
 
   $elements.form.addEventListener("submit", (e) => {
@@ -3269,7 +3286,7 @@ var searchType = () => {
         "search_history",
         JSON.stringify(
           array.filter(
-            (data) => data.id != id && data.type != useThis.params.type
+            (data) => data.id != id && data.type != myVal.params.type
           )
         )
       );
@@ -3278,22 +3295,24 @@ var searchType = () => {
     }
   });
 
-  useThis.functions.dataTrue();
+  myVal.functions.dataTrue();
   setTimeout(() => $elements.form.search.focus());
 
   return $element;
 };
 
 var searchTypeResult = () => {
-  const f = window.MyResourceFunction;
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
 
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
-    oValues: {
-      dataNull: useApp.MyFunction.observeValue(true),
-      dataTrue: useApp.MyFunction.observeValue([]),
-      dataTrueGender: useApp.MyFunction.observeValue([
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+    signals: {
+      dataNull: mrf.observeValue(true),
+      dataTrue: mrf.observeValue([]),
+      dataTrueGender: mrf.observeValue([
         { value: "", string: "Todos" },
         { value: "-1", string: "Ultimos episodios" },
         { value: "-2", string: "Ultimos animes" },
@@ -3317,7 +3336,7 @@ var searchTypeResult = () => {
     set: {},
   };
 
-  const $element = useApp.MyFunction.createNodeElement(
+  const $element = mrf.createNodeElement(
     ((_) => `
 
       <div class="div_Xu02Xjh">
@@ -3326,7 +3345,7 @@ var searchTypeResult = () => {
 
             <a href="${_.href}" class="a_33g9UEa">
               <small class="small_rppYggX">
-                ${useApp.svgIcon("fi fi-rr-search")}
+                ${svg("fi fi-rr-search")}
               </small>
               <h4>${_.title}</h4>
             </a>
@@ -3364,7 +3383,7 @@ var searchTypeResult = () => {
         <div class="div_IsTCHpN">
             <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
             <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${useApp.svgIcon("fi fi-rr-search-alt")}
+                ${svg("fi fi-rr-search-alt")}
                 <h3>sin resultados</h3>
             </div>
             <div id="itemTrue" class="div_qsNmfP3" style="display:none">
@@ -3377,60 +3396,58 @@ var searchTypeResult = () => {
       </div>
 
   `)({
-      href: ["#", "search", useThis.params.type, useThis.params.result].join(
-        "/"
-      ),
-      title: decodeURIComponent(useThis.params.result),
-      description: useThis.params.type,
+      href: ["#", "search", myVal.params.type, myVal.params.result].join("/"),
+      title: decodeURIComponent(myVal.params.result),
+      description: myVal.params.type,
       hidden: "display:none",
     })
   );
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useApp.events(
+  myApp.events(
     $elements.itemTrueLoad,
     "_IntersectionObserver",
     ({ detail }) => {
       if (detail.entry.isIntersecting) {
         detail.observer.unobserve(detail.entry.target);
-        useThis.get.dataTrue().then(useThis.set.dataTrue);
+        myVal.get.dataTrue().then(myVal.set.dataTrue);
       }
     }
   );
 
-  useApp.events($elements.selectGender, "change", () => {
+  myApp.events($elements.selectGender, "change", () => {
     $elements.itemTrue.innerHTML = "";
-    useThis.oValues.dataNull.value = true;
+    myVal.signals.dataNull.value = true;
     $elements.genderText.textContent =
       $elements.selectGender.selectedOptions[0].innerText;
-    useThis.get.dataTrue().then(useThis.set.dataTrue);
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
   });
 
-  useApp.events($elements["form-filter-type"], "change", () => {
+  myApp.events($elements["form-filter-type"], "change", () => {
     $elements.itemTrue.innerHTML = "";
-    useThis.oValues.dataNull.value = true;
+    myVal.signals.dataNull.value = true;
 
-    useThis.get.dataTrue().then(useThis.set.dataTrue);
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
   });
 
-  useApp.events($elements.itemTrue, "click", (e) => {
+  myApp.events($elements.itemTrue, "click", (e) => {
     const button = e.target.closest("button");
 
     if (button) {
       const data = JSON.parse(button.getAttribute("data-data"));
       Android.openWithDefault(
-        `${useApp.iptv.server}/live/${useApp.iptv.username}/${useApp.iptv.password}/${data.stream_id}.m3u8`,
+        `${myApp.iptv.server}/live/${myApp.iptv.username}/${myApp.iptv.password}/${data.stream_id}.m3u8`,
         "video/*"
       );
     }
   });
 
-  useThis.oValues.dataNull.observe((boolean) => {
+  myVal.signals.dataNull.observe((boolean) => {
     const dataItem = Boolean($elements.itemTrue.querySelector("[data-item]"));
 
     const render = {
@@ -3445,7 +3462,7 @@ var searchTypeResult = () => {
   });
 
   /** GET */
-  useThis.get.dataTrueAnime = () => {
+  myVal.get.dataTrueAnime = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
@@ -3454,16 +3471,16 @@ var searchTypeResult = () => {
 
       ApiWebAnimeflv.search({
         page,
-        search: decodeURIComponent(useThis.params.result),
+        search: decodeURIComponent(myVal.params.result),
       }).then((array) => {
         resolve(array);
       });
     });
   };
 
-  useThis.get.dataTruePelicula = () => {
+  myVal.get.dataTruePelicula = () => {
     return new Promise((resolve, reject) => {
-      ApiWebCuevana.search(decodeURIComponent(useThis.params.result)).then(
+      ApiWebCuevana.search(decodeURIComponent(myVal.params.result)).then(
         (datas) => {
           resolve(datas?.props?.pageProps?.movies || []);
         }
@@ -3471,7 +3488,7 @@ var searchTypeResult = () => {
     });
   };
 
-  useThis.get.dataTrueSerie = () => {
+  myVal.get.dataTrueSerie = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
@@ -3484,7 +3501,7 @@ var searchTypeResult = () => {
     });
   };
 
-  useThis.get.dataTrueIptv = () => {
+  myVal.get.dataTrueIptv = () => {
     return new Promise((resolve, reject) => {
       const types = {
         4: "pelicula",
@@ -3497,9 +3514,9 @@ var searchTypeResult = () => {
 
       const length = $elements.itemTrue.querySelectorAll("[data-item]").length;
 
-      const encodeQueryString = f.encodeQueryObject({
+      const encodeQueryString = mrf.encodeQueryObject({
         route: type,
-        search: decodeURIComponent(useThis.params.result),
+        search: decodeURIComponent(myVal.params.result),
         start: length,
         end: 50,
       });
@@ -3513,10 +3530,10 @@ var searchTypeResult = () => {
   };
 
   /** SET */
-  useThis.set.dataTrueAnime = (array) => {
+  myVal.set.dataTrueAnime = (array) => {
     $elements.itemTrue.append(
       ...array.map((data) => {
-        const url = useApp.url.img(data.poster);
+        const url = data.poster;
         const episode = `episodio ${data.episode}`;
 
         const aspectRatio = data.episode ? "aspect-ratio:3/2" : "";
@@ -3530,8 +3547,7 @@ var searchTypeResult = () => {
           intersectionObserver: true,
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3541,11 +3557,11 @@ var searchTypeResult = () => {
 
     if (array.length == 24) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.set.dataTruePeliculaSerie = (array) => {
+  myVal.set.dataTruePeliculaSerie = (array) => {
     const type =
       $elements["form-filter-type"].key.value == "2" ? "pelicula" : "serie";
 
@@ -3566,8 +3582,7 @@ var searchTypeResult = () => {
           intersectionObserver: true,
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3577,11 +3592,11 @@ var searchTypeResult = () => {
 
     if (array.length == 24) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.set.dataTrueIptv = (array) => {
+  myVal.set.dataTrueIptv = (array) => {
     const types = {
       4: "pelicula-ii",
       5: "serie-ii",
@@ -3602,8 +3617,8 @@ var searchTypeResult = () => {
           intersectionObserver: true,
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myApp.instances.IntersectionObserver.observe(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3613,18 +3628,18 @@ var searchTypeResult = () => {
 
     if (array.length == 50) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.set.dataTrueIptvChannel = (array) => {
+  myVal.set.dataTrueIptvChannel = (array) => {
     const template = document.createElement("div");
 
     template.innerHTML = array
       .map((data) => {
         const url = data.stream_icon ?? data.cover;
 
-        const dataInput = useApp.MyClass.EncodeTemplateString.toInput(
+        const dataInput = mrc.EncodeTemplateString.toInput(
           JSON.stringify(data)
         );
 
@@ -3656,8 +3671,7 @@ var searchTypeResult = () => {
           }
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3667,46 +3681,46 @@ var searchTypeResult = () => {
 
     if (array.length == 50) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.get.dataTrue = () => {
+  myVal.get.dataTrue = () => {
     return new Promise((resolve, reject) => {
       const type = $elements["form-filter-type"].key.value;
 
       const types = {
-        1: useThis.get.dataTrueAnime,
-        2: useThis.get.dataTruePelicula,
-        3: useThis.get.dataTrueSerie,
-        4: useThis.get.dataTrueIptv,
-        5: useThis.get.dataTrueIptv,
-        6: useThis.get.dataTrueIptv,
+        1: myVal.get.dataTrueAnime,
+        2: myVal.get.dataTruePelicula,
+        3: myVal.get.dataTrueSerie,
+        4: myVal.get.dataTrueIptv,
+        5: myVal.get.dataTrueIptv,
+        6: myVal.get.dataTrueIptv,
       };
 
       types?.[type]?.()?.then(resolve);
     });
   };
 
-  useThis.set.dataTrue = (array) => {
+  myVal.set.dataTrue = (array) => {
     const type = $elements["form-filter-type"].key.value;
 
     const types = {
-      1: useThis.set.dataTrueAnime,
-      2: useThis.set.dataTruePeliculaSerie,
-      3: useThis.set.dataTruePeliculaSerie,
-      4: useThis.set.dataTrueIptv,
-      5: useThis.set.dataTrueIptv,
-      6: useThis.set.dataTrueIptvChannel,
+      1: myVal.set.dataTrueAnime,
+      2: myVal.set.dataTruePeliculaSerie,
+      3: myVal.set.dataTruePeliculaSerie,
+      4: myVal.set.dataTrueIptv,
+      5: myVal.set.dataTrueIptv,
+      6: myVal.set.dataTrueIptvChannel,
     };
 
     types?.[type]?.(array);
 
-    useThis.oValues.dataNull.value = true;
-    useThis.oValues.dataNull.value = false;
+    myVal.signals.dataNull.value = true;
+    myVal.signals.dataNull.value = false;
   };
 
-  useThis.get.dataTrue().then(useThis.set.dataTrue);
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   return $element;
 };
@@ -3714,15 +3728,18 @@ var searchTypeResult = () => {
 // import gendersAnime from "../data/gendersAnime";
 // import gendersPelicula from "../data/gendersPelicula";
 
-var favoritos = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
+var collection = () => {
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
 
-    oValues: {
-      dataNull: useApp.MyFunction.observeValue(true),
-      dataTrue: useApp.MyFunction.observeValue([]),
-      dataTrueGender: useApp.MyFunction.observeValue([
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+
+    signals: {
+      dataNull: mrf.observeValue(true),
+      dataTrue: mrf.observeValue([]),
+      dataTrueGender: mrf.observeValue([
         { value: "1", string: "Favoritos" },
         { value: "2", string: "Vistos" },
       ]),
@@ -3739,9 +3756,12 @@ var favoritos = () => {
       dataLoad: () => {},
     },
     functions: {},
+
+    get: {},
+    set: {},
   };
 
-  const $element = useApp.MyFunction.createNodeElement(
+  const $element = mrf.createNodeElement(
     ((_) => `
 
       <div class="div_Xu02Xjh">
@@ -3761,7 +3781,7 @@ var favoritos = () => {
               </a>
               <div class="div_klylpyg">
                 <small>
-                  ${useApp.svgIcon("fi fi-rr-filter")}
+                  ${svg("fi fi-rr-filter")}
                 </small>
                 <select id="selectGender">
                   <option selected>Todos</option>
@@ -3794,7 +3814,7 @@ var favoritos = () => {
         <div class="div_IsTCHpN">
             <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
             <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${useApp.svgIcon("fi fi-rr-search-alt")}
+                ${svg("fi fi-rr-search-alt")}
                 <h3>sin resultados</h3>
             </div>
             <div id="itemTrue" class="div_qsNmfP3" style="display:none">
@@ -3807,55 +3827,54 @@ var favoritos = () => {
       </div>
 
   `)({
-      href: ["#", "search", useThis.params.type, useThis.params.result].join(
-        "/"
-      ),
+      href: ["#", "search", myVal.params.type, myVal.params.result].join("/"),
       title: "Inicio" ,
-      description: useThis.params.type,
+      description: myVal.params.type,
       hidden: "display:none",
     })
   );
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  $elements.itemTrueLoad.addEventListener(
+  myApp.events(
+    $elements.itemTrueLoad,
     "_IntersectionObserver",
     ({ detail }) => {
       if (detail.entry.isIntersecting) {
         detail.observer.unobserve(detail.entry.target);
-        useThis.functions.dataTrue();
+        myVal.get.dataTrue().then(myVal.set.dataTrue);
       }
     }
   );
 
-  $elements.selectGender.addEventListener("change", () => {
+  myApp.events($elements.selectGender, "change", () => {
     $elements.itemTrue.innerHTML = "";
-    useThis.oValues.dataNull.value = true;
+    myVal.signals.dataNull.value = true;
 
     $elements.genderText.textContent =
       $elements.selectGender.selectedOptions[0].innerText;
 
-    useThis.functions.dataTrue();
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
   });
 
-  $elements["form-filter-type"].addEventListener("change", () => {
+  myApp.events($elements["form-filter-type"], "change", () => {
     $elements.itemTrue.innerHTML = "";
-    useThis.oValues.dataNull.value = true;
+    myVal.signals.dataNull.value = true;
 
-    useThis.functions.dataTrue();
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
   });
 
-  useThis.oValues.dataNull.observe((load) => {
-    const dataItem = $elements.itemTrue.querySelector("[data-item]");
+  myVal.signals.dataNull.observe((load) => {
+    const dataItem = Boolean($elements.itemTrue.querySelector("[data-item]"));
 
     const render = {
       itemNull: load,
       itemFalse: !load && !dataItem,
-      itemTrue: !load && !!dataItem,
+      itemTrue: !load && dataItem,
     };
 
     Object.entries(render).forEach((entries) => {
@@ -3863,20 +3882,7 @@ var favoritos = () => {
     });
   });
 
-  useThis.oValues.dataTrue.observe((array) => {
-    if (array.length) {
-      const type = $elements["form-filter-type"].key.value;
-      if (["2", "3"].includes(type)) {
-        return useThis.functions.dataRenderPeliculaSerie(array);
-      }
-
-      if (type == "1") {
-        return useThis.functions.dataRenderAnime(array);
-      }
-    }
-  });
-
-  useThis.oValues.dataTrueGender.observe((array) => {
+  myVal.signals.dataTrueGender.observe((array) => {
     $elements.selectGender.innerHTML = array
       .map((object) => {
         return `<option value="${object.value}">${object.string}</option>`;
@@ -3887,41 +3893,24 @@ var favoritos = () => {
       $elements.selectGender.selectedOptions[0].innerText;
   });
 
-  useThis.functions.dataRenderAnime = (array) => {
-    const template = document.createElement("div");
-
-    template.innerHTML = array
-      .map((data) => {
-        const url = useApp.url.img(data.poster);
-        return `
-          <a
-            href="#/anime/${data.identifier}"
-            class="div_SQpqup7" data-item>
-              <div class="div_fMC1uk6">
-                <img src="" alt="" data-src="${url}" style="display:none">
-                <span style="display:none">${data.type ?? ""}</span>
-              </div>
-              <div class="div_9nWIRZE">
-                <p>${data.title}</p>
-              </div>
-          </a>
-        `;
-      })
-      .join("");
-
+  myVal.set.dataTrueAnime = (array) => {
     $elements.itemTrue.append(
-      ...Array.from(template.children).map((child) => {
-        child.addEventListener("_IntersectionObserver", ({ detail }) => {
-          if (detail.entry.isIntersecting) {
-            detail.observer.unobserve(detail.entry.target);
-            const img = child.querySelector("img");
-            img.onload = () => (img.style.display = "");
-            img.src = img.dataset.src;
-          }
+      ...array.map((data) => {
+        const url = myApp.url.img(data.poster);
+        const episode = `episodio ${data.episode}`;
+
+        const aspectRatio = data.episode ? "aspect-ratio:3/2" : "";
+
+        const child = itemData({
+          href: `#/anime/${data.identifier}`,
+          title: data.title,
+          info: data.type ?? episode,
+          style: aspectRatio,
+          imgSrc: url,
+          intersectionObserver: true,
         });
 
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3931,55 +3920,32 @@ var favoritos = () => {
 
     if (array.length == 25) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.functions.dataRenderPeliculaSerie = (array) => {
+  myVal.set.dataTruePeliculaSerie = (array) => {
     const type =
       $elements["form-filter-type"].key.value == "2" ? "pelicula" : "serie";
 
-    const template = document.createElement("div");
-
-    template.innerHTML = array
-      .map((data) => {
+    $elements.itemTrue.append(
+      ...array.map((data) => {
         if (data.images.poster == null) {
-          return '<div style="display:none"></div>';
+          return "";
         }
+
         const url = data.images.poster.replace("/original/", "/w185/");
 
-        return `
-          <a
-            href="#/${type}/${data.TMDbId}"
-            class="div_SQpqup7"
-            data-item>
-              <div class="div_fMC1uk6">
-                <img src="" alt="" data-src="${url}" style="display:none">
-                <span style="display:none">${type}</span>
-              </div>
-              <div class="div_9nWIRZE">
-                <p>${data.titles.name}</p>
-              </div>
-          </a>
-        `;
-      })
-      .join("");
+        const child = itemData({
+          href: `#/${type}/${data.TMDbId}`,
+          title: data.titles.name,
+          info: type,
+          style: "",
+          imgSrc: url,
+          intersectionObserver: true,
+        });
 
-    $elements.itemTrue.append(
-      ...Array.from(template.children).map((child) => {
-        if (child.tagName == "A") {
-          child.addEventListener("_IntersectionObserver", ({ detail }) => {
-            if (detail.entry.isIntersecting) {
-              detail.observer.unobserve(detail.entry.target);
-              const img = child.querySelector("img");
-              img.onload = () => (img.style.display = "");
-              img.src = img.dataset.src;
-            }
-          });
-
-          useApp.instances.IntersectionObserver.observe(child);
-          useThis.values.observes.push(child);
-        }
+        myVal.values.observes.push(child);
 
         return child;
       })
@@ -3987,99 +3953,86 @@ var favoritos = () => {
 
     $elements.itemTrueLoad.remove();
 
-    if (array.length == 24) {
+    if (array.length == 25) {
       $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.functions.dataTrueAnime = () => {
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
-      route: useThis.values.types[$elements.selectGender.value] ?? "favorites",
-      type: 1,
-      start: $elements.itemTrue.querySelectorAll("[data-item]").length,
-      end: 25,
-    });
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      const type = $elements["form-filter-type"].key.value;
 
-    fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
-        method: "GET",
-      })
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        useThis.oValues.dataNull.value = true;
-        useThis.oValues.dataTrue.value = data.map((data) =>
-          JSON.parse(data.data_json)
-        );
-        useThis.oValues.dataNull.value = false;
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: myVal.values.types[$elements.selectGender.value] ?? "favorites",
+        type: type,
+        start: $elements.itemTrue.querySelectorAll("[data-item]").length,
+        end: 25,
       });
-  };
 
-  useThis.functions.dataTruePelicula = () => {
-    const type = $elements["form-filter-type"].key.value;
-
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
-      route: useThis.values.types[$elements.selectGender.value] ?? "favorites",
-      type: type,
-      start: $elements.itemTrue.querySelectorAll("[data-item]").length,
-      end: 25,
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "GET",
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data.map((data) => JSON.parse(data.data_json)));
+        });
     });
-
-    fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
-        method: "GET",
-      })
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        useThis.oValues.dataNull.value = true;
-        useThis.oValues.dataTrue.value = data.map((data) =>
-          JSON.parse(data.data_json)
-        );
-        useThis.oValues.dataNull.value = false;
-      });
   };
 
-  useThis.functions.dataTrueSerie = () => {
-    useThis.functions.dataTruePelicula();
-  };
-
-  useThis.functions.dataTrue = () => {
+  myVal.set.dataTrue = (array) => {
     const type = $elements["form-filter-type"].key.value;
 
     const types = {
-      1: useThis.functions.dataTrueAnime,
-      2: useThis.functions.dataTruePelicula,
-      3: useThis.functions.dataTrueSerie,
+      1: myVal.set.dataTrueAnime,
+      2: myVal.set.dataTruePeliculaSerie,
+      3: myVal.set.dataTruePeliculaSerie,
     };
 
-    types?.[type]?.();
+    types?.[type]?.(array);
+
+    myVal.signals.dataNull.value = true;
+    myVal.signals.dataNull.value = false;
   };
 
-  useThis.functions.dataTrue();
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   return $element;
 };
 
 var historial = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
-    oValues: {
-      dataNull: useApp.MyFunction.observeValue(true),
-      dataTrue: useApp.MyFunction.observeValue([]),
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+    signals: {
+      dataNull: mrf.observeValue(true),
+      dataTrue: mrf.observeValue([]),
     },
     values: {
       observes: [],
       dates: {},
     },
     functions: {},
+
+    get: {},
+    set: {},
+
+    fragment: (...childNodes) => {
+      const fragment = document.createDocumentFragment();
+
+      fragment.append(...childNodes);
+
+      return fragment;
+    },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
 
         <div class="div_Xu02Xjh">
 
@@ -4087,24 +4040,42 @@ var historial = () => {
  
                 <div class="div_uNg74XS div_McPrYGP">
                     <a href="#/favorite" class="button_lvV6qZu">
-                      ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                      ${svg("fi fi-rr-angle-small-left")}
                     </a>
                     <div class="div_sZZicpN">  
                         <h3>Historial</h3>
-                        <span style="display:none">${useThis.params.type}</span>
+                        <span style="display:none">${myVal.params.type}</span>
                     </div>
                 </div>
 
             </header>
 
             <div class="div_BIchAsC">
+
+                <form class="app-form-label-checkbox" id="form-filter-type" name="form-filter-type">
+                  <label>
+                    <input type="radio" name="key" value="1" checked>
+                    <span>Animes</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="key" value="2">
+                    <span>peliculas</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="key" value="3">
+                    <span>Series</span>
+                  </label>
+                </form>
+                  
+            </div>
+
+            <div class="div_BIchAsC" style="display:none">
                 <div id="buttonsFocus" data-gender="Todos" class="div_O73RBqH">
 
                     ${Object.entries({
                       anime: "Animes",
                       pelicula: "peliculas",
                       serie: "series",
-                      // youtube: "YT Videos",
                     })
                       .map((entries, index) => {
                         return `
@@ -4119,13 +4090,13 @@ var historial = () => {
             </div>
         
             <div class="div_IsTCHpN">
-                <div id="itemNull" class="loader-i" style="--color:var(--color-letter)"></div>
-                <div id="itemFalse" class="div_b14S3dH">
-                  ${useApp.svgIcon("fi fi-rr-search-alt")}
+                <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
+                <div id="itemFalse" class="div_b14S3dH" style="display:none">
+                  ${svg("fi fi-rr-search-alt")}
                   <h3>sin resultados</h3>
                 </div>
 
-                <div id="itemTrue" class="">
+                <div id="itemTrue" class="div_qsNmfP3" style="display:none">
                     <div id="itemTrueLoad" class="div_Qm4cPUn">
                         <div class="loader-i" style="--color:var(--color-letter)"></div>
                     </div>
@@ -4137,367 +4108,238 @@ var historial = () => {
 
   `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.functions.dataRenderAnime = (Data) => {
-    const template = document.createElement("div");
-    template.innerHTML = Data.map((data) => {
-      const date = new Date(data.other.datetime);
-      let fechaFormateada = "";
-      if (!useThis.values.dates[date.toLocaleDateString()]) {
-        useThis.values.dates[date.toLocaleDateString()] = true;
-        fechaFormateada = date.toLocaleDateString("es-ES", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
-      }
-
-      const url = useApp.url.img(data.poster);
-      const episode = data.other.episode.padStart(2, "0");
-
-      return `
-          ${
-            fechaFormateada
-              ? `
-                <h3 style="grid-column: 1 / -1; padding: 10px">
-                  ${fechaFormateada}
-                </h3>
-              `
-              : ""
-          }
-          
-          <a 
-            href="#/anime/${data?.identifier}" 
-            class="div_SQpqup7" 
-            data-item>
-
-              <div class="div_fMC1uk6">
-                  <img src="" alt="" data-src="${url}" style="display:none">
-                  <span>${data.type ?? ""} | E${episode}</span>
-              </div>
-              <div class="div_9nWIRZE">
-                  <p>${data.title}</p>
-              </div>
-
-          </a>
-      `;
-    }).join("");
-
-    for (const child of template.children) {
-      if (child.tagName == "A") {
-        child.addEventListener("_IntersectionObserver", ({ detail }) => {
-          if (detail.entry.isIntersecting) {
-            detail.observer.unobserve(detail.entry.target);
-            const img = child.querySelector("img");
-            img.onload = () => (img.style.display = "");
-            img.src = img.dataset.src;
-          }
-        });
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
-      }
+  myVal.functions.unobserve = () => {
+    for (const observe of myVal.values.observes) {
+      myApp.instances.IntersectionObserver.unobserve(observe);
     }
 
-    $elements.itemTrue.append(...template.children);
-    $elements.itemTrueLoad.remove();
-
-    if (Data.length === 25) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
+    myVal.values.observes = [];
   };
 
-  useThis.functions.dataRenderPeliculaSerie = (Data, type) => {
-    const template = document.createElement("div");
-    template.innerHTML = Data.map((data) => {
-      const date = new Date(data.other.datetime);
+  myVal.set.dataTrueAnime = (array) => {
+    $elements.itemTrue.append(
+      ...array.map((data, index, array) => {
+        const date = new Date(data.other.datetime);
+        const datePrevious =
+          index != 0
+            ? date.toLocaleDateString() !=
+              new Date(array[index - 1].other.datetime).toLocaleDateString()
+            : true;
 
-      const url = data.images.poster.replace("/original/", "/w185/");
+        const url = data.poster;
+        const episode = `E${data.other.episode.padStart(2, "0")}`;
+        const aspectRatio = data.episode ? "aspect-ratio:3/2" : "";
 
-      let seasonAndEpisode = type;
-      let fechaFormateada = "";
-
-      if (type == "serie") {
-        const [season, episode] = data.other.episode.split("-");
-        if (!episode) return "";
-
-        seasonAndEpisode = `
-          T${season.padStart(2, "0")}
-          E${episode.padStart(2, "0")}
-        `;
-      }
-
-      if (data.images.poster == null) return "";
-
-      if (!useThis.values.dates[date.toLocaleDateString()]) {
-        useThis.values.dates[date.toLocaleDateString()] = true;
-        fechaFormateada = date.toLocaleDateString("es-ES", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
+        const child = itemData({
+          href: `#/anime/${data.identifier}`,
+          title: data.title,
+          info: `${data.type ?? ""} | ${episode}`,
+          style: aspectRatio,
+          imgSrc: url,
+          intersectionObserver: true,
         });
-      }
 
-      return `
+        myVal.values.observes.push(child);
 
-        ${
-          fechaFormateada
-            ? `
-              <h3 style="grid-column: 1 / -1; padding: 10px">
-                ${fechaFormateada}
-              </h3>
-            `
-            : ""
-        }
-        <a 
-          href="#/${type}/${data.TMDbId}" 
-          class="div_SQpqup7" data-item>
-
-            <div class="div_fMC1uk6">
-                <img src="" alt="" data-src="${url}" style="display:none">
-                <span>${seasonAndEpisode}</span>
-            </div>
-            <div class="div_9nWIRZE">
-                <p>${data.titles.name}</p>
-            </div>
-        </a>    
-      `;
-    }).join("");
-
-    Array.from(template.children).forEach((child) => {
-      if (child.tagName == "A") {
-        child.addEventListener("_IntersectionObserver", ({ detail }) => {
-          if (detail.entry.isIntersecting) {
-            detail.observer.unobserve(detail.entry.target);
-            const img = child.querySelector("img");
-            img.onload = () => (img.style.display = "");
-            img.src = img.dataset.src;
-          }
-        });
-        useApp.instances.IntersectionObserver.observe(child);
-        useThis.values.observes.push(child);
-      }
-    });
-
-    $elements.itemTrue.append(...template.children);
-    $elements.itemTrueLoad.remove();
-
-    if (Data.length === 25) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      useApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
-  useThis.functions.dataRenderYoutube = (Data) => {
-    const fragment = document.createDocumentFragment();
-    fragment.append(
-      ...Data.map((data) => {
-        return createNodeElement(`
-                <a 
-                  href="#/youtube/${data.videoId}" 
-                  class="div_EJlRW2l" data-item>
-
-                    <div class="div_zcWgA0o">
-                        <img 
-                          src="${data.thumbnail.thumbnails[0].url}" 
-                          alt="">
-                        <span>
-                          ${data.author || data.ownerText.runs[0].text}
-                        </span>
-                    </div>
-                    <div class="div_9nWIRZE">
-                      <p>
-                        ${
-                          data.title.runs ? data.title.runs[0].text : data.title
-                        }
-                      </p>
-                    </div>
-    
-                </a>
-            `);
+        return myVal.fragment(
+          datePrevious
+            ? mrf.createNodeElement(`
+          <h3 style="grid-column: 1 / -1; padding: 10px">
+            ${date.toLocaleDateString("es-ES", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </h3>  
+        `)
+            : "",
+          child
+        );
       })
     );
 
-    $elements.itemTrue.append(fragment);
     $elements.itemTrueLoad.remove();
+
+    if (array.length == 25) {
+      $elements.itemTrue.append($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+    }
   };
 
-  useThis.functions.dataTrueAnime = () => {
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
-      route: "history",
-      type: 1,
-      start: $elements.itemTrue.querySelectorAll("[data-item]").length,
-      end: 25,
-    });
+  myVal.set.dataTruePeliculaSerie = (array) => {
+    const type = $elements["form-filter-type"].key.value;
 
-    fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions()
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        useThis.oValues.dataNull.value = true;
-        useThis.oValues.dataTrue.value = Array.isArray(data)
-          ? data.map((data) => {
-              return {
-                ...JSON.parse(data.data_json),
-                other: {
-                  episode: data.episode,
-                  datetime: data.datetime,
-                },
-              };
-            })
-          : [];
+    $elements.itemTrue.append(
+      ...array.map((data, index, array) => {
+        if (data.images.poster == null) return "";
 
-        useThis.oValues.dataNull.value = false;
-      });
-  };
+        const date = new Date(data.other.datetime);
+        const datePrevious =
+          index != 0
+            ? date.toLocaleDateString() !=
+              new Date(array[index - 1].other.datetime).toLocaleDateString()
+            : true;
 
-  useThis.functions.dataTruePeliculaSerie = (type) => {
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
-      route: "history",
-      type: type == "pelicula" ? 2 : 3,
-      start: $elements.itemTrue.querySelectorAll("[data-item]").length,
-      end: 25,
-    });
+        const url = data.images.poster.replace("/original/", "/w185/");
 
-    fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions()
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        useThis.oValues.dataNull.value = true;
-        useThis.oValues.dataTrue.value = Array.isArray(data)
-          ? data.map((data) => {
-              return {
-                ...JSON.parse(data.data_json),
-                other: {
-                  episode: data.episode,
-                  datetime: data.datetime,
-                },
-              };
-            })
-          : [];
+        const [season, episode] = data.other.episode.split("-");
+        const info =
+          type == 2
+            ? ""
+            : `
+          T${season.padStart(2, "0")}
+          E${episode.padStart(2, "0")}
+        `;
 
-        useThis.oValues.dataNull.value = false;
-      });
-  };
+        const child = itemData({
+          href: `#/${type}/${data.TMDbId}`,
+          title: data.titles.name,
+          info: info,
+          style: "",
+          imgSrc: url,
+          intersectionObserver: true,
+        });
 
-  useThis.functions.dataTrue = () => {
-    const type = $elements.buttonsFocus
-      .querySelector("button.focus")
-      .getAttribute("data-gender");
-    $elements.itemTrue.setAttribute(
-      "class",
-      ["anime", "pelicula", "serie"].includes(type)
-        ? "div_qsNmfP3"
-        : "div_FtxwFbU"
+        myVal.values.observes.push(child);
+
+        return myVal.fragment(
+          datePrevious
+            ? mrf.createNodeElement(`
+          <h3 style="grid-column: 1 / -1; padding: 10px">
+            ${date.toLocaleDateString("es-ES", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </h3>  
+        `)
+            : "",
+          child
+        );
+      })
     );
 
-    if (["pelicula", "serie"].includes(type)) {
-      return useThis.functions.dataTruePeliculaSerie(type);
-    }
+    $elements.itemTrueLoad.remove();
 
-    if (type == "anime") {
-      return useThis.functions.dataTrueAnime();
-    }
-
-    if (type == "youtube") {
-      return useThis.functions.dataTrueYoutube();
+    if (array.length == 25) {
+      $elements.itemTrue.append($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
   };
 
-  useThis.functions.unobserve = () => {
-    for (const observe of useThis.values.observes) {
-      useApp.instances.IntersectionObserver.unobserve(observe);
-    }
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      const type = $elements["form-filter-type"].key.value;
 
-    useThis.values.observes = [];
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "history",
+        type: type,
+        start: $elements.itemTrue.querySelectorAll("[data-item]").length,
+        end: 25,
+      });
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "GET",
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(
+            Array.isArray(data)
+              ? data.map((data) => {
+                  return {
+                    ...JSON.parse(data.data_json),
+                    other: {
+                      episode: data.episode,
+                      datetime: data.datetime,
+                    },
+                  };
+                })
+              : []
+          );
+        });
+    });
   };
 
-  $elements.buttonsFocus.addEventListener("click", (e) => {
-    const button = e.target.closest("button");
-    if (button) {
-      Array.from(
-        $elements.buttonsFocus.querySelectorAll("button.focus")
-      ).forEach((button) => button.classList.remove("focus"));
-      button.classList.add("focus");
+  myVal.set.dataTrue = (array) => {
+    try {
+      const type = $elements["form-filter-type"].key.value;
 
-      useThis.oValues.dataNull.value = true;
+      const types = {
+        1: myVal.set.dataTrueAnime,
+        2: myVal.set.dataTruePeliculaSerie,
+        3: myVal.set.dataTruePeliculaSerie,
+      };
 
-      $elements.itemTrue.innerHTML = "";
-      useThis.values.dates = {};
+      types?.[type]?.(array);
 
-      useThis.functions.unobserve();
-      useThis.functions.dataTrue();
+      myVal.signals.dataNull.value = true;
+      myVal.signals.dataNull.value = false;
+    } catch (error) {
+      alert(error.message);
     }
-  });
+  };
 
-  $elements.itemTrueLoad.addEventListener(
-    "_IntersectionObserver",
-    ({ detail }) => {
-      if (detail.entry.isIntersecting) {
-        detail.observer.unobserve(detail.entry.target);
-        useThis.functions.dataTrue();
-      }
-    }
-  );
-
-  addEventListener(
-    "hashchange",
-    () => {
-      useThis.functions.unobserve();
-    },
-    { once: true }
-  );
-
-  useThis.functions.dataTrue();
-
-  //end
-
-  useThis.oValues.dataNull.observe((boolean) => {
-    const dataItem = $elements.itemTrue.querySelector("[data-item]");
+  myVal.signals.dataNull.observe((boolean) => {
+    const dataItem = Boolean($elements.itemTrue.querySelector("[data-item]"));
 
     const render = {
       itemNull: boolean,
       itemFalse: !boolean && !dataItem,
-      itemTrue: !boolean && !!dataItem,
+      itemTrue: !boolean && dataItem,
     };
 
-    Object.entries(render).forEach((entries) => {
-      $elements[entries[0]].style.display = entries[1] ? "" : "none";
+    Object.entries(render).forEach(([key, value]) => {
+      $elements[key].style.display = value ? "" : "none";
     });
   });
 
-  useThis.oValues.dataTrue.observe((Data) => {
-    const type = $elements.buttonsFocus
-      .querySelector("button.focus")
-      .getAttribute("data-gender");
-
-    Data = Data.filter((data) => Object.keys(data).length);
-
-    if (["pelicula", "serie"].includes(type)) {
-      return useThis.functions.dataRenderPeliculaSerie(Data, type);
+  myApp.events(
+    $elements.itemTrueLoad,
+    "_IntersectionObserver",
+    ({ detail }) => {
+      if (detail.entry.isIntersecting) {
+        detail.observer.unobserve(detail.entry.target);
+        myVal.get.dataTrue().then(myVal.set.dataTrue);
+      }
     }
+  );
 
-    if (type == "anime") {
-      return useThis.functions.dataRenderAnime(Data);
-    }
+  myApp.events($elements["form-filter-type"], "change", () => {
+    $elements.itemTrue.innerHTML = "";
+    myVal.signals.dataNull.value = true;
+
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
   });
+
+  addEventListener(
+    "hashchange",
+    () => {
+      myVal.functions.unobserve();
+    },
+    { once: true }
+  );
+
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   return $element;
 };
 
 var login = () => {
-  const useApp = window.dataApp;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const myApp = window.dataApp;
+
+  const $element = mrf.createNodeElement(`
 
     <div class="div_Xu02Xjh">
 
@@ -4505,7 +4347,7 @@ var login = () => {
 
             <div class="div_uNg74XS">
                 <a href="#/setting" class="button_lvV6qZu" data-history-back>
-                  ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                  ${svg("fi fi-rr-angle-small-left")}
                 </a>
                 <h3 id="textTitle"></h3>
             </div>
@@ -4528,7 +4370,7 @@ var login = () => {
               </button>
               <a href="#/register" class="a_8hzaMUg">
                   <span>registro</span>
-                  ${useApp.svgIcon("fi fi-rr-arrow-right")}
+                  ${svg("fi fi-rr-arrow-right")}
               </a>
           </form>
           <form id="form2" class="div_SCqCUTo" autocomplete="off" style="display: none">
@@ -4549,11 +4391,11 @@ var login = () => {
               <a href="#" id="aSendEmail" class="a_c305F1l">Volver a recibir codigo</a>
               <button id="buttonSubmit" class="button_WU25psx" >
                   <span id="spanLoad">Ingresar</span>
-                  ${useApp.svgIcon("fi fi-rr-arrow-right")}
+                  ${svg("fi fi-rr-arrow-right")}
               </button>
               <a href="#/register" class="a_8hzaMUg" >
                   <span>registro</span>
-                  ${useApp.svgIcon("fi fi-rr-arrow-right")}
+                  ${svg("fi fi-rr-arrow-right")}
               </a>
           </form>
 
@@ -4563,7 +4405,7 @@ var login = () => {
 
 `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
@@ -4579,7 +4421,7 @@ var login = () => {
       email: $elements.form.email.value.trim(),
     };
 
-    fetch(useApp.url.server("/api.php?route=auth.login-email-get"), {
+    fetch(myApp.url.server("/api.php?route=auth.login-email-get"), {
       method: "POST",
       body: JSON.stringify(body),
     })
@@ -4617,19 +4459,17 @@ var login = () => {
     $elements.form2.style.display = "none";
   });
 
-  // useApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  // myApp.functions.historyBack($element.querySelector("[data-history-back]"));
   return $element;
 };
 
 var register = () => {
-  const useApp = window.dataApp;
-  ({
-    params: useApp.routes.params(),
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
 
-    functions: {},
-  });
+  const myApp = window.dataApp;
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
 
     <div class="div_Xu02Xjh">
 
@@ -4637,7 +4477,7 @@ var register = () => {
 
             <div class="div_uNg74XS">
                 <a href="#/setting" class="button_lvV6qZu">
-                  ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                  ${svg("fi fi-rr-angle-small-left")}
                 </a>
                 <h3 id="textTitle"></h3>
             </div>
@@ -4664,11 +4504,11 @@ var register = () => {
               </div>
               <button class="button_WU25psx">
                   <span id="spanLoad">Crear cuenta</span>
-                  ${useApp.svgIcon("fi fi-rr-arrow-right")}
+                  ${svg("fi fi-rr-arrow-right")}
               </button>
               <a href="#/login" class="a_8hzaMUg">
                   <span>Iniciar sesion</span>
-                  ${useApp.svgIcon("fi fi-rr-arrow-right")}
+                  ${svg("fi fi-rr-arrow-right")}
               </a>
           </form>
 
@@ -4678,7 +4518,7 @@ var register = () => {
 
 `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
@@ -4693,7 +4533,7 @@ var register = () => {
       email: $elements.form.email.value.trim(),
     };
 
-    fetch(useApp.url.server("/api.php?route=auth.register"), {
+    fetch(myApp.url.server("/api.php?route=auth.register"), {
       method: "POST",
       body: JSON.stringify(body),
     })
@@ -4707,24 +4547,23 @@ var register = () => {
 };
 
 var loginKeyValue = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
-
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
     functions: {},
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`<div class=""></div>`);
-  useApp.MyFunction.createObjectElement(
+  const $element = mrf.createNodeElement(`<div class=""></div>`);
+  mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  if (useThis.params.key == "code") {
+  if (myVal.params.key == "code") {
     try {
       const [email, code] = JSON.parse(
-        decodeURIComponent(useThis.params.value)
+        decodeURIComponent(myVal.params.value)
       );
 
       if (true) {
@@ -4733,14 +4572,14 @@ var loginKeyValue = () => {
           code,
         };
 
-        fetch(useApp.url.server("/api.php?route=auth.login-email-set"), {
+        fetch(myApp.url.server("/api.php?route=auth.login-email-set"), {
           method: "POST",
           body: JSON.stringify(body),
         })
           .then((res) => res.json())
           .then((data) => {
             if (data?.status) {
-              useApp.MyClass.Cookie.set(useApp.auth, data.token, {
+              mrc.Cookie.set(myApp.auth, data.token, {
                 lifetime: 60 * 60 * 24 * 7,
               });
 
@@ -4762,9 +4601,12 @@ var loginKeyValue = () => {
 };
 
 var profile = () => {
-  const useApp = window.dataApp;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const myApp = window.dataApp;
+
+  const $element = mrf.createNodeElement(`
 
         <div class="div_Xu02Xjh">
 
@@ -4772,7 +4614,7 @@ var profile = () => {
 
                 <div class="div_uNg74XS">
                     <a href="#/setting" class="button_lvV6qZu">
-                      ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                      ${svg("fi fi-rr-angle-small-left")}
                     </a>
                     <h3 id="textTitle">Actualizar datos</h3>
                 </div>
@@ -4795,11 +4637,11 @@ var profile = () => {
                   </div>
                   <button class="button_WU25psx">
                       <span id="spanLoad">Actualizar datos</span>
-                      ${useApp.svgIcon("fi fi-rr-arrow-right")}
+                      ${svg("fi fi-rr-arrow-right")}
                   </button>
                   <a href="#/register" id="aLogout" class="a_8hzaMUg">
                       <span>Cerrar sesion</span>
-                      ${useApp.svgIcon("fi fi-rr-arrow-right")}
+                      ${svg("fi fi-rr-arrow-right")}
                   </a>
               </form>
 
@@ -4809,7 +4651,7 @@ var profile = () => {
 
     `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
@@ -4818,7 +4660,7 @@ var profile = () => {
   $elements.form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "user",
     });
 
@@ -4828,8 +4670,8 @@ var profile = () => {
     };
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "PATCH",
         body: JSON.stringify(body),
       })
@@ -4842,8 +4684,8 @@ var profile = () => {
   });
 
   fetch(
-    useApp.url.server(`/api.php?route=user`),
-    useApp.fetchOptions({
+    myApp.url.server(`/api.php?route=user`),
+    myApp.fetchOptions({
       method: "GET",
     })
   )
@@ -4857,14 +4699,14 @@ var profile = () => {
     e.preventDefault();
 
     if (confirm("¿Cerrar session?")) {
-      const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+      const encodeQueryString = mrf.encodeQueryObject({
         route: "auth.logout",
         id: "one",
       });
 
       fetch(
-        useApp.url.server(`/api.php?${encodeQueryString}`),
-        useApp.fetchOptions({
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
           method: "POST",
         })
       )
@@ -4881,13 +4723,16 @@ var profile = () => {
 };
 
 var theme = () => {
-  const useApp = window.dataApp;
-  const useThis = {
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
     instances: {
       // abortController: new AbortController(),
     },
     values: {
-      // themeCustom: useApp.MyFunction.callbackTryCatch(
+      // themeCustom: mrf.callbackTryCatch(
       //   () => JSON.parse(localStorage.getItem("theme-custom")),
       //   {}
       // ),
@@ -4909,14 +4754,14 @@ var theme = () => {
         "--app-color-item-iii": "#1A1A1A",
       },
       light: {
-        "--app-color-background": "#F7F7F7",
+        "--app-color-background": "#FFFFFF",
         "--app-color-background-second": "#FFFFFF",
         "--app-color-background-ii": "#FFFFFF",
         "--app-color-background-transparent": "rgb(0 0 0 / 0.1)",
         "--app-color-letter": "#000000",
         "--app-color-letter-second": "#ffffff",
         "--app-color-letter-ii": "#ffffff",
-        "--app-color-item": "#FFFFFF",
+        "--app-color-item": "#F7F7F7",
         "--app-color-item-second": "#000000",
         "--app-color-item-ii": "#000000",
         "--app-color-item-third": "#F7F7F7",
@@ -4926,13 +4771,13 @@ var theme = () => {
       custom: {},
     },
   };
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
         <div class="div_Xu02Xjh div_MN7ZWeX">
             <header class="header_K0hs3I0">
 
                 <div class="div_uNg74XS">
                     <a href="#/setting" class="button_lvV6qZu button_YWxwK2P">
-                        ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                        ${svg("fi fi-rr-angle-small-left")}
                     </a>
                     <h3 id="textTitle">Tema</h3>
                 </div>
@@ -5003,30 +4848,30 @@ var theme = () => {
         </div>
     `);
 
-  useThis.functions.updateTheme = () => {
+  myVal.functions.updateTheme = () => {
     $element.querySelectorAll("[data-theme]").forEach((element) => {
       element.addEventListener("change", () => {
         const theme = ((theme) => {
-          if (theme == "light") return useThis.themes.light;
-          if (theme == "dark") return useThis.themes.dark;
+          if (theme == "light") return myVal.themes.light;
+          if (theme == "dark") return myVal.themes.dark;
           if (theme == "system") {
             if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-              return useThis.themes.light;
+              return myVal.themes.light;
             }
 
             if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-              return useThis.themes.dark;
+              return myVal.themes.dark;
             }
           }
 
-          return useThis.themes.light;
+          return myVal.themes.light;
         })(element.getAttribute("data-theme"));
 
         Object.entries(theme).forEach((entries) => {
           document.documentElement.style.setProperty(entries[0], entries[1]);
         });
 
-        useApp.elements.meta.color.setAttribute(
+        myApp.elements.meta.color.setAttribute(
           "content",
           theme["--app-color-background"]
         );
@@ -5046,13 +4891,13 @@ var theme = () => {
     .matchMedia("(prefers-color-scheme: light)")
     .addEventListener("change", (e) => {
       if (localStorage.getItem("theme") == "system") {
-        const theme = e.matches ? useThis.themes.light : useThis.themes.dark;
+        const theme = e.matches ? myVal.themes.light : myVal.themes.dark;
 
         Object.entries(theme).forEach((entries) => {
           document.documentElement.style.setProperty(entries[0], entries[1]);
         });
 
-        useApp.elements.meta.color.setAttribute(
+        myApp.elements.meta.color.setAttribute(
           "content",
           theme["--app-color-background"]
         );
@@ -5061,18 +4906,18 @@ var theme = () => {
       }
     });
 
-  addEventListener("hashchange", useThis.functions.updateTheme);
+  addEventListener("hashchange", myVal.functions.updateTheme);
 
-  useThis.functions.updateTheme();
+  myVal.functions.updateTheme();
   //   $element.querySelectorAll("[data-color-custom]").forEach((element) => {
   //     element.value =
-  //       useThis.values.themeCustom?.[element.getAttribute("data-color-custom")];
+  //       myVal.values.themeCustom?.[element.getAttribute("data-color-custom")];
   //     element.addEventListener("change", () => {
   //       const themeCustom = JSON.parse(localStorage.getItem("theme-custom"));
   //       themeCustom[element.getAttribute("data-color-custom")] = element.value;
   //       localStorage.setItem("theme-custom", JSON.stringify(themeCustom));
 
-  //       dispatchEvent(useApp.values.customEvents._theme);
+  //       dispatchEvent(myApp.values.customEvents._theme);
   //     });
   //   });
 
@@ -5080,15 +4925,16 @@ var theme = () => {
 };
 
 var setting = () => {
-  const useApp = window.dataApp;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
       <div class="div_Xu02Xjh">
           <header class="header_K0hs3I0">
 
               <div class="div_uNg74XS">
                   <a href="#/" class="button_lvV6qZu">
-                    ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                    ${svg("fi fi-rr-angle-small-left")}
                   </a>
                   <h3 id="textTitle">Configuracion</h3>
               </div>
@@ -5101,13 +4947,13 @@ var setting = () => {
                   href="#/profile"
                   class="app-style-var d-flex-center-y" style="--pd:10px; --g:10px; --h:60px;">
                     <small class="app-square-var d-flex-center">
-                      ${useApp.svgIcon("fi fi-rr-user")}
+                      ${svg("fi fi-rr-user")}
                     </small>
                     <span>Cuenta</span>
                   </a>
                   <a href="#/theme" class="app-style-var d-flex-center-y" style="--pd:10px; --g:10px; --h:60px;">
                     <small class="app-square-var d-flex-center">
-                      ${useApp.svgIcon("fi fi-rr-palette")}
+                      ${svg("fi fi-rr-palette")}
                     </small>
                     <span>Tema</span>
                   </a>
@@ -5121,9 +4967,13 @@ var setting = () => {
 };
 
 var iptvPeliculaId = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
     // reactivity: {
     //   isFavorite: defineVal(false),
     //   isView: defineVal(false),
@@ -5131,9 +4981,9 @@ var iptvPeliculaId = () => {
     //   data: defineVal({}),
     // },
     functions: {},
-    oValues: {
-      favorite: useApp.MyFunction.observeValue(false),
-      view: useApp.MyFunction.observeValue(false),
+    signals: {
+      favorite: mrf.observeValue(false),
+      view: mrf.observeValue(false),
     },
     values: {
       isConnected: false,
@@ -5145,20 +4995,20 @@ var iptvPeliculaId = () => {
     },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
     <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
          
         <header class="header_K0hs3I0 header_RtX3J1X">
 
             <div class="div_uNg74XS">
                 <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                  ${svg("fi fi-rr-angle-small-left")}
                 </a>  
             </div>
             <h2 id="textTitle" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
             <div id="divButton" class="div_x0cH0Hq" style="visibility:hidden">
                 <button id="favorite" class="button_lvV6qZu" data-action="0">
-                  ${useApp.svgIcon("fi fi-rr-heart")}
+                  ${svg("fi fi-rr-heart")}
                 </button>
             </div>
 
@@ -5166,7 +5016,7 @@ var iptvPeliculaId = () => {
         <div id="item" class="div_guZ6yID div_DtSQApy">
             <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
             <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${useApp.svgIcon("fi fi-rr-search-alt")}
+                ${svg("fi fi-rr-search-alt")}
                 <h3>La pelicula no existe</h3>
             </div> 
             <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
@@ -5232,30 +5082,28 @@ var iptvPeliculaId = () => {
     </div>
   `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.oValues.favorite.observe((boolean) => {
-    $elements.favorite.innerHTML = useApp.svgIcon(
+  myVal.signals.favorite.observe((boolean) => {
+    $elements.favorite.innerHTML = svg(
       boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
     );
 
     $elements.favorite.setAttribute("data-action", boolean ? 1 : 0);
   });
 
-  useThis.oValues.view.observe((boolean) => {
+  myVal.signals.view.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
 
-  useThis.functions.dataRenderTrue = (data) => {
+  myVal.functions.dataRenderTrue = (data) => {
     try {
       const thisMovie = data.info;
-      const fromSecondsToTime = useApp.MyFunction.fromSecondsToTime(
-        thisMovie.runtime * 60
-      );
+      const fromSecondsToTime = mrf.fromSecondsToTime(thisMovie.runtime * 60);
 
       // const slug = thisMovie.url.slug
       //   .split("/")
@@ -5270,7 +5118,7 @@ var iptvPeliculaId = () => {
 
       const duration = thisMovie.duration?.split?.(":");
 
-      $elements.poster.src = useApp.url.img(thisMovie.movie_image);
+      $elements.poster.src = myApp.url.img(thisMovie.movie_image);
 
       $elements.textTitle.textContent = thisMovie.name;
       $elements.overview.textContent = thisMovie.description;
@@ -5283,29 +5131,29 @@ var iptvPeliculaId = () => {
       $elements.play.setAttribute("data-data", JSON.stringify(thisMovie));
       // $elements.play.setAttribute("data-slug", `https://cuevana.biz/${slug}`);
 
-      // useApp.mediaPlayer.info({
+      // myApp.mediaPlayer.info({
       //   title: thisMovie.titles.name,
       //   description: thisMovie.genres.map((genre) => genre.name).join(", "),
       // });
 
-      // useApp.mediaPlayer.controls({
+      // myApp.mediaPlayer.controls({
       //   options: {
       //     not: ["download"],
       //   },
       // });
 
-      useApp.MyClass.MyImage.canvas($elements.poster.src).then((result) => {
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
         const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
         const r = pixelData[0];
         const g = pixelData[1];
         const b = pixelData[2];
 
-        const color = useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 50);
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
 
         $elements.itemTrueOptionVideos.parentElement.style.background =
-          useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 60);
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
 
-        useApp.elements.meta.color.setAttribute("content", color);
+        myApp.elements.meta.color.setAttribute("content", color);
         $element.style.background = color;
 
         Android.colorSystemBar(color);
@@ -5349,7 +5197,7 @@ var iptvPeliculaId = () => {
       //   })
       //   .join("");
 
-      useThis.functions.dataTrueInfo(thisMovie);
+      myVal.functions.dataTrueInfo(thisMovie);
 
       $elements.itemNull.style.display = "none";
       $elements.itemTrue.style.display = "";
@@ -5358,15 +5206,15 @@ var iptvPeliculaId = () => {
     }
   };
 
-  useThis.functions.dataTrueInfo = (data) => {
+  myVal.functions.dataTrueInfo = (data) => {
     return null;
   };
 
-  useThis.functions.getLinkServer = (url) => {
+  myVal.functions.getLinkServer = (url) => {
     const newURL = new URL(url);
     const hostSplit = newURL.host.split(".");
     const host = hostSplit.length == 3 ? hostSplit[1] : hostSplit[0];
-    const mediaPlayer = useApp.mediaPlayer;
+    const mediaPlayer = myApp.mediaPlayer;
 
     if (["streamwish"].includes(host)) {
       MediaWebUrl.streamwish({ url: url }).then((res) => {
@@ -5400,34 +5248,34 @@ var iptvPeliculaId = () => {
     }
   };
 
-  useThis.functions.dataTrue = () => {
+  myVal.functions.dataTrue = () => {
     fetch(
       "https://fetch.vniox.com/get.php?url=" +
         encodeURIComponent(
-          `${useApp.iptv.server}/player_api.php?username=${useApp.iptv.username}&password=${useApp.iptv.password}&action=get_vod_info&vod_id=${useThis.params.id}`
+          `${myApp.iptv.server}/player_api.php?username=${myApp.iptv.username}&password=${myApp.iptv.password}&action=get_vod_info&vod_id=${myVal.params.id}`
         )
     )
       .then((res) => res.json())
       .then((data) => {
-        useThis.values.data = data;
-        useThis.values.thisMovie = data.info;
-        useThis.functions.dataRenderTrue(data);
+        myVal.values.data = data;
+        myVal.values.thisMovie = data.info;
+        myVal.functions.dataRenderTrue(data);
       });
 
-    // ApiWebCuevana.peliculaId(useThis.params.id).then((data) => {
-    //   useThis.values.data = data;
-    //   useThis.values.thisMovie = data.props.pageProps.thisMovie;
-    //   useThis.functions.dataRenderTrue(data);
+    // ApiWebCuevana.peliculaId(myVal.params.id).then((data) => {
+    //   myVal.values.data = data;
+    //   myVal.values.thisMovie = data.props.pageProps.thisMovie;
+    //   myVal.functions.dataRenderTrue(data);
     // });
   };
 
-  useThis.functions.updateHistory = (currentTime, duration = 0) => {
+  myVal.functions.updateHistory = (currentTime, duration = 0) => {
     console.log("visto");
-    console.log(useThis.values.isConnected);
+    console.log(myVal.values.isConnected);
   };
 
-  useThis.functions.updateHistoryVideo = () => {
-    useApp.mediaPlayer.video((video) => {
+  myVal.functions.updateHistoryVideo = () => {
+    myApp.mediaPlayer.video((video) => {
       let times = {};
       let status = false;
 
@@ -5439,8 +5287,7 @@ var iptvPeliculaId = () => {
 
         const currentTime =
           parseInt(
-            useThis.values.streaming?.episodes?.[useThis.values.episode]
-              ?.time_view
+            myVal.values.streaming?.episodes?.[myVal.values.episode]?.time_view
           ) || 0;
 
         video.currentTime = currentTime;
@@ -5452,17 +5299,14 @@ var iptvPeliculaId = () => {
 
           if (num > 0 && num % 15 == 0 && !times[num]) {
             times[num] = true;
-            useThis.functions.updateHistory(
-              num,
-              Math.ceil(video.duration) || 0
-            );
+            myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
           }
         }
       };
 
       video.onseeked = () => {
         const currentTime = Math.floor(video.currentTime);
-        useThis.functions.updateHistory(
+        myVal.functions.updateHistory(
           currentTime,
           Math.ceil(video.duration) || 0
         );
@@ -5477,7 +5321,7 @@ var iptvPeliculaId = () => {
 
   $elements.play.addEventListener("click", () => {
     Android.openWithDefault(
-      `${useApp.iptv.server}/movie/${useApp.iptv.username}/${useApp.iptv.password}/${useThis.values.data.movie_data.stream_id}.${useThis.values.data.movie_data.container_extension}`,
+      `${myApp.iptv.server}/movie/${myApp.iptv.username}/${myApp.iptv.password}/${myVal.values.data.movie_data.stream_id}.${myVal.values.data.movie_data.container_extension}`,
       "video/*"
     );
 
@@ -5489,22 +5333,22 @@ var iptvPeliculaId = () => {
   });
 
   $elements.inputView.addEventListener("change", () => {
-    // if (!useThis.values.isConnected) {
+    // if (!myVal.values.isConnected) {
     //   return (location.hash = "#/login");
     // }
 
-    // useThis.oValues.view.value = !useThis.oValues.view.value;
+    // myVal.signals.view.value = !myVal.signals.view.value;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-views",
-      data_id: useThis.values.thisMovie.TMDbId,
+      data_id: myVal.values.thisMovie.TMDbId,
       type: 2,
       action: $elements.inputView.checked ? 1 : 0,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -5527,11 +5371,11 @@ var iptvPeliculaId = () => {
       $elements.itemTrueOption.hidePopover();
 
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
-        useThis.functions.getLinkServer(url);
+        myVal.functions.getLinkServer(url);
       });
 
-      useApp.mediaPlayer.element().requestFullscreen();
-      useThis.functions.updateHistoryVideo();
+      myApp.mediaPlayer.element().requestFullscreen();
+      myVal.functions.updateHistoryVideo();
 
       if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -5569,25 +5413,31 @@ var iptvPeliculaId = () => {
     });
   });
 
-  useApp.elements.meta.color.setAttribute("content", "#000000");
-  useThis.functions.dataTrue();
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.functions.dataTrue();
 
-  useApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
 
-  Android.colorSystemBar("#000000");
+  mrf.callbackTryCatch(() => {
+    Android.colorSystemBar("#000000");
+  });
 
   return $element;
 };
 
 var iptvSerieId = () => {
-  const useApp = window.dataApp;
-  const useThis = {
-    params: useApp.routes.params(),
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
     functions: {},
-    oValues: {
-      isFavorite: useApp.MyFunction.observeValue(false),
-      isView: useApp.MyFunction.observeValue(false),
-      episodes: useApp.MyFunction.observeValue([]),
+    signals: {
+      isFavorite: mrf.observeValue(false),
+      isView: mrf.observeValue(false),
+      episodes: mrf.observeValue([]),
     },
     values: {
       dataInfo: null,
@@ -5601,19 +5451,19 @@ var iptvSerieId = () => {
     },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
     <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
         <header class="header_K0hs3I0 header_XpmKRuK header_RtX3J1X">
 
             <div class="div_uNg74XS">
                 <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${useApp.svgIcon("fi fi-rr-angle-small-left")}
+                  ${svg("fi fi-rr-angle-small-left")}
                 </a>
             </div>
             <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
             <div class="div_x0cH0Hq">
                 <button id="favorite" class="button_lvV6qZu" data-action="0" style="visibility:hidden">
-                  ${useApp.svgIcon("fi fi-rr-heart")}
+                  ${svg("fi fi-rr-heart")}
                 </button>
             </div>
 
@@ -5622,7 +5472,7 @@ var iptvSerieId = () => {
         <div id="item" class="div_guZ6yID div_DtSQApy" >
             <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
             <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${useApp.svgIcon("fi fi-rr-search-alt")}
+                ${svg("fi fi-rr-search-alt")}
                 <h3>La pelicula no existe</h3>
             </div>
             <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
@@ -5706,28 +5556,28 @@ var iptvSerieId = () => {
     </div>
 `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
   );
 
-  useThis.oValues.isFavorite.observe((boolean) => {
-    $elements.favorite.innerHTML = useApp.svgIcon(
+  myVal.signals.isFavorite.observe((boolean) => {
+    $elements.favorite.innerHTML = svg(
       boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
     );
   });
 
-  useThis.oValues.isView.observe((boolean) => {
+  myVal.signals.isView.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
 
-  useThis.functions.dataRenderTrue = (data) => {
+  myVal.functions.dataRenderTrue = (data) => {
     try {
       const thisSerie = data.info;
 
-      $elements.poster.src = useApp.url.img(thisSerie.cover);
- 
+      $elements.poster.src = myApp.url.img(thisSerie.cover);
+
       $elements.title.textContent = thisSerie.name;
       $elements.overview.textContent = thisSerie.plot;
       $elements.genres.textContent = thisSerie.genre;
@@ -5783,24 +5633,24 @@ var iptvSerieId = () => {
         })
         .join("");
 
-      useApp.MyClass.MyImage.canvas($elements.poster.src).then((result) => {
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
         const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
         const r = pixelData[0];
         const g = pixelData[1];
         const b = pixelData[2];
 
-        const color = useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 50);
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
 
         $elements.itemTrueOptionVideos.parentElement.style.background =
-          useApp.MyClass.MyColor.toDark({ rgb: [r, g, b] }, 60);
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
 
-        useApp.elements.meta.color.setAttribute("content", color);
+        myApp.elements.meta.color.setAttribute("content", color);
         $element.style.background = color;
         Android.colorSystemBar(color);
       });
 
-      useThis.functions.renderSeason($elements.selectSeason.value);
-      // useThis.functions.dataTrueInfo(thisSerie);
+      myVal.functions.renderSeason($elements.selectSeason.value);
+      // myVal.functions.dataTrueInfo(thisSerie);
 
       $elements.itemNull.style.display = "none";
       $elements.itemTrue.style.display = "";
@@ -5809,26 +5659,26 @@ var iptvSerieId = () => {
     }
   };
 
-  useThis.functions.dataTrueInfo = (data) => {
+  myVal.functions.dataTrueInfo = (data) => {
     return;
   };
 
-  useThis.functions.renderSeason = (index = 0) => {
-    // const seasons = useThis.values.thisSerie.seasons.filter(
+  myVal.functions.renderSeason = (index = 0) => {
+    // const seasons = myVal.values.thisSerie.seasons.filter(
     //   (season) => season.episodes.length
     // );
 
     // const episodes = seasons[index].episodes;
     // const season = seasons[index].number;
 
-    const array = useThis.values.data.episodes[index];
+    const array = myVal.values.data.episodes[index];
 
     $elements.episodes.innerHTML = array
       .map((episode) => {
         // const episodeInfo =
-        //   useThis.values.streaming?.episodes?.[`${season}-${episode.number}`];
+        //   myVal.values.streaming?.episodes?.[`${season}-${episode.number}`];
 
-        const dataData = useApp.MyClass.EncodeTemplateString.toInput(
+        const dataData = mrc.EncodeTemplateString.toInput(
           JSON.stringify(episode)
         );
 
@@ -5866,7 +5716,7 @@ var iptvSerieId = () => {
     //   $elements.episodes.innerHTML = `
     //     <div class="div_Qm4cPUn">
     //       <div id="itemFalse" class="div_b14S3dH">
-    //         ${useApp.svgIcon("fi fi-rr-search-alt")}
+    //         ${svg("fi fi-rr-search-alt")}
     //         <h3>No hay capitulos</h3>
     //       </div>
     //     </div>
@@ -5874,12 +5724,12 @@ var iptvSerieId = () => {
     // }
   };
 
-  useThis.functions.setLinkServer = (url) => {
+  myVal.functions.setLinkServer = (url) => {
     const newURL = new URL(url);
     const hostSplit = newURL.host.split(".");
     const host = hostSplit.length == 3 ? hostSplit[1] : hostSplit[0];
 
-    const mediaPlayer = useApp.mediaPlayer;
+    const mediaPlayer = myApp.mediaPlayer;
 
     if (["streamwish"].includes(host)) {
       MediaWebUrl.streamwish({ url: url }).then((res) => {
@@ -5913,43 +5763,43 @@ var iptvSerieId = () => {
     }
   };
 
-  useThis.functions.dataTrue = () => {
+  myVal.functions.dataTrue = () => {
     fetch(
       "https://fetch.vniox.com/get.php?url=" +
         encodeURIComponent(
-          `${useApp.iptv.server}/player_api.php?username=${useApp.iptv.username}&password=${useApp.iptv.password}&action=get_series_info&series_id=${useThis.params.id}`
+          `${myApp.iptv.server}/player_api.php?username=${myApp.iptv.username}&password=${myApp.iptv.password}&action=get_series_info&series_id=${myVal.params.id}`
         )
     )
       .then((res) => res.json())
       .then((data) => {
-        // alert(useThis.params.id);
+        // alert(myVal.params.id);
 
-        useThis.values.data = data;
-        useThis.values.thisSerie = data.info;
-        useThis.functions.dataRenderTrue(data);
+        myVal.values.data = data;
+        myVal.values.thisSerie = data.info;
+        myVal.functions.dataRenderTrue(data);
       });
 
-    // ApiWebCuevana.serieId(useThis.params.id).then((data) => {
-    //   useThis.values.data = data;
-    //   useThis.values.thisSerie = data.props.pageProps.thisSerie;
+    // ApiWebCuevana.serieId(myVal.params.id).then((data) => {
+    //   myVal.values.data = data;
+    //   myVal.values.thisSerie = data.props.pageProps.thisSerie;
 
-    //   useThis.functions.dataRenderTrue(data);
+    //   myVal.functions.dataRenderTrue(data);
     // });
   };
 
-  useThis.functions.unobserve = () => {
-    for (const observe of useThis.values.observes) {
-      useApp.instances.IntersectionObserver.unobserve(observe);
+  myVal.functions.unobserve = () => {
+    for (const observe of myVal.values.observes) {
+      myApp.instances.IntersectionObserver.unobserve(observe);
     }
 
-    useThis.values.observes = [];
+    myVal.values.observes = [];
   };
 
-  useThis.functions.updateHistory = (currentTime, duration = 0) => {
+  myVal.functions.updateHistory = (currentTime, duration = 0) => {
   };
 
-  useThis.functions.updateHistoryVideo = () => {
-    useApp.mediaPlayer.video((video) => {
+  myVal.functions.updateHistoryVideo = () => {
+    myApp.mediaPlayer.video((video) => {
       let times = {};
       let status = false;
 
@@ -5961,8 +5811,7 @@ var iptvSerieId = () => {
 
         const currentTime =
           parseInt(
-            useThis.values.streaming?.episodes?.[useThis.values.episode]
-              ?.time_view
+            myVal.values.streaming?.episodes?.[myVal.values.episode]?.time_view
           ) || 0;
 
         video.currentTime = currentTime;
@@ -5974,17 +5823,14 @@ var iptvSerieId = () => {
 
           if (num > 0 && num % 15 == 0 && !times[num]) {
             times[num] = true;
-            useThis.functions.updateHistory(
-              num,
-              Math.ceil(video.duration) || 0
-            );
+            myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
           }
         }
       };
 
       video.onseeked = () => {
         const currentTime = Math.floor(video.currentTime);
-        useThis.functions.updateHistory(
+        myVal.functions.updateHistory(
           currentTime,
           Math.ceil(video.duration) || 0
         );
@@ -5998,7 +5844,7 @@ var iptvSerieId = () => {
   };
 
   $elements.selectSeason.addEventListener("change", () => {
-    useThis.functions.renderSeason($elements.selectSeason.value);
+    myVal.functions.renderSeason($elements.selectSeason.value);
   });
 
   $elements.buttonSeasonOrder.addEventListener("click", () => {
@@ -6014,7 +5860,7 @@ var iptvSerieId = () => {
       const data = JSON.parse(item.getAttribute("data-data"));
 
       Android.openWithDefault(
-        `${useApp.iptv.server}/series/${useApp.iptv.username}/${useApp.iptv.password}/${data.id}.${data.container_extension}`,
+        `${myApp.iptv.server}/series/${myApp.iptv.username}/${myApp.iptv.password}/${data.id}.${data.container_extension}`,
         "video/*"
       );
 
@@ -6022,18 +5868,18 @@ var iptvSerieId = () => {
     }
 
     // if (input) {
-    //   const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    //   const encodeQueryString = mrf.encodeQueryObject({
     //     route: "toggle-history-view",
     //     episode: `${input.dataset.season}-${input.dataset.episode}`,
     //     datetime: Date.now(),
-    //     data_id: useThis.values.data_id,
+    //     data_id: myVal.values.data_id,
     //     type: 3,
     //     action: input.checked ? 1 : 0,
     //   });
 
     //   fetch(
-    //     useApp.url.server(`/api.php?${encodeQueryString}`),
-    //     useApp.fetchOptions({
+    //     myApp.url.server(`/api.php?${encodeQueryString}`),
+    //     myApp.fetchOptions({
     //       method: "GET",
     //     })
     //   )
@@ -6052,22 +5898,22 @@ var iptvSerieId = () => {
       $elements.favorite.getAttribute("data-action") != 0 ? 0 : 1
     );
 
-    // if (!useThis.values.isConnected) {
+    // if (!myVal.values.isConnected) {
     //   return (location.hash = "#/login");
     // }
 
-    useThis.oValues.isFavorite.value = !useThis.oValues.isFavorite.value;
+    myVal.signals.isFavorite.value = !myVal.signals.isFavorite.value;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-favorites",
-      data_id: useThis.values.thisSerie.TMDbId,
+      data_id: myVal.values.thisSerie.TMDbId,
       type: 3,
       action: $elements.favorite.dataset.action,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -6079,26 +5925,26 @@ var iptvSerieId = () => {
         }
 
         if (data?.status) {
-          useThis.oValues.isFavorite.value = data.type == 1;
+          myVal.signals.isFavorite.value = data.type == 1;
         }
       });
   });
 
   $elements.inputView.addEventListener("click", () => {
-    // if (!useThis.values.isConnected) {
+    // if (!myVal.values.isConnected) {
     //   return (location.hash = "#/login");
     // }
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-views",
-      data_id: useThis.values.thisSerie.TMDbId,
+      data_id: myVal.values.thisSerie.TMDbId,
       type: 3,
       action: $elements.inputView.checked ? 1 : 0,
     });
 
     fetch(
-      useApp.url.server(`/api.php?${encodeQueryString}`),
-      useApp.fetchOptions({
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
         method: "GET",
       })
     )
@@ -6118,28 +5964,28 @@ var iptvSerieId = () => {
   $elements.itemTrueOptionVideos.addEventListener("click", (e) => {
     const button = e.target.closest("button");
     if (button) {
-      useThis.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
-      const [season, episode] = useThis.values.episode.split("-");
+      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
+      const [season, episode] = myVal.values.episode.split("-");
 
       $elements.itemTrueOption.hidePopover();
-      useApp.mediaPlayer.element().requestFullscreen();
-      useThis.functions.updateHistoryVideo();
+      myApp.mediaPlayer.element().requestFullscreen();
+      myVal.functions.updateHistoryVideo();
 
-      useApp.mediaPlayer.info({
-        title: useThis.values.dataInfo.props.pageProps.episode.title,
-        description: useThis.values.dataInfo.props.pageProps.serie.genres
+      myApp.mediaPlayer.info({
+        title: myVal.values.dataInfo.props.pageProps.episode.title,
+        description: myVal.values.dataInfo.props.pageProps.serie.genres
           .map((genre) => genre.name)
           .join(", "),
       });
 
-      useApp.mediaPlayer.controls({
+      myApp.mediaPlayer.controls({
         options: {
           not: ["download"],
         },
       });
 
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
-        useThis.functions.setLinkServer(url);
+        myVal.functions.setLinkServer(url);
       });
 
       if ("mediaSession" in navigator) {
@@ -6182,24 +6028,26 @@ var iptvSerieId = () => {
   addEventListener(
     "hashchange",
     () => {
-      useThis.functions.unobserve();
+      myVal.functions.unobserve();
     },
     { once: true }
   );
 
-  useApp.elements.meta.color.setAttribute("content", "#000000");
-  useThis.functions.dataTrue();
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.functions.dataTrue();
 
-  useApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
 
-  Android.colorSystemBar("#000000");
+  mrf.callbackTryCatch(() => {
+    Android.colorSystemBar("#000000");
+  });
 
   return $element;
 };
 
 var routes = () => {
-  const useApp = window.dataApp;
-  const useThis = {
+  const myApp = window.dataApp;
+  const myVal = {
     values: {
       pages: {},
     },
@@ -6212,8 +6060,8 @@ var routes = () => {
     },
   };
 
-  useApp.routes.set([
-    { hash: "/", callback: () => useThis.elements.inicio },
+  myApp.routes.set([
+    { hash: "/", callback: () => myVal.elements.inicio },
     { hash: "/login", callback: () => routesPublic(login) },
     { hash: "/register", callback: () => routesPublic(register) },
 
@@ -6231,9 +6079,9 @@ var routes = () => {
     { hash: "/search/:result", callback: searchType },
     { hash: "/search/:result/result", callback: searchTypeResult },
 
-    { hash: "/favorite", callback: () => routesPrivate(favoritos) },
-    { hash: "/historial", callback: () => routesPrivate(historial) },
-    { hash: "/theme", callback: () => useThis.elements.theme },
+    { hash: "/collection", callback: collection },
+    { hash: "/historial", callback: historial },
+    { hash: "/theme", callback: () => myVal.elements.theme },
     { hash: "/setting", callback: setting },
   ]);
 
@@ -6243,7 +6091,7 @@ var routes = () => {
 
   addEventListener("hashchange", (e) => {
     // try {
-    //   useApp.elements.meta.color.setAttribute(
+    //   myApp.elements.meta.color.setAttribute(
     //     "content",
     //     localStorage.getItem("theme") == "light" ? "#F7F7F7" : "#000000"
     //   );
@@ -6253,23 +6101,22 @@ var routes = () => {
     //   );
     // } catch (error) {}
 
-    let uuid = history.state?.uuid ?? useApp.functions.generateUUID();
+    let uuid = history.state?.uuid ?? myApp.functions.generateUUID();
 
     if (!Boolean(e instanceof CustomEvent) && history.state == null) {
       history.replaceState({ start: false, uuid }, null, location.href);
     }
 
-    useThis.element.route.innerHTML = "";
+    myVal.element.route.innerHTML = "";
 
     if (navigator.onLine) {
-      // useThis.values.pages[uuid] || useApp.routes.get() || "";
-      useThis.element.route.append(useApp.routes.get() || "");
+      myVal.element.route.append(myApp.routes.get() || "");
     } else {
-      useThis.element.route.append(offline());
+      myVal.element.route.append(offline());
     }
   });
 
-  return useThis.element.route;
+  return myVal.element.route;
 };
 
 class ElementMakeDrag {
@@ -6358,10 +6205,10 @@ function calculateNewPosition(
 }
 
 var footerVideoPlayer = () => {
-  const useApp = window.dataApp;
-  const useThis = {
+  const myApp = window.dataApp;
+  const myVal = {
     elements: {
-      video: useApp.mediaPlayer.element("video"),
+      video: myApp.mediaPlayer.element("video"),
     },
     classes: {
       divPreview: null,
@@ -6376,7 +6223,7 @@ var footerVideoPlayer = () => {
     },
   };
 
-  const $element = useApp.MyFunction.createNodeElement(`
+  const $element = myApp.MyFunction.createNodeElement(`
         <footer class="footer_rTzBt2c">
 
             <div id="divPrueba" class="div_MJ5Ba2C" style="pointer-events:none;">
@@ -6400,7 +6247,7 @@ var footerVideoPlayer = () => {
         </footer>
   `);
 
-  const $elements = useApp.MyFunction.createObjectElement(
+  const $elements = myApp.MyFunction.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
@@ -6409,7 +6256,7 @@ var footerVideoPlayer = () => {
   const context = $elements.canvasVideo.getContext("2d");
 
   const draw = () => {
-    const video = useThis.elements.video;
+    const video = myVal.elements.video;
     const canvas = $elements.canvasVideo;
     if (!video.paused && !video.ended) {
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -6418,72 +6265,72 @@ var footerVideoPlayer = () => {
   };
 
   $elements.canvasVideo.addEventListener("click", () => {
-    useApp.mediaPlayer.element().requestFullscreen();
+    myApp.mediaPlayer.element().requestFullscreen();
   });
 
   $elements.buttonPlayPause.addEventListener("click", () => {
-    if (useThis.elements.video.paused) useThis.elements.video.play();
-    else useThis.elements.video.pause();
+    if (myVal.elements.video.paused) myVal.elements.video.play();
+    else myVal.elements.video.pause();
   });
 
   $elements.buttonPIP.addEventListener("click", () => {
-    useThis.elements.video.requestPictureInPicture();
+    myVal.elements.video.requestPictureInPicture();
   });
 
   $elements.buttonCloseVideo.addEventListener("click", () => {
     $elements.divPreview.style.display = "none";
-    useApp.mediaPlayer.video((video) => {
+    myApp.mediaPlayer.video((video) => {
       video.src = "";
     });
   });
 
-  useThis.elements.video.addEventListener("play", () => {
+  myVal.elements.video.addEventListener("play", () => {
     $elements.buttonPlayPause.innerHTML =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-pause"><path d="M6.5,0A3.5,3.5,0,0,0,3,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,6.5,0ZM8,20.5a1.5,1.5,0,0,1-3,0V3.5a1.5,1.5,0,0,1,3,0Z"></path><path d="M17.5,0A3.5,3.5,0,0,0,14,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,17.5,0ZM19,20.5a1.5,1.5,0,0,1-3,0V3.5a1.5,1.5,0,0,1,3,0Z"></path></svg>';
     draw();
   });
-  useThis.elements.video.addEventListener("pause", () => {
+  myVal.elements.video.addEventListener("pause", () => {
     $elements.buttonPlayPause.innerHTML =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-play"><path d="M20.494,7.968l-9.54-7A5,5,0,0,0,3,5V19a5,5,0,0,0,7.957,4.031l9.54-7a5,5,0,0,0,0-8.064Zm-1.184,6.45-9.54,7A3,3,0,0,1,5,19V5A2.948,2.948,0,0,1,6.641,2.328,3.018,3.018,0,0,1,8.006,2a2.97,2.97,0,0,1,1.764.589l9.54,7a3,3,0,0,1,0,4.836Z"></path></svg>';
   });
 
-  useThis.elements.video.addEventListener("timeupdate", () => {
+  myVal.elements.video.addEventListener("timeupdate", () => {
     $elements.spanBar.style.width =
-      useApp.MyClass.MyInt.percentage(
-        useThis.elements.video.currentTime,
-        useThis.elements.video.duration
+      myApp.MyClass.MyInt.percentage(
+        myVal.elements.video.currentTime,
+        myVal.elements.video.duration
       ) + "%";
   });
 
-  useThis.elements.video.addEventListener("loadstart", () => {
-    if (useThis.elements.video.getAttribute("src").trim()) {
+  myVal.elements.video.addEventListener("loadstart", () => {
+    if (myVal.elements.video.getAttribute("src").trim()) {
       $elements.divPreview.style.display = "";
     }
   });
 
-  useThis.elements.video.addEventListener("loadedmetadata", () => {
-    $elements.canvasVideo.width = useThis.elements.video.videoWidth;
-    $elements.canvasVideo.height = useThis.elements.video.videoHeight;
+  myVal.elements.video.addEventListener("loadedmetadata", () => {
+    $elements.canvasVideo.width = myVal.elements.video.videoWidth;
+    $elements.canvasVideo.height = myVal.elements.video.videoHeight;
     $elements.canvasVideo.style.aspectRatio = "";
   });
 
-  useThis.elements.video.addEventListener("error", (e) => {
+  myVal.elements.video.addEventListener("error", (e) => {
     if (e.target.error.code == 3) {
-      useApp.values.hls.recoverMediaError();
+      myApp.values.hls.recoverMediaError();
       e.target.play();
     }
   });
 
-  useThis.elements.video.addEventListener("enterpictureinpicture", () => {
+  myVal.elements.video.addEventListener("enterpictureinpicture", () => {
     $elements.divPreview.style.display = "none";
   });
 
-  useThis.elements.video.addEventListener("leavepictureinpicture", () => {
+  myVal.elements.video.addEventListener("leavepictureinpicture", () => {
     if (document.fullscreenElement) document.exitFullscreen();
     $elements.divPreview.style.display = "";
   });
 
-  $elements.elementVideo.append(useApp.mediaPlayer.element());
+  $elements.elementVideo.append(myApp.mediaPlayer.element());
 
   const function_pmgnvcdirebja = () => {
     const elementMakeDrag = new ElementMakeDrag($elements.divPrueba);
@@ -6695,11 +6542,10 @@ addEventListener("contextmenu", (e) => {
 });
 
 addEventListener("DOMContentLoaded", () => {
-  const useApp = dataApp();
-  window.dataApp = useApp;
+  const myApp = (window.dataApp = dataApp());
 
   document.getElementById("app").append(
-    useApp.MyClass.MyElement.create(
+    myApp.MyClass.MyElement.create(
       `
       <div class="container">
         <navigate></navigate>
@@ -6709,7 +6555,7 @@ addEventListener("DOMContentLoaded", () => {
       <footer-player></footer-player>
     `
     ).fragment((fragment) => {
-      useApp.MyClass.MyElement.replaceChildren(fragment, {
+      myApp.MyClass.MyElement.replaceChildren(fragment, {
         navigate: navigate(),
         "navigate-bottom": navigateBottom(),
         "element-route": routes(),
