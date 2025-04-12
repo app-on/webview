@@ -759,6 +759,18 @@ input {
   pointer-events: none;
 }
 
+/* ----- APP -- TRANSITION.CSS ----- */
+
+.transition-rotate {
+  --rotate: 180deg;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
+
+  &.active {
+    transform: rotate(var(--rotate));
+  }
+}
+
 /* ----- ASSETS -- FOOTERVIDEOPLAYER.CSS ----- */
 
 .footer_rTzBt2c {

@@ -1,38 +1,32 @@
 'use strict';
 
-var dataAppUrl = () => {
-  {
-    return {
-      server: (pathname = "") => {
-        return `https://api.vniox.com/streaming/${window.MyResourceClass.MyString.trim(
-          pathname
-        ).left("/")}`;
-      },
-      img: (url = "") =>
-        `https://img.vniox.com/index.php?url=${encodeURIComponent(url)}`,
-      fetch: (url = "") => url,
-      rr: (path = "") => `https://app.victor01sp.com/rr` + path,
-    };
-  }
-};
-
-// import svgIcon from "./svgIcon";
-
 var dataApp = () => {
-  const MyClass = window.MyResourceClass;
-  const MyFunction = window.MyResourceFunction;
+  const mrc = window.MyResourceClass;
+  console.log(mrc);
 
-  const dataApp = {
-    routes: new MyClass.RouteHashCallback(),
+  const exp = {
+    ta: "ta-019626a1-7528-79cb-9c04-14ee7055d7b4",
+
+    routes: new mrc.RouteHashCallback(),
     auth: "auth_Mj8Q5q3",
     user: null,
-    // icon: new IconSVG(),
-    // svgIcon: svgIcon(),
     mediaPlayer: new MediaPlayer(
       document.createDocumentFragment(),
       "media-player-id-1741285515518"
     ),
-    url: dataAppUrl(),
+    url: {
+      server: (pathname = "") => {
+        return `https://api.vniox.com/streaming/${mrc.MyString.trim(
+          pathname
+        ).left("/")}`;
+      },
+      img: (url) => {
+        return `https://img.vniox.com/index.php?url=${encodeURIComponent(url)}`;
+      },
+      fetch: () => {
+        return url;
+      },
+    },
     elements: {
       meta: {
         color: document.getElementById("meta-theme-color"),
@@ -144,14 +138,13 @@ var dataApp = () => {
       return {
         ...options,
         headers: {
-          "Token-Auth": window.MyResourceClass.Cookie.get("auth_Mj8Q5q3"),
-          ...(options?.headers ?? {}),
+          "Token-Auth": localStorage.getItem(
+            "ta-019626a1-7528-79cb-9c04-14ee7055d7b4"
+          ),
         },
         method: options?.method ?? "GET",
       };
     },
-    MyClass: MyClass,
-    MyFunction: MyFunction,
 
     iptv: {
       server: "https://593zona.live:8443",
@@ -175,7 +168,7 @@ var dataApp = () => {
     },
   };
 
-  return dataApp;
+  return exp;
 };
 
 // import eleConfirm from "../includes/eleConfirm";
@@ -243,17 +236,17 @@ var navigate = () => {
 };
 
 var navigateBottom = () => {
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
   const svg = window.iconSVG;
-
-  const myApp = window.dataApp;
   const myVal = {
-    routes: new myApp.MyClass.RouteHashCallback(),
+    routes: new mrc.RouteHashCallback(),
     element: {
       textNode: document.createTextNode(""),
     },
   };
 
-  const $element = myApp.MyFunction.createNodeElement(`
+  const $element = mrf.createNodeElement(`
         <div class="div_U1rCCk1">
             <div id="links" class="div_ZnL3gfK">
                 <a id="inicio" href="#/">
@@ -270,9 +263,9 @@ var navigateBottom = () => {
                 </a>
             </div>
         </div>
-    `);
+  `);
 
-  const $elements = myApp.MyFunction.createObjectElement(
+  const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
     "id",
     true
@@ -302,17 +295,20 @@ var navigateBottom = () => {
 
 var auth = () => {
   return new Promise((resolve, reject) => {
-    const useApp = window.dataApp;
+    const mrf = window.MyResourceFunction;
 
-    const encodeQueryString = useApp.MyFunction.encodeQueryObject({
+    const myApp = window.dataApp;
+
+    const encodeQueryString = mrf.encodeQueryObject({
       route: "token.auth",
     });
 
-    if (useApp.MyClass.Cookie.get(useApp.auth)) {
-      return fetch(useApp.url.server(`/api.php?${encodeQueryString}`), {
+    
+    if (localStorage.getItem(myApp.ta)) {
+      return fetch(myApp.url.server(`/api.php?${encodeQueryString}`), {
         method: "GET",
         headers: {
-          "Token-Auth": useApp.MyClass.Cookie.get(useApp.auth),
+          "Token-Auth": localStorage.getItem(myApp.ta),
         },
       })
         .then((res) => res.json())
@@ -329,14 +325,13 @@ var auth = () => {
 };
 
 var routesPrivate = (page = "") => {
+
   const myApp = window.dataApp;
   const $node = document.createTextNode("");
 
   auth().then((result) => {
     if (result?.status) {
-      myApp.MyClass.Cookie.set(myApp.auth, result.token, {
-        lifetime: 60 * 60 * 24 * 7,
-      });
+      localStorage.setItem(myApp.ta, result.token);
       return $node.replaceWith(page());
     }
 
@@ -347,12 +342,13 @@ var routesPrivate = (page = "") => {
 };
 
 var routesPublic = (page = "") => {
+
   const myApp = window.dataApp;
   const $node = document.createTextNode("");
 
   auth().then((result) => {
     if (!result?.status) {
-      myApp.MyClass.Cookie.remove(myApp.auth, {});
+      localStorage.removeItem(myApp.ta);
       return $node.replaceWith(page());
     }
 
@@ -391,115 +387,147 @@ var peliculaId = () => {
   const myApp = window.dataApp;
   const myVal = {
     params: myApp.routes.params(),
-    functions: {},
     signals: {
-      favorite: mrf.observeValue(false),
-      view: mrf.observeValue(false),
+      isFavorite: mrf.observeValue(false),
+      isView: mrf.observeValue(false),
+      episodes: mrf.observeValue([]),
     },
+    functions: {},
     values: {
+      video: null,
       isConnected: false,
       streaming: {},
-      episode: 1,
+      episode: -1,
       data_id: "",
       data: null,
-      thisMovie: {},
+      thisAnime: {},
     },
+    url: {
+      fetch: (url) => {
+        return `https://fetch.vniox.com/get.php?url=${encodeURIComponent(url)}`;
+      },
+    },
+    get: {},
+    set: {},
   };
 
   const $element = mrf.createNodeElement(`
     <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
-         
-        <header class="header_K0hs3I0 header_RtX3J1X">
 
-            <div class="div_uNg74XS">
-                <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${svg("fi fi-rr-angle-small-left")}
-                </a>  
-            </div>
-            <h2 id="textTitle" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
-            <div id="divButton" class="div_x0cH0Hq">
-                <button id="favorite" class="button_lvV6qZu" data-action="0">
-                  ${svg("fi fi-rr-heart")}
-                </button>
-            </div>
+          <header class="header_K0hs3I0 header_RtX3J1X">
 
-        </header>
-        <div id="item" class="div_guZ6yID div_DtSQApy">
-            <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
-            <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${svg("fi fi-rr-search-alt")}
-                <h3>La pelicula no existe</h3>
-            </div> 
-            <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
+              <div class="div_uNg74XS">
+                  <a href="#" class="button_lvV6qZu" data-history-back>
+                    ${svg("fi fi-rr-angle-small-left")}
+                  </a>
+              </div>
 
-                <div class="div_cnJqhFl">
-                  <div class="div_0JOSFlg">
-                    <img id="poster" src="">
-                  </div>
-                  <div class="div_cxFXOaL">
-                    <label class="label_zjZIMnZ">
-                      <input type="checkbox" id="inputView">
-                      <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
-                    </label>
-                    <button id="play" class="button_bDfhQ4b">
-                      <small>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-sr-play"><path d="M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z"></path></svg>
-                      </small>
-                      <span>Reproducir</span>
-                    </button>
-                  </div>
-                </div>
-                
-                <hr class="hr_nTfcjTI">
-                <div class="div_BIchAsC">
+              <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
 
-                    <form class="app-form-label-checkbox" id="form-filter-type">
-                      <label>
-                        <input type="radio" name="key" value="information" checked>
-                        <span>Detalles</span>
+              <div class="div_x0cH0Hq">
+                  <button id="favorite" class="button_lvV6qZu">
+                    ${svg("fi fi-rr-heart")}
+                  </button>
+              </div>
+
+          </header>
+
+          <div class="div_guZ6yID div_DtSQApy">
+              <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <div id="itemFalse" class="div_b14S3dH" style="display:none">
+                  ${svg("fi fi-rr-search-alt")}
+                  <h3>La pelicula no existe</h3>
+              </div>
+
+              <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
+
+                  <div class="div_cnJqhFl">
+                    <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
+                      <img id="poster" src="" style="display:none">
+                    </div>
+                    <div class="div_cxFXOaL">
+                      <label class="label_zjZIMnZ">
+                        <input type="checkbox" id="inputView">
+                        <span style="display:flex">
+                          ${svg("fi fi-rr-check")}
+                        </span>
                       </label>
-                      <label>
-                        <input type="radio" name="key" value="similar">
-                        <span>Otros</span>
-                      </label>
-                    </form>
-                      
-                </div>
-                <hr class="hr_nTfcjTI">
-
-                <div id="itemTrueInformation" class="div_cnJqhFl" >
-                  <div class="div_aSwP0zW">
-                      <span id="genres"></span>
-                      <span id="duration"></span>
-                      <span id="date"></span>
+                      <button id="play" class="button_bDfhQ4b" style="display:none">
+                        <small></small>
+                        <span>Play</span>
+                      </button>
+                    </div>
                   </div>
-                  <p id="overview" style="font-size:14px"></p>
-                </div>
 
-                <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
-                  <div id="episodes" class="div_qsNmfP3" style="padding: 0"></div>
-                </div>
+                  <hr class="hr_nTfcjTI">
+                  <div class="div_BIchAsC">
 
-            </div>
-        </div>
-        
-        <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
-            <div class="div_dsb3nhtCrFmUlSN p-10px">
-                <div class="div_cXaADrL pointer-on">
-                    <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
-                </div>
-            </div>
-        </div>
+                      <form class="app-form-label-checkbox" id="form-filter-type">
+                        <label>
+                          <input type="radio" name="key" value="information" checked>
+                          <span>Detalles</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="chapter">
+                          <span>Capitulos</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="similar">
+                          <span>Otros</span>
+                        </label>
+                      </form>
+                        
+                  </div>
+                  <hr class="hr_nTfcjTI">
 
-        <div id="loaderVideo" class="div_uzuovb5" style="display:none">
-        
-          <div class="div_x8birmo">
-            <div class="loader-i" style="--color:var(--app-color-letter)"></div>
-            <span>cargando...</span>
+                  <div id="itemTrueInformation" class="div_cnJqhFl" >
+                    <div class="div_aSwP0zW">
+                        <span id="nextEpisode"></span>
+                        <span id="genres"></span>
+                        <span id="duration"></span>
+                        <span id="date"></span>
+                    </div>
+                    <p id="overview" style="font-size:14px"></p>
+                  </div>
+
+                  <div id="itemTrueChapter" class="div_692wB8" style="display:none">
+                      <div class="div_mu7pmfs">
+                        <div class="div_xesi90n">
+                          <select id="selectSeason">
+                            <option>Temporada 1</option>
+                          </select>
+                          <button id="buttonSeasonOrder">
+                            ${svg("fi fi-rr-sort-alt")}
+                          </button>
+                        </div>
+                      </div>
+                      <div id="episodes" class="div_bi3qmqX"></div>
+                  </div>
+
+                  <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
+                    <div id="similar" class="div_qsNmfP3" style="padding: 0"></div>
+                  </div>
+
+              </div>
           </div>
 
-        </div>
-    </div>
+          <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
+              <div class="div_dsb3nhtCrFmUlSN p-10px">
+                  <div class="div_cXaADrL pointer-on">
+                      <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
+                  </div>
+              </div>
+          </div>
+
+          <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+            <div class="div_x8birmo">
+              <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <span>cargando...</span>
+            </div>
+
+          </div>
+      </div>
   `);
 
   const $elements = mrf.createObjectElement(
@@ -508,7 +536,7 @@ var peliculaId = () => {
     true
   );
 
-  myVal.signals.favorite.observe((boolean) => {
+  myVal.signals.isFavorite.observe((boolean) => {
     $elements.favorite.innerHTML = svg(
       boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
     );
@@ -516,167 +544,11 @@ var peliculaId = () => {
     $elements.favorite.setAttribute("data-action", boolean ? 1 : 0);
   });
 
-  myVal.signals.view.observe((boolean) => {
+  myVal.signals.isView.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
 
-  myVal.functions.dataRenderTrue = (data) => {
-    const thisMovie = data.props.pageProps.thisMovie;
-    const fromSecondsToTime = mrf.fromSecondsToTime(thisMovie.runtime * 60);
-
-    const slug = thisMovie.url.slug
-      .split("/")
-      .map((name) => {
-        if (name == "movies") return "pelicula";
-        else if (name == "series") return "serie";
-        else if (name == "seasons") return "temporada";
-        else if (name == "episodes") return "episodio";
-        return name;
-      })
-      .join("/");
-
-    $elements.poster.src = myApp.url.img(
-      thisMovie.images.poster.replace("/original/", "/w342/")
-    );
-
-    $elements.textTitle.textContent = thisMovie.titles.name;
-    $elements.overview.textContent = thisMovie.overview;
-    $elements.genres.textContent = thisMovie.genres
-      .map((genre) => genre.name)
-      .join(", ");
-
-    $elements.duration.textContent = `${fromSecondsToTime.hours}h ${fromSecondsToTime.minutes}min`;
-    $elements.date.textContent = new Date(thisMovie.releaseDate).getFullYear();
-
-    $elements.play.style.display = "";
-    $elements.play.setAttribute("data-data", JSON.stringify(thisMovie));
-    $elements.play.setAttribute("data-slug", `https://cuevana.biz/${slug}`);
-
-    myApp.mediaPlayer.info({
-      title: thisMovie.titles.name,
-      description: thisMovie.genres.map((genre) => genre.name).join(", "),
-    });
-
-    myApp.mediaPlayer.controls({
-      options: {
-        not: ["download"],
-      },
-    });
-
-    mrc.MyImage.canvas($elements.poster.src).then((result) => {
-      const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
-      const r = pixelData[0];
-      const g = pixelData[1];
-      const b = pixelData[2];
-
-      const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
-
-      $elements.itemTrueOptionVideos.parentElement.style.background =
-        mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
-
-      myApp.elements.meta.color.setAttribute("content", color);
-      $element.style.background = color;
-
-      Android.colorSystemBar(color);
-    });
-
-    const objectMovies = Object.values(data.props.pageProps)
-      .filter((value) => Array.isArray(value))
-      .flat()
-      .reduce((prev, curr) => {
-        if (!prev[curr.TMDbId]) {
-          prev[curr.TMDbId] = curr;
-        }
-
-        return prev;
-      }, {});
-
-    $elements.episodes.innerHTML = Object.values(objectMovies)
-      .map((data) => {
-        const type =
-          data.url.slug.split("/")[0] == "movies" ? "pelicula" : "serie";
-
-        if (data.images.poster == null) {
-          return '<div style="display:none"></div>';
-        }
-        const url = data.images.poster.replace("/original/", "/w185/");
-
-        return `
-          <a
-            href="#/${type}/${data.TMDbId}"
-            class="div_SQpqup7"
-            data-item>
-              <div class="div_fMC1uk6">
-                <img src="${url}" alt="">
-                <span>${type}</span>
-              </div>
-              <div class="div_9nWIRZE">
-                <p>${data.titles.name}</p>
-              </div>
-          </a>
-        `;
-      })
-      .join("");
-
-    myVal.functions.dataTrueInfo(thisMovie);
-
-    $elements.itemNull.style.display = "none";
-    $elements.itemTrue.style.display = "";
-  };
-
-  myVal.functions.dataTrueInfo = (data) => {
-    myVal.values.data_id = data.TMDbId;
-
-    const encodeQueryString = mrf.encodeQueryObject({
-      route: "favorites-one",
-      data_id: data.TMDbId,
-      type: 2,
-    });
-
-    const body = {
-      data_id: data.TMDbId,
-      data_json: JSON.stringify(
-        Object.entries(data).reduce((prev, curr) => {
-          if (["TMDbId", "titles", "url", "images"].includes(curr[0])) {
-            prev[curr[0]] = curr[1];
-          }
-          return prev;
-        }, {})
-      ),
-      type: 2,
-    };
-
-    fetch(
-      myApp.url.server(`/api.php?${encodeQueryString}`),
-      myApp.fetchOptions({
-        method: "POST",
-        body: JSON.stringify(body),
-      })
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        myVal.values.streaming = data;
-        $elements.favorite.style.visibility = "";
-        myVal.values.isConnected = Boolean(data);
-
-        if (myVal.values.isConnected) {
-          myVal.signals.favorite.value = Boolean(data?.favorite);
-          myVal.signals.view.value = Boolean(data?.view);
-        }
-      });
-  };
-
-  myVal.functions.dataTrue = () => {
-    ApiWebCuevana.peliculaId(myVal.params.id).then((data) => {
-      myVal.values.data = data;
-      myVal.values.thisMovie = data.props.pageProps.thisMovie;
-      myVal.functions.dataRenderTrue(data);
-    });
-  };
-
   myVal.functions.updateHistory = (currentTime, duration = 0) => {
-    console.log("visto");
-    console.log(myVal.values.isConnected);
     if (myVal.values.isConnected) {
       const encodeQueryString = mrf.encodeQueryObject({
         route: "update-history-view",
@@ -685,7 +557,7 @@ var peliculaId = () => {
         time_duration: duration,
         datetime: Date.now(),
         data_id: myVal.values.data_id,
-        type: 2,
+        type: 1,
       });
 
       fetch(
@@ -720,7 +592,7 @@ var peliculaId = () => {
         if (status) {
           const num = Math.floor(e.target.currentTime);
 
-          if (num > 0 && num % 15 == 0 && !times[num]) {
+          if (num > 0 && num % 30 == 0 && !times[num]) {
             times[num] = true;
             myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
           }
@@ -742,20 +614,25 @@ var peliculaId = () => {
     });
   };
 
-  $elements.play.addEventListener("click", () => {
-    const data = JSON.parse($elements.play.getAttribute("data-data"));
-    $elements.itemTrueOption.showPopover();
+  myApp.events($elements.episodes, "click", (e) => {
+    const item = e.target.closest("[data-item]");
+    const input = e.target.closest("input");
 
-    $elements.itemTrueOptionVideos.innerHTML =
-      '<div class="loader-i m-auto g-col-full" style="--color:#fff; padding: 20px 0"></div>';
+    if (item) {
+      $elements.itemTrueOption.showPopover();
 
-    Promise.all([
-      // add more aditional server,
-      data.videos,
-    ]).then((res) => {
-      const mergedObject = res.reduce((acc, obj) => ({ ...acc, ...obj }), {});
+      $elements.itemTrueOptionVideos.setAttribute(
+        "data-episode",
+        item.dataset.episode
+      );
 
-      $elements.itemTrueOptionVideos.innerHTML = Object.entries(mergedObject)
+      // $elements.itemTrueOptionVideos.innerHTML =
+      //   '<div class="loader-i m-auto g-col-full" style="--color:#fff; padding: 20px 0"></div>';
+
+      const videos =
+        myVal.values.data?.props?.pageProps?.thisMovie?.videos ?? {};
+
+      $elements.itemTrueOptionVideos.innerHTML = Object.entries(videos)
         .map((data) => {
           let show = true;
 
@@ -790,18 +667,41 @@ var peliculaId = () => {
             .join("");
         })
         .join("");
-    });
+    }
+
+    if (input) {
+      // myVal.values.episode = input.dataset.episode;
+
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "toggle-history-view",
+        episode: input.dataset.episode,
+        datetime: Date.now(),
+        data_id: myVal.values.data_id,
+        type: 1,
+        action: input.checked ? 1 : 0,
+      });
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "GET",
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.status) {
+            input.checked = data.type == 1;
+          }
+        });
+    }
   });
 
-  $elements.favorite.addEventListener("click", () => {
-    // if (!myVal.values.isConnected) {
-    //   return (location.hash = "#/login");
-    // }
-    myVal.signals.favorite.value = !myVal.signals.favorite.value;
+  myApp.events($elements.favorite, "click", () => {
+    myVal.signals.isFavorite.value = !myVal.signals.isFavorite.value;
 
     const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-favorites",
-      data_id: myVal.values.thisMovie.TMDbId,
+      data_id: myVal.values.data_id,
       type: 2,
       action: $elements.favorite.dataset.action,
     });
@@ -820,21 +720,15 @@ var peliculaId = () => {
         }
 
         if (data?.status) {
-          myVal.signals.favorite.value = data.type == 1;
+          myVal.signals.isFavorite.value = data.type == 1;
         }
       });
   });
 
-  $elements.inputView.addEventListener("change", () => {
-    // if (!myVal.values.isConnected) {
-    //   return (location.hash = "#/login");
-    // }
-
-    // myVal.signals.view.value = !myVal.signals.view.value;
-
+  myApp.events($elements.inputView, "change", () => {
     const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-views",
-      data_id: myVal.values.thisMovie.TMDbId,
+      data_id: myVal.values.data_id,
       type: 2,
       action: $elements.inputView.checked ? 1 : 0,
     });
@@ -853,17 +747,19 @@ var peliculaId = () => {
         }
 
         if (data?.status) {
-          $elements.inputView.checked = data.type == 1;
+          myVal.signals.isView.value = data.type == 1;
         }
       });
   });
 
-  $elements.itemTrueOptionVideos.addEventListener("click", (e) => {
+  myApp.events($elements.itemTrueOptionVideos, "click", (e) => {
     const button = e.target.closest("button");
     if (button) {
       $elements.itemTrueOption.hidePopover();
-
       $elements.loaderVideo.style.display = "";
+
+      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
+
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
         setTimeout(() => {
           getMediaWeb(url, (res) => {
@@ -876,38 +772,21 @@ var peliculaId = () => {
           });
         });
       });
-
-      // myApp.mediaPlayer.element().requestFullscreen();
-      // myVal.functions.updateHistoryVideo();
-
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: $elements.textTitle.textContent,
-          artist: $elements.genres.textContent,
-          album: "Pelicula",
-          artwork: [
-            {
-              src: $elements.poster.src,
-              sizes: "512x512",
-              type: "image/png",
-            },
-          ],
-        });
-      }
     }
   });
 
-  $elements.itemTrueOption.addEventListener("click", (e) => {
+  myApp.events($elements.itemTrueOption, "click", (e) => {
     if (e.target === e.currentTarget) {
       $elements.itemTrueOption.hidePopover();
     }
   });
 
-  $elements["form-filter-type"].addEventListener("change", () => {
+  myApp.events($elements["form-filter-type"], "change", () => {
     const value = $elements["form-filter-type"].key.value;
 
     const elements = {
       information: $elements.itemTrueInformation,
+      chapter: $elements.itemTrueChapter,
       similar: $elements.itemTrueSimilar,
     };
 
@@ -916,344 +795,163 @@ var peliculaId = () => {
     });
   });
 
-  myApp.elements.meta.color.setAttribute("content", "#000000");
-  myVal.functions.dataTrue();
-
-  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
-
-  mrf.callbackTryCatch(() => {
-    Android.colorSystemBar("#000000");
+  myApp.events($elements.selectSeason, "change", () => {
+    myVal.set.dataTrueEpisodes($elements.selectSeason.value);
   });
 
-  return $element;
-};
+  myApp.events($elements.buttonSeasonOrder, "click", () => {
+    $elements.episodes.append(
+      ...Array.from($elements.episodes.children).reverse()
+    );
+  });
 
-var serieId = () => {
-  const mrc = window.MyResourceClass;
-  const mrf = window.MyResourceFunction;
-  const svg = window.iconSVG;
-
-  const myApp = window.dataApp;
-  const myVal = {
-    params: myApp.routes.params(),
-    functions: {},
-    signals: {
-      isFavorite: mrf.observeValue(false),
-      isView: mrf.observeValue(false),
-      episodes: mrf.observeValue([]),
-    },
-    values: {
-      dataInfo: null,
-      isConnected: false,
-      observes: [],
-      streaming: {},
-      episode: -1,
-      data_id: "",
-      data: null,
-      thisSerie: {},
-    },
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      ApiWebCuevana.peliculaId(myVal.params.id).then((data) => {
+        resolve(data);
+      });
+    });
   };
 
-  const $element = mrf.createNodeElement(`
-    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
-        <header class="header_K0hs3I0 header_XpmKRuK header_RtX3J1X">
+  myVal.set.dataTrue = (data) => {
+    const thisMovie = data.props.pageProps.thisMovie;
+    const fromSecondsToTime = mrf.fromSecondsToTime(thisMovie.runtime * 60);
 
-            <div class="div_uNg74XS">
-                <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${svg("fi fi-rr-angle-small-left")}
-                </a>
-            </div>
-            <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
-            <div class="div_x0cH0Hq">
-                <button id="favorite" class="button_lvV6qZu" data-action="0">
-                  ${svg("fi fi-rr-heart")}
-                </button>
-            </div>
-
-        </header>
-
-        <div id="item" class="div_guZ6yID div_DtSQApy" >
-            <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
-            <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${svg("fi fi-rr-search-alt")}
-                <h3>La pelicula no existe</h3>
-            </div>
-            <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
-
-                <div class="div_cnJqhFl">
-                  <div class="div_0JOSFlg">
-                    <img id="poster" src="">
-                  </div>
-                  <div class="div_cxFXOaL">
-                    <label class="label_zjZIMnZ">
-                      <input type="checkbox" id="inputView">
-                      <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
-                    </label>
-                    <button id="play" class="button_bDfhQ4b" style="display:none">
-                      <small>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-sr-play"><path d="M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z"></path></svg>
-                      </small>
-                      <span>Reproducir</span>
-                    </button>
-                  </div>
-                </div>
-
-                <hr class="hr_nTfcjTI">
-                <div class="div_BIchAsC">
-
-                    <form class="app-form-label-checkbox" id="form-filter-type">
-                      <label>
-                        <input type="radio" name="key" value="information" checked>
-                        <span>Detalles</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="key" value="chapter">
-                        <span>Capitulos</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="key" value="similar">
-                        <span>Otros</span>
-                      </label>
-                    </form>
-                      
-                </div>
-                <hr class="hr_nTfcjTI">
-
-                <div id="itemTrueInformation" class="div_cnJqhFl" >
-                  <div class="div_aSwP0zW">
-                      <span id="genres"></span>
-                      <span id="duration"></span>
-                      <span id="date"></span>
-                  </div>
-                  <p id="overview" style="font-size:14px"></p>
-                </div>
-
-                <div id="itemTrueChapter" class="div_rJOqfX3" style="display:none">
-                    <div class="div_mu7pmfs">
-                      <div class="div_xesi90n">
-                        <select id="selectSeason">
-                          <option>Temporada 1</option>
-                        </select>
-                        <button id="buttonSeasonOrder">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-sort-alt"><path d="M11.293,17.707l-3.293,3.293V1c0-.553-.447-1-1-1s-1,.447-1,1V21l-3.293-3.293c-.391-.391-1.023-.391-1.414,0s-.391,1.023,0,1.414l4.293,4.293c.39,.39,.902,.585,1.414,.585s1.024-.195,1.414-.585l4.293-4.293c.391-.391,.391-1.023,0-1.414s-1.023-.391-1.414,0ZM22.707,6.293c.391-.391,.391-1.023,0-1.414L18.414,.586C18.024,.196,17.512,0,17,0s-1.024,.195-1.414,.585l-4.293,4.293c-.391,.391-.391,1.023,0,1.414s1.023,.391,1.414,0l3.293-3.293V23c0,.553,.447,1,1,1s1-.447,1-1V3l3.293,3.293c.391,.391,1.023,.391,1.414,0Z"></path></svg>
-                        </button>
-                      </div>
-                    </div>
-                    <div id="episodes" class="div_bi3qmqX" data-class="div_2cD7Iqb"></div>
-                </div>
-
-                <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
-                  <div id="similar" class="div_qsNmfP3" style="padding: 0"></div>
-                </div>
-                
-            </div>
-        </div>
-       
-        <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
-            <div class="div_dsb3nhtCrFmUlSN p-10px">
-                <div class="div_cXaADrL pointer-on">
-                    <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="loaderVideo" class="div_uzuovb5" style="display:none">
-        
-          <div class="div_x8birmo">
-            <div class="loader-i" style="--color:var(--app-color-letter)"></div>
-            <span>cargando...</span>
-          </div>
-
-        </div>
-    </div>
-`);
-
-  const $elements = mrf.createObjectElement(
-    $element.querySelectorAll("[id]"),
-    "id",
-    true
-  );
-
-  myVal.signals.isFavorite.observe((boolean) => {
-    $elements.favorite.innerHTML = svg(
-      boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
-    );
-  });
-
-  myVal.signals.isView.observe((boolean) => {
-    $elements.inputView.checked = boolean;
-  });
-
-  myVal.functions.dataRenderTrue = (data) => {
-    const thisSerie = data.props.pageProps.thisSerie;
-
-    $elements.poster.src = myApp.url.img(
-      thisSerie.images.poster.replace("/original/", "/w342/")
-    );
-
-    $elements.title.textContent = thisSerie.titles.name;
-    $elements.overview.textContent = thisSerie.overview;
-    $elements.genres.textContent = thisSerie.genres
-      .map((genre) => genre.name)
-      .join(", ");
-    $elements.duration.textContent = `${
-      thisSerie.seasons.at(-1).number
-    } temporadas`;
-    $elements.date.textContent = new Date(thisSerie.releaseDate).getFullYear();
-
-    const seasons = thisSerie.seasons.filter(
-      (season) => season.episodes.length
-    );
-
-    const objectMovies = Object.values(data.props.pageProps)
-      .filter((value) => Array.isArray(value))
-      .flat()
-      .reduce((prev, curr) => {
-        if (!prev[curr.TMDbId] && curr.TMDbId != data.TMDbId) {
-          prev[curr.TMDbId] = curr;
-        }
-
-        return prev;
-      }, {});
-
-    $elements.similar.innerHTML = Object.values(objectMovies)
-      .map((data) => {
-        const type =
-          data.url.slug.split("/")[0] == "movies" ? "pelicula" : "serie";
-
-        if (data.images.poster == null) {
-          return '<div style="display:none"></div>';
-        }
-        const url = data.images.poster.replace("/original/", "/w185/");
-
-        return `
-          <a
-            href="#/${type}/${data.TMDbId}"
-            class="div_SQpqup7"
-            data-item>
-              <div class="div_fMC1uk6">
-                <img src="${url}" alt="">
-                <span>${type}</span>
-              </div>
-              <div class="div_9nWIRZE">
-                <p>${data.titles.name}</p>
-              </div>
-          </a>
-        `;
-      })
-      .join("");
-
-    $elements.selectSeason.innerHTML = seasons
-      .map((season, index) => {
-        return `
-          <option value="${index}">Temporada ${season.number}</option>
-        `;
-      })
-      .join("");
-
-    myVal.functions.renderSeason();
-
-    mrc.MyImage.canvas($elements.poster.src).then((result) => {
-      const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
-      const r = pixelData[0];
-      const g = pixelData[1];
-      const b = pixelData[2];
-
-      const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
-
-      $elements.itemTrueOptionVideos.parentElement.style.background =
-        mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
-
-      myApp.elements.meta.color.setAttribute("content", color);
-      $element.style.background = color;
-
-      Android.colorSystemBar(color);
-    });
-
-    myVal.functions.dataTrueInfo(thisSerie);
+    myVal.values.data = data;
+    myVal.values.data_id = thisMovie.TMDbId;
 
     $elements.itemNull.style.display = "none";
     $elements.itemTrue.style.display = "";
-  };
 
-  myVal.functions.dataTrueInfo = (data) => {
-    myVal.values.data_id = data.TMDbId;
+    $elements.poster.onload = () => {
+      $elements.poster.style.display = "";
 
-    const encodeQueryString = mrf.encodeQueryObject({
-      route: "favorites-one",
-      data_id: data.TMDbId,
-      type: 3,
-    });
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
+        const r = pixelData[0];
+        const g = pixelData[1];
+        const b = pixelData[2];
 
-    const body = {
-      data_id: data.TMDbId,
-      data_json: JSON.stringify(
-        Object.entries(data).reduce((prev, curr) => {
-          if (["TMDbId", "titles", "url", "images"].includes(curr[0])) {
-            prev[curr[0]] = curr[1];
-          }
-          return prev;
-        }, {})
-      ),
-      type: 3,
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
+
+        $elements.itemTrueOptionVideos.parentElement.style.background =
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
+
+        myApp.elements.meta.color.setAttribute("content", color);
+        $element.style.background = color;
+
+        Android.colorSystemBar(color);
+      });
     };
 
-    fetch(
-      myApp.url.server(`/api.php?${encodeQueryString}`),
-      myApp.fetchOptions({
-        method: "POST",
-        body: JSON.stringify(body),
-      })
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        myVal.values.streaming = data;
-        $elements.favorite.style.visibility = "";
-        myVal.values.isConnected = Boolean(data);
+    // renderInfo
+    mrf.callbackTryCatch(() => {
+      $elements.poster.src = myApp.url.img(
+        thisMovie.images.poster.replace("/original/", "/w342/")
+      );
 
-        if (myVal.values.isConnected) {
-          myVal.signals.isFavorite.value = Boolean(data?.favorite);
-          myVal.signals.isView.value = Boolean(data?.view);
+      $elements.title.textContent = thisMovie.titles.name;
+      $elements.overview.textContent = thisMovie.overview;
+      $elements.genres.textContent = thisMovie.genres
+        .map((genre) => genre.name)
+        .join(", ");
 
-          myVal.functions.renderSeason();
-        }
-      });
+      $elements.duration.textContent = `${fromSecondsToTime.hours}h ${fromSecondsToTime.minutes}min`;
+      $elements.date.textContent = new Date(
+        thisMovie.releaseDate
+      ).getFullYear();
+    });
+
+    // renderSeason
+    mrf.callbackTryCatch(() => {
+      $elements.selectSeason.parentElement.style.display = "none";
+      $elements.selectSeason.innerHTML = `<option value="1-1">Temporada 1</option>`;
+
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+    });
+
+    // renderSimiliar
+    mrf.callbackTryCatch(() => {
+      return;
+    });
+
+    myVal.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
   };
 
-  myVal.functions.renderSeason = (index = 0) => {
-    const seasons = myVal.values.thisSerie.seasons.filter(
-      (season) => season.episodes.length
-    );
+  myVal.get.dataTrueInfo = () => {
+    return new Promise((resolve, reject) => {
+      const data = myVal.values.data.props.pageProps.thisMovie;
+      const data_id = myVal.values.data_id;
 
-    const episodes = seasons[index].episodes;
-    const season = seasons[index].number;
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "favorites-one",
+        type: 2,
+        data_id,
+      });
 
-    const array = episodes;
+      const body = {
+        data_id: data_id,
+        data_json: JSON.stringify(
+          Object.entries(data).reduce((prev, curr) => {
+            if (["TMDbId", "titles", "url", "images"].includes(curr[0])) {
+              prev[curr[0]] = curr[1];
+            }
+            return prev;
+          }, {})
+        ),
+        type: 2,
+      };
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "POST",
+          body: JSON.stringify(body),
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrueInfo = (data) => {
+    myVal.values.streaming = data;
+    $elements.favorite.style.visibility = "";
+    myVal.values.isConnected = Boolean(data);
+
+    if (myVal.values.isConnected) {
+      myVal.signals.isFavorite.value = Boolean(data?.favorite);
+      myVal.signals.isView.value = Boolean(data?.view);
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+    }
+  };
+
+  myVal.set.dataTrueEpisodes = (string = "") => {
+    const [from, to] = string.split("-").map(Number);
+    const array = Array(to - from + 1)
+      .fill()
+      .map((_, i) => i + from);
 
     $elements.episodes.innerHTML = array
       .map((episode) => {
-        const episodeInfo =
-          myVal.values.streaming?.episodes?.[`${season}-${episode.number}`];
-
-        const dataData = mrc.EncodeTemplateString.toInput(
-          JSON.stringify(episode)
-        );
+        const episodeInfo = myVal.values.streaming?.episodes?.[episode];
 
         const checked = episodeInfo != undefined ? "checked" : "";
+
         const displayInput = myVal.values.isConnected ? "" : "display:none";
 
         return `
-          <div data-episode="${episode.number}" class="div_eGwK6I1">
+          <div data-episode="${episode}" class="div_eGwK6I1">
             <button 
-            class="button_fk0VHgU" 
-              data-data="${dataData}" 
-              data-season="${season}"
-              data-episode="${episode.number}"
+              class="button_fk0VHgU" 
+              data-slug="${myVal.params.id}-${episode}" 
+              data-title="${myVal.params.id}" 
+              data-description="episodio ${episode}" 
+              data-episode="${episode}"
               data-item>
-                <span>
-                  T${season.toString().padStart(2, "0")} 
-                  E${episode.number.toString().padStart(2, "0")}
-                </span>
+                <span>Episodio ${episode}</span>
                 <small>
                   ${
                     parseInt(episodeInfo?.time_view)
@@ -1272,44 +970,200 @@ var serieId = () => {
                 </small>
             </button>
             <label class="label_zjZIMnZ" style="${displayInput}">
-              <input type="checkbox" 
-                data-season="${season}" 
-                data-episode="${episode.number}" ${checked}>
+              <input type="checkbox" data-episode="${episode}" ${checked}>
               <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
             </label>
           </div>
         `;
       })
       .join("");
+  };
 
-    if (!episodes.length) {
-      $elements.episodes.innerHTML = `
-        <div class="div_Qm4cPUn">
-          <div id="itemFalse" class="div_b14S3dH">
-            ${svg("fi fi-rr-search-alt")}
-            <h3>No hay capitulos</h3>
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
+
+  mrf.callbackTryCatch(() => {
+    Android.colorSystemBar("#000000");
+  });
+
+  $elements.itemNull.style.display = "none";
+  $elements.itemTrue.style.display = "";
+
+  return $element;
+};
+
+var serieId = () => {
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+    signals: {
+      isFavorite: mrf.observeValue(false),
+      isView: mrf.observeValue(false),
+      episodes: mrf.observeValue([]),
+    },
+    functions: {},
+    values: {
+      video: null,
+      isConnected: false,
+      streaming: {},
+      episode: -1,
+      data_id: "",
+      data: null,
+      thisAnime: {},
+    },
+    url: {
+      fetch: (url) => {
+        return `https://fetch.vniox.com/get.php?url=${encodeURIComponent(url)}`;
+      },
+    },
+    get: {},
+    set: {},
+  };
+
+  const $element = mrf.createNodeElement(`
+    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
+
+          <header class="header_K0hs3I0 header_RtX3J1X">
+
+              <div class="div_uNg74XS">
+                  <a href="#" class="button_lvV6qZu" data-history-back>
+                    ${svg("fi fi-rr-angle-small-left")}
+                  </a>
+              </div>
+
+              <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
+
+              <div class="div_x0cH0Hq">
+                  <button id="favorite" class="button_lvV6qZu">
+                    ${svg("fi fi-rr-heart")}
+                  </button>
+              </div>
+
+          </header>
+
+          <div class="div_guZ6yID div_DtSQApy">
+              <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <div id="itemFalse" class="div_b14S3dH" style="display:none">
+                  ${svg("fi fi-rr-search-alt")}
+                  <h3>La pelicula no existe</h3>
+              </div>
+
+              <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
+
+                  <div class="div_cnJqhFl">
+                    <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
+                      <img id="poster" src="" style="display:none">
+                    </div>
+                    <div class="div_cxFXOaL">
+                      <label class="label_zjZIMnZ">
+                        <input type="checkbox" id="inputView">
+                        <span style="display:flex">
+                          ${svg("fi fi-rr-check")}
+                        </span>
+                      </label>
+                      <button id="play" class="button_bDfhQ4b" style="display:none">
+                        <small></small>
+                        <span>Play</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <hr class="hr_nTfcjTI">
+                  <div class="div_BIchAsC">
+
+                      <form class="app-form-label-checkbox" id="form-filter-type">
+                        <label>
+                          <input type="radio" name="key" value="information" checked>
+                          <span>Detalles</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="chapter">
+                          <span>Capitulos</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="similar">
+                          <span>Otros</span>
+                        </label>
+                      </form>
+                        
+                  </div>
+                  <hr class="hr_nTfcjTI">
+
+                  <div id="itemTrueInformation" class="div_cnJqhFl" >
+                    <div class="div_aSwP0zW">
+                        <span id="nextEpisode"></span>
+                        <span id="genres"></span>
+                        <span id="duration"></span>
+                        <span id="date"></span>
+                    </div>
+                    <p id="overview" style="font-size:14px"></p>
+                  </div>
+
+                  <div id="itemTrueChapter" class="div_692wB8" style="display:none">
+                      <div class="div_mu7pmfs" style="display: flex; justify-content: space-between;">
+                        <div class="div_xesi90n">
+                          <select id="selectSeason" style="padding-right:10px">
+                            <option>Temporada 1</option>
+                          </select>  
+                        </div>
+
+                        <div class="div_xesi90n">
+                          <button id="buttonSeasonOrder">
+                            ${svg("fi fi-rr-sort-alt")}
+                          </button>
+                        </div>
+                      </div>
+                      <div id="episodes" class="div_bi3qmqX"></div>
+                  </div>
+
+                  <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
+                    <div id="similar" class="div_qsNmfP3" style="padding: 0"></div>
+                  </div>
+
+              </div>
           </div>
-        </div>
-      `;
-    }
-  };
 
-  myVal.functions.dataTrue = () => {
-    ApiWebCuevana.serieId(myVal.params.id).then((data) => {
-      myVal.values.data = data;
-      myVal.values.thisSerie = data.props.pageProps.thisSerie;
+          <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
+              <div class="div_dsb3nhtCrFmUlSN p-10px">
+                  <div class="div_cXaADrL pointer-on">
+                      <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
+                  </div>
+              </div>
+          </div>
 
-      myVal.functions.dataRenderTrue(data);
-    });
-  };
+          <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+            <div class="div_x8birmo">
+              <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <span>cargando...</span>
+            </div>
 
-  myVal.functions.unobserve = () => {
-    for (const observe of myVal.values.observes) {
-      myApp.instances.IntersectionObserver.unobserve(observe);
-    }
+          </div>
+      </div>
+  `);
 
-    myVal.values.observes = [];
-  };
+  const $elements = mrf.createObjectElement(
+    $element.querySelectorAll("[id]"),
+    "id",
+    true
+  );
+
+  myVal.signals.isFavorite.observe((boolean) => {
+    $elements.favorite.innerHTML = svg(
+      boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
+    );
+
+    $elements.favorite.setAttribute("data-action", boolean ? 1 : 0);
+  });
+
+  myVal.signals.isView.observe((boolean) => {
+    $elements.inputView.checked = boolean;
+  });
 
   myVal.functions.updateHistory = (currentTime, duration = 0) => {
     if (myVal.values.isConnected) {
@@ -1320,7 +1174,7 @@ var serieId = () => {
         time_duration: duration,
         datetime: Date.now(),
         data_id: myVal.values.data_id,
-        type: 3,
+        type: 1,
       });
 
       fetch(
@@ -1328,15 +1182,7 @@ var serieId = () => {
         myApp.fetchOptions({
           method: "GET",
         })
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          if (data?.status) {
-            if (document.body.contains($element)) {
-              myVal.functions.dataTrueInfo(myVal.values.thisSerie);
-            }
-          }
-        });
+      );
     }
   };
 
@@ -1363,7 +1209,7 @@ var serieId = () => {
         if (status) {
           const num = Math.floor(e.target.currentTime);
 
-          if (num > 0 && num % 15 == 0 && !times[num]) {
+          if (num > 0 && num % 30 == 0 && !times[num]) {
             times[num] = true;
             myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
           }
@@ -1385,26 +1231,18 @@ var serieId = () => {
     });
   };
 
-  $elements.selectSeason.addEventListener("change", () => {
-    myVal.functions.renderSeason($elements.selectSeason.value);
-  });
-
-  $elements.buttonSeasonOrder.addEventListener("click", () => {
-    $elements.episodes.append(
-      ...Array.from($elements.episodes.children).reverse()
-    );
-  });
-
-  $elements.episodes.addEventListener("click", (e) => {
+  myApp.events($elements.episodes, "click", (e) => {
     const item = e.target.closest("[data-item]");
     const input = e.target.closest("input");
 
     if (item) {
       $elements.itemTrueOption.showPopover();
+
       $elements.itemTrueOptionVideos.setAttribute(
         "data-episode",
-        `${item.dataset.season}-${item.dataset.episode}`
+        item.dataset.episode
       );
+
       $elements.itemTrueOptionVideos.innerHTML =
         '<div class="loader-i m-auto g-col-full" style="--color:#fff; padding: 20px 0"></div>';
 
@@ -1412,10 +1250,10 @@ var serieId = () => {
         myVal.params.id,
         item.getAttribute("data-season"),
         item.getAttribute("data-episode")
-      ).then((response) => {
-        myVal.values.dataInfo = response;
+      ).then((result) => {
+        myVal.values.dataInfo = result;
         $elements.itemTrueOptionVideos.innerHTML = Object.entries(
-          response.props.pageProps.episode.videos
+          result.props.pageProps.episode.videos
         )
           .map((data) => {
             let show = true;
@@ -1429,24 +1267,24 @@ var serieId = () => {
                 show = false;
 
                 return `
-                  <span 
-                    class="span_eNUkEzu" 
-                    style="${visibility}">
-                      ${data[0].slice(0, 3).toUpperCase()}
-                  </span>
-                  <button 
-                    class="button_NuUj5A6" 
-                    data-type="" 
-                    data-url="${video.result}" 
-                    data-quality="">
-                      
-                      <div class="div_Z8bTLpN">
-                          <span>${video.cyberlocker}</span>
-                          <p>${video.quality}</p>
-                      </div>
-                      
-                  </button>
-              `;
+                    <span 
+                      class="span_eNUkEzu" 
+                      style="${visibility}">
+                        ${data[0].slice(0, 3).toUpperCase()}
+                    </span>
+                    <button 
+                      class="button_NuUj5A6" 
+                      data-type="" 
+                      data-url="${video.result}" 
+                      data-quality="">
+                        
+                        <div class="div_Z8bTLpN">
+                            <span>${video.cyberlocker}</span>
+                            <p>${video.quality}</p>
+                        </div>
+                        
+                    </button>
+                `;
               })
               .join("");
           })
@@ -1455,12 +1293,14 @@ var serieId = () => {
     }
 
     if (input) {
+      // myVal.values.episode = input.dataset.episode;
+
       const encodeQueryString = mrf.encodeQueryObject({
         route: "toggle-history-view",
-        episode: `${input.dataset.season}-${input.dataset.episode}`,
+        episode: input.dataset.episode,
         datetime: Date.now(),
         data_id: myVal.values.data_id,
-        type: 3,
+        type: 1,
         action: input.checked ? 1 : 0,
       });
 
@@ -1479,21 +1319,12 @@ var serieId = () => {
     }
   });
 
-  $elements.favorite.addEventListener("click", () => {
-    $elements.favorite.setAttribute(
-      "data-action",
-      $elements.favorite.getAttribute("data-action") != 0 ? 0 : 1
-    );
-
-    // if (!myVal.values.isConnected) {
-    //   return (location.hash = "#/login");
-    // }
-
+  myApp.events($elements.favorite, "click", () => {
     myVal.signals.isFavorite.value = !myVal.signals.isFavorite.value;
 
     const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-favorites",
-      data_id: myVal.values.thisSerie.TMDbId,
+      data_id: myVal.values.data_id,
       type: 3,
       action: $elements.favorite.dataset.action,
     });
@@ -1517,14 +1348,10 @@ var serieId = () => {
       });
   });
 
-  $elements.inputView.addEventListener("click", () => {
-    // if (!myVal.values.isConnected) {
-    //   return (location.hash = "#/login");
-    // }
-
+  myApp.events($elements.inputView, "change", () => {
     const encodeQueryString = mrf.encodeQueryObject({
       route: "toggle-views",
-      data_id: myVal.values.thisSerie.TMDbId,
+      data_id: myVal.values.data_id,
       type: 3,
       action: $elements.inputView.checked ? 1 : 0,
     });
@@ -1543,35 +1370,18 @@ var serieId = () => {
         }
 
         if (data?.status) {
-          $elements.inputView.checked = data.type == 1;
+          myVal.signals.isView.value = data.type == 1;
         }
       });
   });
 
-  $elements.itemTrueOptionVideos.addEventListener("click", (e) => {
+  myApp.events($elements.itemTrueOptionVideos, "click", (e) => {
     const button = e.target.closest("button");
     if (button) {
-      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
-      const [season, episode] = myVal.values.episode.split("-");
-
       $elements.itemTrueOption.hidePopover();
-      // myApp.mediaPlayer.element().requestFullscreen();
-      // myVal.functions.updateHistoryVideo();
-
-      myApp.mediaPlayer.info({
-        title: myVal.values.dataInfo.props.pageProps.episode.title,
-        description: myVal.values.dataInfo.props.pageProps.serie.genres
-          .map((genre) => genre.name)
-          .join(", "),
-      });
-
-      myApp.mediaPlayer.controls({
-        options: {
-          not: ["download"],
-        },
-      });
-
       $elements.loaderVideo.style.display = "";
+
+      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
 
       ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
         setTimeout(() => {
@@ -1586,30 +1396,31 @@ var serieId = () => {
         });
       });
 
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: $elements.title.textContent,
-          artist: `T${season.padStart(2, "0")} E${episode.padStart(2, "0")}`,
-          album: "Serie",
-          artwork: [
-            {
-              src: $elements.poster.src,
-              sizes: "512x512",
-              type: "image/png",
-            },
-          ],
-        });
-      }
+      // setTimeout(() => {
+      //   getMediaWeb(button.getAttribute("data-url"), (res) => {
+      //     $elements.loaderVideo.style.display = "none";
+      //     if (res.status) {
+      //       Android.openWithDefault(res.url, "video/*");
+      //     } else {
+      //       alert("El video no esta disponible");
+      //     }
+      //   });
+      // });
+
+      // myApp.mediaPlayer.element().requestFullscreen();
+      // myVal.functions.updateHistoryVideo();
+
+      return;
     }
   });
 
-  $elements.itemTrueOption.addEventListener("click", (e) => {
+  myApp.events($elements.itemTrueOption, "click", (e) => {
     if (e.target === e.currentTarget) {
       $elements.itemTrueOption.hidePopover();
     }
   });
 
-  $elements["form-filter-type"].addEventListener("change", () => {
+  myApp.events($elements["form-filter-type"], "change", () => {
     const value = $elements["form-filter-type"].key.value;
 
     const elements = {
@@ -1623,23 +1434,234 @@ var serieId = () => {
     });
   });
 
-  addEventListener(
-    "hashchange",
-    () => {
-      myVal.functions.unobserve();
-    },
-    { once: true }
-  );
-
-  myApp.elements.meta.color.setAttribute("content", "#000000");
-  myVal.functions.dataTrue();
-
-  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
-
-  mrf.callbackTryCatch(() => {
-    Android.colorSystemBar("#000000");
+  myApp.events($elements.selectSeason, "change", () => {
+    myVal.set.dataTrueEpisodes($elements.selectSeason.value);
   });
 
+  myApp.events($elements.buttonSeasonOrder, "click", () => {
+    const svg = $elements.buttonSeasonOrder.children[0];
+    svg.classList.add("transition-rotate");
+    svg.classList.toggle("active");
+
+    $elements.episodes.append(
+      ...Array.from($elements.episodes.children).reverse()
+    );
+  });
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      ApiWebCuevana.serieId(myVal.params.id).then((data) => {
+        resolve(data);
+      });
+    });
+  };
+
+  myVal.set.dataTrue = (data) => {
+    const thisSerie = data.props.pageProps.thisSerie;
+
+    myVal.values.data = data;
+    myVal.values.data_id = thisSerie.TMDbId;
+
+    $elements.itemNull.style.display = "none";
+    $elements.itemTrue.style.display = "";
+
+    $elements.poster.onload = () => {
+      $elements.poster.style.display = "";
+
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
+        const r = pixelData[0];
+        const g = pixelData[1];
+        const b = pixelData[2];
+
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
+
+        $elements.itemTrueOptionVideos.parentElement.style.background =
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
+
+        myApp.elements.meta.color.setAttribute("content", color);
+        $element.style.background = color;
+
+        Android.colorSystemBar(color);
+      });
+    };
+
+    // renderInfo
+    mrf.callbackTryCatch(() => {
+      $elements.poster.src = myApp.url.img(
+        thisSerie.images.poster.replace("/original/", "/w342/")
+      );
+
+      $elements.title.textContent = thisSerie.titles.name;
+      $elements.overview.textContent = thisSerie.overview;
+      $elements.genres.textContent = thisSerie.genres
+        .map((genre) => genre.name)
+        .join(", ");
+
+      $elements.duration.textContent = `${
+        thisSerie.seasons.at(-1).number
+      } temporadas`;
+
+      $elements.date.textContent = new Date(
+        thisSerie.releaseDate
+      ).getFullYear();
+    });
+
+    // renderSeason
+    mrf.callbackTryCatch(() => {
+      const seasons = thisSerie.seasons.filter(
+        (season) => season.episodes.length
+      );
+
+      $elements.selectSeason.innerHTML = seasons
+        .map((season) => {
+          const value = `1-${season.episodes.length}-${season.number}`;
+
+          return `
+            <option value="${value}">Temporada ${season.number}</option>
+          `;
+        })
+        .join("");
+
+      if ($elements.selectSeason.children.length == 1) {
+        $elements.selectSeason.parentElement.style.pointerEvents = "none";
+        $elements.selectSeason.parentElement.style.opacity = ".7";
+      }
+
+      if (
+        $elements.selectSeason.children.length == 1 &&
+        $elements.selectSeason.value == "1-1"
+      ) {
+        $elements.selectSeason.parentElement.style.display = "none";
+      }
+
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+    });
+
+    // renderSimiliar
+    mrf.callbackTryCatch(() => {
+      return;
+    });
+
+    myVal.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
+  };
+
+  myVal.get.dataTrueInfo = (data) => {
+    return new Promise((resolve, reject) => {
+      const data = myVal.values.data.props.pageProps.thisSerie;
+      const data_id = myVal.values.data_id;
+
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "favorites-one",
+        type: 3,
+        data_id,
+      });
+
+      const body = {
+        data_id: data_id,
+        data_json: JSON.stringify(
+          Object.entries(data).reduce((prev, curr) => {
+            if (["TMDbId", "titles", "url", "images"].includes(curr[0])) {
+              prev[curr[0]] = curr[1];
+            }
+            return prev;
+          }, {})
+        ),
+        type: 3,
+      };
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "POST",
+          body: JSON.stringify(body),
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrueInfo = (data) => {
+    myVal.values.streaming = data;
+    $elements.favorite.style.visibility = "";
+    myVal.values.isConnected = Boolean(data);
+
+    if (myVal.values.isConnected) {
+      myVal.signals.isFavorite.value = Boolean(data?.favorite);
+      myVal.signals.isView.value = Boolean(data?.view);
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+    }
+  };
+
+  myVal.set.dataTrueEpisodes = (string = "") => {
+    const [from, to, season] = string.split("-").map(Number);
+    const array = Array(to - from + 1)
+      .fill()
+      .map((_, i) => i + from);
+
+    $elements.episodes.innerHTML = array
+      .map((episode) => {
+        const episodeInfo = myVal.values.streaming?.episodes?.[episode];
+
+        const checked = episodeInfo != undefined ? "checked" : "";
+
+        const displayInput = myVal.values.isConnected ? "" : "display:none";
+
+        return `
+          <div data-episode="${episode}" class="div_eGwK6I1">
+            <button 
+              class="button_fk0VHgU" 
+              data-slug="${myVal.params.id}-${episode}" 
+              data-title="${myVal.params.id}" 
+              data-description="episodio ${episode}" 
+              data-season="${season}"
+              data-episode="${episode}"
+              data-item>
+                <span>Episodio ${episode}</span>
+                <small>
+                  ${
+                    parseInt(episodeInfo?.time_view)
+                      ? "visto ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_view)
+                        )
+                      : ""
+                  }
+                  ${
+                    parseInt(episodeInfo?.time_duration)
+                      ? "de ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_duration)
+                        )
+                      : ""
+                  }
+                </small>
+            </button>
+            <label class="label_zjZIMnZ" style="${displayInput}">
+              <input type="checkbox" data-episode="${episode}" ${checked}>
+              <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
+            </label>
+          </div>
+        `;
+      })
+      .join("");
+
+    $elements.buttonSeasonOrder.parentElement.style.display =
+      array.length > 1 ? "" : "none";
+
+    $elements.buttonSeasonOrder.children[0].classList.toggle("active", false);
+  };
+
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
+
+  // mrf.callbackTryCatch(() => {
+  //   Android.colorSystemBar("#000000");
+  // });
+
+  $elements.itemNull.style.display = "none";
+  $elements.itemTrue.style.display = "";
   return $element;
 };
 
@@ -1706,19 +1728,19 @@ var animeId = () => {
               <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
 
                   <div class="div_cnJqhFl">
-                    <div class="div_0JOSFlg">
-                      <img id="poster" src="">
+                    <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
+                      <img id="poster" src="" style="display:none">
                     </div>
                     <div class="div_cxFXOaL">
                       <label class="label_zjZIMnZ">
                         <input type="checkbox" id="inputView">
-                        <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
+                        <span style="display:flex">
+                          ${svg("fi fi-rr-check")}
+                        </span>
                       </label>
                       <button id="play" class="button_bDfhQ4b" style="display:none">
-                        <small>
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-sr-play"><path d="M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z"></path></svg>
-                        </small>
-                        <span>Reproducir</span>
+                        <small></small>
+                        <span>Play</span>
                       </button>
                     </div>
                   </div>
@@ -1755,13 +1777,17 @@ var animeId = () => {
                   </div>
 
                   <div id="itemTrueChapter" class="div_692wB8" style="display:none">
-                      <div class="div_mu7pmfs">
+                      <div class="div_mu7pmfs" style="display: flex; justify-content: space-between;">
+
                         <div class="div_xesi90n">
-                          <select id="selectSeason">
+                          <select id="selectSeason" style="padding-right:10px">
                             <option>Temporada 1</option>
-                          </select>
+                          </select>  
+                        </div>
+
+                        <div class="div_xesi90n">
                           <button id="buttonSeasonOrder">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-sort-alt"><path d="M11.293,17.707l-3.293,3.293V1c0-.553-.447-1-1-1s-1,.447-1,1V21l-3.293-3.293c-.391-.391-1.023-.391-1.414,0s-.391,1.023,0,1.414l4.293,4.293c.39,.39,.902,.585,1.414,.585s1.024-.195,1.414-.585l4.293-4.293c.391-.391,.391-1.023,0-1.414s-1.023-.391-1.414,0ZM22.707,6.293c.391-.391,.391-1.023,0-1.414L18.414,.586C18.024,.196,17.512,0,17,0s-1.024,.195-1.414,.585l-4.293,4.293c-.391,.391-.391,1.023,0,1.414s1.023,.391,1.414,0l3.293-3.293V23c0,.553,.447,1,1,1s1-.447,1-1V3l3.293,3.293c.391,.391,1.023,.391,1.414,0Z"></path></svg>
+                            ${svg("fi fi-rr-sort-alt")}
                           </button>
                         </div>
                       </div>
@@ -1811,82 +1837,6 @@ var animeId = () => {
   myVal.signals.isView.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
-
-  // myVal.functions.dataRenderTrue = (data) => {
-  //   const episode_length = data.episodes;
-
-  //   $elements.poster.src = myApp.url.img(data.poster);
-  //   $elements.title.textContent = data.title;
-  //   $elements.overview.textContent = data.overview;
-
-  //   $elements.genres.textContent = data.genres.map((genre) => genre).join(", ");
-  //   $elements.duration.textContent = `${episode_length} episodios`;
-  //   $elements.date.textContent = data.status;
-  //   $elements.nextEpisode.innerHTML = data.nextEpisode
-  //     ? `(nuevo episodio el <b>${data.nextEpisode}<b>)`
-  //     : "";
-
-  //   $elements.selectSeason.innerHTML = Array(
-  //     Math.floor(episode_length / 50) + 1
-  //   )
-  //     .fill(null)
-  //     .map((_, index, array) => {
-  //       const end =
-  //         array[index + 1] !== undefined ? index * 50 + 50 : episode_length;
-  //       const start = index * 50 + 1;
-  //       return `
-  //           <option value="${start}-${end || 50}">
-  //             ${start} - ${end || 50}
-  //           </option>
-  //         `;
-  //     })
-  //     .join("");
-
-  //   $elements.similar.innerHTML = data.related
-  //     .map((data) => {
-  //       const url = myApp.url.img(data.poster);
-  //       return `
-  //           <a
-  //             href="#/anime/${data.identifier}"
-  //             class="div_SQpqup7" data-item>
-  //               <div class="div_fMC1uk6">
-  //                 <img src="${url}" alt="">
-  //                 <span>${data.type ?? ""}</span>
-  //               </div>
-  //               <div class="div_9nWIRZE">
-  //                 <p>${data.title}</p>
-  //               </div>
-  //           </a>
-  //         `;
-  //     })
-  //     .join("");
-
-  //   myVal.signals.episodes.value = Array(Math.min(50, data.episodes))
-  //     .fill()
-  //     .map((_, i) => i + 1);
-
-  //   mrc.MyImage.canvas($elements.poster.src).then((result) => {
-  //     const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
-  //     const r = pixelData[0];
-  //     const g = pixelData[1];
-  //     const b = pixelData[2];
-
-  //     const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
-
-  //     $elements.itemTrueOptionVideos.parentElement.style.background =
-  //       mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
-
-  //     myApp.elements.meta.color.setAttribute("content", color);
-  //     $element.style.background = color;
-
-  //     Android.colorSystemBar(color);
-  //   });
-
-  //   myVal.functions.dataTrueInfo(data);
-
-  //   $elements.itemNull.style.display = "none";
-  //   $elements.itemTrue.style.display = "";
-  // };
 
   myVal.functions.updateHistory = (currentTime, duration = 0) => {
     if (myVal.values.isConnected) {
@@ -2166,15 +2116,14 @@ var animeId = () => {
   });
 
   myApp.events($elements.selectSeason, "change", () => {
-    const [start, end] = $elements.selectSeason.value
-      .split("-")
-      .map((str) => parseInt(str));
-
-    //myVal.signals.episodes.value = mrc.MyArray.range(start, end);
-    myVal.set.dataTrueEpisodes(mrc.MyArray.range(start, end));
+    myVal.set.dataTrueEpisodes($elements.selectSeason.value);
   });
 
   myApp.events($elements.buttonSeasonOrder, "click", () => {
+    const svg = $elements.buttonSeasonOrder.children[0];
+    svg.classList.add("transition-rotate");
+    svg.classList.toggle("active");
+
     $elements.episodes.append(
       ...Array.from($elements.episodes.children).reverse()
     );
@@ -2192,52 +2141,35 @@ var animeId = () => {
     });
   };
 
-  myVal.get.dataTrueInfo = (data) => {
-    return new Promise((resolve, reject) => {
-      const data_id = parseInt(data.poster.split("/").pop());
-      myVal.values.data_id = data_id;
-
-      const body = {
-        data_id: data_id,
-        data_json: JSON.stringify(
-          Object.entries(data).reduce(
-            (prev, curr) => {
-              if (["identifier", "title", "poster", "type"].includes(curr[0])) {
-                prev[curr[0]] = curr[1];
-              }
-              return prev;
-            },
-            {
-              id: data_id,
-            }
-          )
-        ),
-        type: 1,
-      };
-
-      fetch(
-        myApp.url.server(
-          `/api.php?route=favorites-one&type=1&data_id=${data_id}`
-        ),
-        myApp.fetchOptions({
-          method: "POST",
-          body: JSON.stringify(body),
-        })
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          resolve(data);
-        });
-    });
-  };
-
   myVal.set.dataTrue = (data) => {
     const episodesLength = data.episodes;
 
     myVal.values.data = data;
+    myVal.values.data_id = parseInt(data.poster.split("/").pop());
 
     $elements.itemNull.style.display = "none";
     $elements.itemTrue.style.display = "";
+
+    $elements.poster.onload = () => {
+      $elements.poster.style.display = "";
+
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
+        const r = pixelData[0];
+        const g = pixelData[1];
+        const b = pixelData[2];
+
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
+
+        $elements.itemTrueOptionVideos.parentElement.style.background =
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
+
+        myApp.elements.meta.color.setAttribute("content", color);
+        $element.style.background = color;
+
+        Android.colorSystemBar(color);
+      });
+    };
 
     // renderInfo
     mrf.callbackTryCatch(() => {
@@ -2265,13 +2197,28 @@ var animeId = () => {
           const end =
             array[index + 1] !== undefined ? index * 50 + 50 : episodesLength;
           const start = index * 50 + 1;
+
+          const value = `${start}-${end || 50}`;
+
           return `
-              <option value="${start}-${end || 50}">
-                ${start} - ${end || 50}
-              </option>
-            `;
+            <option value="${value}">${value}</option>
+          `;
         })
         .join("");
+
+      if ($elements.selectSeason.children.length == 1) {
+        $elements.selectSeason.parentElement.style.pointerEvents = "none";
+        $elements.selectSeason.parentElement.style.opacity = ".7";
+      }
+
+      if (
+        $elements.selectSeason.children.length == 1 &&
+        $elements.selectSeason.value == "1-1"
+      ) {
+        $elements.selectSeason.parentElement.style.display = "none";
+      }
+
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
     });
 
     // renderSimiliar
@@ -2296,33 +2243,53 @@ var animeId = () => {
         .join("");
     });
 
-    // renderPosterColor
-    mrf.callbackTryCatch(() => {
-      mrc.MyImage.canvas($elements.poster.src).then((result) => {
-        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
-        const r = pixelData[0];
-        const g = pixelData[1];
-        const b = pixelData[2];
+    myVal.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
+  };
 
-        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
+  myVal.get.dataTrueInfo = (data) => {
+    return new Promise((resolve, reject) => {
+      const data = myVal.values.data;
+      const data_id = myVal.values.data_id;
 
-        $elements.itemTrueOptionVideos.parentElement.style.background =
-          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
+      // const data_id = parseInt(data.poster.split("/").pop());
+      // myVal.values.data_id = data_id;
 
-        myApp.elements.meta.color.setAttribute("content", color);
-        $element.style.background = color;
-
-        Android.colorSystemBar(color);
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "favorites-one",
+        type: 1,
+        data_id,
       });
+
+      const body = {
+        data_id: data_id,
+        data_json: JSON.stringify(
+          Object.entries(data).reduce(
+            (prev, curr) => {
+              if (["identifier", "title", "poster", "type"].includes(curr[0])) {
+                prev[curr[0]] = curr[1];
+              }
+              return prev;
+            },
+            {
+              id: data_id,
+            }
+          )
+        ),
+        type: 1,
+      };
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "POST",
+          body: JSON.stringify(body),
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
     });
-
-    myVal.set.dataTrueEpisodes(
-      Array(Math.min(50, data.episodes))
-        .fill()
-        .map((_, i) => i + 1)
-    );
-
-    mrf.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
   };
 
   myVal.set.dataTrueInfo = (data) => {
@@ -2333,11 +2300,17 @@ var animeId = () => {
     if (myVal.values.isConnected) {
       myVal.signals.isFavorite.value = Boolean(data?.favorite);
       myVal.signals.isView.value = Boolean(data?.view);
-      myVal.set.dataTrueEpisodes(myVal.signals.episodes.value);
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+      
     }
   };
 
-  myVal.set.dataTrueEpisodes = (array) => {
+  myVal.set.dataTrueEpisodes = (string = "") => {
+    const [from, to] = string.split("-").map(Number);
+    const array = Array(to - from + 1)
+      .fill()
+      .map((_, i) => i + from);
+
     $elements.episodes.innerHTML = array
       .map((episode) => {
         const episodeInfo = myVal.values.streaming?.episodes?.[episode];
@@ -2381,16 +2354,27 @@ var animeId = () => {
         `;
       })
       .join("");
+
+    $elements.buttonSeasonOrder.children[0].classList.remove("active");
+    $elements.buttonSeasonOrder.parentElement.style.display =
+      array.length > 1 ? "" : "none";
   };
 
   myApp.functions.historyBack($element.querySelector("[data-history-back]"));
   myApp.elements.meta.color.setAttribute("content", "#000000");
-  myVal.get.dataTrue().then(myVal.set.dataTrue);
+
+  try {
+    myVal.get.dataTrue().then(myVal.set.dataTrue);
+  } catch (error) {
+    alert(error.message);
+  }
 
   mrf.callbackTryCatch(() => {
     Android.colorSystemBar("#000000");
   });
 
+  $elements.itemNull.style.display = "none";
+  $elements.itemTrue.style.display = "";
   return $element;
 };
 
@@ -2592,15 +2576,15 @@ var inicio = () => {
                 <input type="radio" name="key" value="3">
                 <span>Series</span>
               </label>
-              <label>
+              <label style="display:none">
                 <input type="radio" name="key" value="4">
                 <span>Peliculas II</span>
               </label>
-              <label>
+              <label style="display:none">
                 <input type="radio" name="key" value="5">
                 <span>Series II</span>
               </label>
-              <label>
+              <label style="display:none">
                 <input type="radio" name="key" value="6">
                 <span>Canales</span>
               </label>
@@ -2902,7 +2886,7 @@ var inicio = () => {
         const child = itemData({
           href: `#/${type}/${data.TMDbId}`,
           title: data.titles.name,
-          info: type,
+          info: "",
           style: "",
           imgSrc: url,
           intersectionObserver: true,
@@ -3226,7 +3210,9 @@ var searchType = () => {
   });
 
   myVal.functions.dataTrue();
-  setTimeout(() => $elements.form.search.focus());
+  setTimeout(() => {
+    $elements.form.search.focus();
+  });
 
   return $element;
 };
@@ -3267,17 +3253,16 @@ var searchTypeResult = () => {
   };
 
   const $element = mrf.createNodeElement(
-    ((_) => `
-
+    `
       <div class="div_Xu02Xjh">
 
         <header class="header_LOF628f">
 
-            <a href="${_.href}" class="a_33g9UEa">
+            <a id="anchorHref" href="#/search" class="a_33g9UEa">
               <small class="small_rppYggX">
                 ${svg("fi fi-rr-search")}
               </small>
-              <h4>${_.title}</h4>
+              <h4 id="textSearch"></h4>
             </a>
 
         </header>
@@ -3294,15 +3279,15 @@ var searchTypeResult = () => {
                 <input type="radio" name="key" value="2">
                 <span>Peliculas y Series</span>
               </label>
-              <label>
+              <label style="display:none">
                 <input type="radio" name="key" value="4">
                 <span>Peliculas II</span>
               </label>
-              <label>
+              <label style="display:none">
                 <input type="radio" name="key" value="5">
                 <span>Series II</span>
               </label>
-              <label>
+              <label style="display:none">
                 <input type="radio" name="key" value="6">
                 <span>Canales</span>
               </label>
@@ -3325,12 +3310,7 @@ var searchTypeResult = () => {
 
       </div>
 
-  `)({
-      href: ["#", "search", myVal.params.type, myVal.params.result].join("/"),
-      title: decodeURIComponent(myVal.params.result),
-      description: myVal.params.type,
-      hidden: "display:none",
-    })
+    `
   );
 
   const $elements = mrf.createObjectElement(
@@ -3492,9 +3472,6 @@ var searchTypeResult = () => {
   };
 
   myVal.set.dataTruePeliculaSerie = (array) => {
-    const type =
-      $elements["form-filter-type"].key.value == "2" ? "pelicula" : "serie";
-
     $elements.itemTrue.append(
       ...array.map((data) => {
         if (data.images.poster == null) {
@@ -3502,6 +3479,7 @@ var searchTypeResult = () => {
         }
 
         const url = data.images.poster.replace("/original/", "/w185/");
+        const type = data.url.slug.startsWith("movies/") ? "pelicula" : "serie";
 
         const child = itemData({
           href: `#/${type}/${data.TMDbId}`,
@@ -3520,10 +3498,10 @@ var searchTypeResult = () => {
 
     $elements.itemTrueLoad.remove();
 
-    if (array.length == 24) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
+    // if (array.length == 24) {
+    //   $elements.itemTrue.append($elements.itemTrueLoad);
+    //   myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+    // }
   };
 
   myVal.set.dataTrueIptv = (array) => {
@@ -3650,7 +3628,27 @@ var searchTypeResult = () => {
     myVal.signals.dataNull.value = false;
   };
 
-  myVal.get.dataTrue().then(myVal.set.dataTrue);
+  $element.addEventListener("_result", ({ detail }) => {
+    // return;
+    if (detail.result != myVal.params.result) {
+      myVal.params = detail;
+
+      $elements.anchorHref.href = ["#", "search", myVal.params.result].join(
+        "/"
+      );
+
+      $elements.textSearch.textContent = decodeURIComponent(
+        myVal.params.result
+      );
+
+      $elements.itemTrue.innerHTML = "";
+      myVal.signals.dataNull.value = true;
+
+      myVal.get.dataTrue().then(myVal.set.dataTrue);
+    }
+  });
+
+  // myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   return $element;
 };
@@ -4275,7 +4273,7 @@ var login = () => {
 
   const $element = mrf.createNodeElement(`
 
-    <div class="div_Xu02Xjh">
+    <div class="div_Xu02Xjh" style="position:fixed">
 
         <header class="header_K0hs3I0">
 
@@ -4295,43 +4293,32 @@ var login = () => {
               <div class="div_Y85zRC0">
                   <label class="label_ieXcceLhkyD2WGY label_0BFeKpk">
                       <input type="text" name="email" placeholder="">
-                      <span>correo</span>
+                      <span>Correo</span>
+                  </label>
+                  <label class="label_ieXcceLhkyD2WGY label_0BFeKpk">
+                      <input type="password" name="password" placeholder="">
+                      <span>Contraseña</span>
                   </label>
               </div>
+              <a href="#/password-recover" class="a_c305F1l">¿Has olvidado tu contraseña?</a>
               <button id="buttonSubmit" class="button_WU25psx">
-                  <span id="spanLoad">Recibir codigo</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-envelope"><path d="M19,1H5A5.006,5.006,0,0,0,0,6V18a5.006,5.006,0,0,0,5,5H19a5.006,5.006,0,0,0,5-5V6A5.006,5.006,0,0,0,19,1ZM5,3H19a3,3,0,0,1,2.78,1.887l-7.658,7.659a3.007,3.007,0,0,1-4.244,0L2.22,4.887A3,3,0,0,1,5,3ZM19,21H5a3,3,0,0,1-3-3V7.5L8.464,13.96a5.007,5.007,0,0,0,7.072,0L22,7.5V18A3,3,0,0,1,19,21Z"></path></svg>
+                  <span id="spanLoad">Ingresar</span>
+                  ${svg("fi fi-rr-arrow-right")}
               </button>
               <a href="#/register" class="a_8hzaMUg">
                   <span>registro</span>
                   ${svg("fi fi-rr-arrow-right")}
               </a>
           </form>
-          <form id="form2" class="div_SCqCUTo" autocomplete="off" style="display: none">
-              <div class="d-flex" style="align-items: center;">
-                <button id="buttonBack" class="wh-40px d-flex-center" type="button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-angle-left"><path d="M17.17,24a1,1,0,0,1-.71-.29L8.29,15.54a5,5,0,0,1,0-7.08L16.46.29a1,1,0,1,1,1.42,1.42L9.71,9.88a3,3,0,0,0,0,4.24l8.17,8.17a1,1,0,0,1,0,1.42A1,1,0,0,1,17.17,24Z"></path></svg></button>
-                <h2>Ingresar codigo</h2>
-              </div>
-              <div class="div_Y85zRC0" >
-                  <label class="label_ieXcceLhkyD2WGY label_0BFeKpk pointer-off" style="opacity: 0.7">
-                      <input type="text" name="email" placeholder="" tabindex="-1">
-                      <span>correo</span>
-                  </label>
-                  <label id="labelCode" class="label_ieXcceLhkyD2WGY label_0BFeKpk">
-                      <input type="number" name="code" placeholder="" autocomplete="off" tabindex="-1">
-                      <span>codigo</span>
-                  </label>
-              </div>
-              <a href="#" id="aSendEmail" class="a_c305F1l">Volver a recibir codigo</a>
-              <button id="buttonSubmit" class="button_WU25psx" >
-                  <span id="spanLoad">Ingresar</span>
-                  ${svg("fi fi-rr-arrow-right")}
-              </button>
-              <a href="#/register" class="a_8hzaMUg" >
-                  <span>registro</span>
-                  ${svg("fi fi-rr-arrow-right")}
-              </a>
-          </form>
+
+        </div>
+
+        <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+          <div class="div_x8birmo">
+            <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+            <span>cargando...</span>
+          </div>
 
         </div>
 
@@ -4348,49 +4335,27 @@ var login = () => {
   $elements.form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    $elements.form.style.display = "none";
-    $elements.form2.style.display = "";
-
     const body = {
       email: $elements.form.email.value.trim(),
+      password: $elements.form.password.value.trim(),
     };
 
-    fetch(myApp.url.server("/api.php?route=auth.login-email-get"), {
+    // return alert(JSON.stringify(body));
+
+    fetch(myApp.url.server("/api.php?route=auth.login"), {
       method: "POST",
       body: JSON.stringify(body),
     })
       .then((res) => res.json())
       .then((data) => {
-        if (!data?.status) {
-          alert("Email no registrado");
-          $elements.buttonBack.dispatchEvent(new CustomEvent("click"));
+        if (!Boolean(data?.status)) {
+          alert(data?.message ?? "Intentelo nuevamente");
+          return;
         }
+
+        localStorage.setItem(myApp.ta, data.token);
+        location.hash = "/";
       });
-  });
-
-  $elements.form2.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    location.hash = `/login/code/${encodeURIComponent(
-      JSON.stringify([$elements.form2.email.value, $elements.form2.code.value])
-    )}`;
-  });
-
-  $elements.form.email.addEventListener("input", () => {
-    $elements.form2.email.value = $elements.form.email.value.trim();
-  });
-
-  $elements.form2.code.addEventListener("input", (e) => {
-    if (e.target.value.length > 6) e.target.value = e.target.value.slice(0, 6);
-  });
-
-  $elements.aSendEmail.addEventListener("click", (e) => {
-    e.preventDefault();
-  });
-
-  $elements.buttonBack.addEventListener("click", () => {
-    $elements.form.style.display = "";
-    $elements.form2.style.display = "none";
   });
 
   // myApp.functions.historyBack($element.querySelector("[data-history-back]"));
@@ -4405,7 +4370,7 @@ var register = () => {
 
   const $element = mrf.createNodeElement(`
 
-    <div class="div_Xu02Xjh">
+    <div class="div_Xu02Xjh" style="position:fixed">
 
         <header class="header_K0hs3I0">
 
@@ -4434,6 +4399,10 @@ var register = () => {
                   <label class="label_ieXcceLhkyD2WGY label_0BFeKpk">
                       <input type="text" name="email" placeholder="" autocomplete="off">
                       <span>Correo</span>
+                  </label>
+                  <label class="label_ieXcceLhkyD2WGY label_0BFeKpk">
+                      <input type="password" name="password" placeholder="">
+                      <span>Contraseña</span>
                   </label>
               </div>
               <button class="button_WU25psx">
@@ -4465,6 +4434,7 @@ var register = () => {
       fullname: $elements.form.fullname.value.trim(),
       lastname: $elements.form.lastname.value.trim(),
       email: $elements.form.email.value.trim(),
+      password: $elements.form.password.value.trim(),
     };
 
     fetch(myApp.url.server("/api.php?route=auth.register"), {
@@ -4472,64 +4442,16 @@ var register = () => {
       body: JSON.stringify(body),
     })
       .then((res) => res.json())
-      .then(() => {
-        location.href = "/login";
+      .then((data) => {
+        if (!Boolean(data?.status)) {
+          alert(data?.message ?? "Intentelo nuevamente");
+          return;
+        }
+
+        localStorage.setItem(myApp.ta, data.token);
+        location.hash = "/";
       });
   });
-
-  return $element;
-};
-
-var loginKeyValue = () => {
-  const myApp = window.dataApp;
-  const myVal = {
-    params: myApp.routes.params(),
-    functions: {},
-  };
-
-  const $element = mrf.createNodeElement(`<div class=""></div>`);
-  mrf.createObjectElement(
-    $element.querySelectorAll("[id]"),
-    "id",
-    true
-  );
-
-  if (myVal.params.key == "code") {
-    try {
-      const [email, code] = JSON.parse(
-        decodeURIComponent(myVal.params.value)
-      );
-
-      if (true) {
-        const body = {
-          email,
-          code,
-        };
-
-        fetch(myApp.url.server("/api.php?route=auth.login-email-set"), {
-          method: "POST",
-          body: JSON.stringify(body),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data?.status) {
-              mrc.Cookie.set(myApp.auth, data.token, {
-                lifetime: 60 * 60 * 24 * 7,
-              });
-
-              location.hash = "/";
-            } else {
-              location.hash = "/";
-              setTimeout(() => {
-                alert("Codigo no valido");
-              }, 50);
-            }
-          });
-      }
-    } catch (error) {
-      // console.log("el codigo no es valido");
-    }
-  }
 
   return $element;
 };
@@ -4908,334 +4830,148 @@ var iptvPeliculaId = () => {
   const myApp = window.dataApp;
   const myVal = {
     params: myApp.routes.params(),
-    functions: {},
-    signals: {
-      favorite: mrf.observeValue(false),
-      view: mrf.observeValue(false),
-    },
-    values: {
-      isConnected: false,
-      streaming: {},
-      episode: 1,
-      data_id: "",
-      data: null,
-      thisMovie: {},
-    },
-  };
-
-  const $element = mrf.createNodeElement(`
-    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
-         
-        <header class="header_K0hs3I0 header_RtX3J1X">
-
-            <div class="div_uNg74XS">
-                <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${svg("fi fi-rr-angle-small-left")}
-                </a>  
-            </div>
-            <h2 id="textTitle" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
-            <div id="divButton" class="div_x0cH0Hq" style="visibility:hidden">
-                <button id="favorite" class="button_lvV6qZu" data-action="0">
-                  ${svg("fi fi-rr-heart")}
-                </button>
-            </div>
-
-        </header>
-        <div id="item" class="div_guZ6yID div_DtSQApy">
-            <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
-            <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${svg("fi fi-rr-search-alt")}
-                <h3>La pelicula no existe</h3>
-            </div> 
-            <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
-
-                <div class="div_cnJqhFl">
-                  <div class="div_0JOSFlg">
-                    <img id="poster" src="">
-                  </div>
-                  <div class="div_cxFXOaL">
-                    <label class="label_zjZIMnZ" style="display:none">
-                      <input type="checkbox" id="inputView">
-                      <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
-                    </label>
-                    <button id="play" class="button_bDfhQ4b">
-                      <small>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-sr-play"><path d="M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z"></path></svg>
-                      </small>
-                      <span>Reproducir</span>
-                    </button>
-                  </div>
-                </div>
-                
-                <hr class="hr_nTfcjTI">
-                <div class="div_BIchAsC">
-
-                    <form class="app-form-label-checkbox" id="form-filter-type">
-                      <label>
-                        <input type="radio" name="key" value="information" checked>
-                        <span>Detalles</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="key" value="similar">
-                        <span>Otros</span>
-                      </label>
-                    </form>
-                      
-                </div>
-                <hr class="hr_nTfcjTI">
-
-                <div id="itemTrueInformation" class="div_cnJqhFl" >
-                  <div class="div_aSwP0zW">
-                      <span id="genres"></span>
-                      <span id="duration"></span>
-                      <span id="date"></span>
-                  </div>
-                  <p id="overview" style="font-size:14px"></p>
-                </div>
-
-                <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
-                  <div id="episodes" class="div_qsNmfP3" style="padding: 0"></div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
-            <div class="div_dsb3nhtCrFmUlSN p-10px">
-                <div class="div_cXaADrL pointer-on">
-                    <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-  `);
-
-  const $elements = mrf.createObjectElement(
-    $element.querySelectorAll("[id]"),
-    "id",
-    true
-  );
-
-  myVal.functions.dataRenderTrue = (data) => {
-    try {
-      const thisMovie = data.info;
-      // const fromSecondsToTime = mrf.fromSecondsToTime(thisMovie.runtime * 60);
-
-      const duration = thisMovie.duration?.split?.(":");
-
-      $elements.poster.src = myApp.url.img(thisMovie.movie_image);
-
-      $elements.textTitle.textContent = thisMovie.name;
-      $elements.overview.textContent = thisMovie.description;
-      $elements.genres.textContent = thisMovie.genre;
-
-      $elements.duration.textContent = `${duration[0]}h ${duration[1]}min`;
-      $elements.date.textContent = thisMovie.releasedate?.split?.("-")[0] ?? "";
-
-      $elements.play.style.display = "";
-      $elements.play.setAttribute("data-data", JSON.stringify(thisMovie));
-      // $elements.play.setAttribute("data-slug", `https://cuevana.biz/${slug}`);
-
-      mrc.MyImage.canvas($elements.poster.src).then((result) => {
-        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
-        const r = pixelData[0];
-        const g = pixelData[1];
-        const b = pixelData[2];
-
-        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
-
-        $elements.itemTrueOptionVideos.parentElement.style.background =
-          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
-
-        myApp.elements.meta.color.setAttribute("content", color);
-        $element.style.background = color;
-
-        Android.colorSystemBar(color);
-      });
-
-      $elements.itemNull.style.display = "none";
-      $elements.itemTrue.style.display = "";
-    } catch (error) {
-      alert(error);
-    }
-  };
-
-  myVal.functions.dataTrue = () => {
-    fetch(
-      "https://fetch.vniox.com/get.php?url=" +
-        encodeURIComponent(
-          `${myApp.iptv.server}/player_api.php?username=${myApp.iptv.username}&password=${myApp.iptv.password}&action=get_vod_info&vod_id=${myVal.params.id}`
-        )
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        myVal.values.data = data;
-        myVal.values.thisMovie = data.info;
-        myVal.functions.dataRenderTrue(data);
-      });
-  };
-
-  $elements.play.addEventListener("click", () => {
-    Android.openWithDefault(
-      `${myApp.iptv.server}/movie/${myApp.iptv.username}/${myApp.iptv.password}/${myVal.values.data.movie_data.stream_id}.${myVal.values.data.movie_data.container_extension}`,
-      "video/*"
-    );
-  });
-
-  $elements["form-filter-type"].addEventListener("change", () => {
-    const value = $elements["form-filter-type"].key.value;
-
-    const elements = {
-      information: $elements.itemTrueInformation,
-      similar: $elements.itemTrueSimilar,
-    };
-
-    Object.entries(elements).forEach((entries) => {
-      entries[1].style.display = entries[0] == value ? "" : "none";
-    });
-  });
-
-  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
-  myApp.elements.meta.color.setAttribute("content", "#000000");
-  myVal.functions.dataTrue();
-
-  mrf.callbackTryCatch(() => {
-    Android.colorSystemBar("#000000");
-  });
-
-  return $element;
-};
-
-var iptvSerieId = () => {
-  const mrc = window.MyResourceClass;
-  const mrf = window.MyResourceFunction;
-  const svg = window.iconSVG;
-
-  const myApp = window.dataApp;
-  const myVal = {
-    params: myApp.routes.params(),
-    functions: {},
     signals: {
       isFavorite: mrf.observeValue(false),
       isView: mrf.observeValue(false),
       episodes: mrf.observeValue([]),
     },
+    functions: {},
     values: {
-      dataInfo: null,
+      video: null,
       isConnected: false,
-      observes: [],
       streaming: {},
       episode: -1,
       data_id: "",
       data: null,
-      thisSerie: {},
+      thisAnime: {},
     },
+    url: {
+      fetch: (url) => {
+        return `https://fetch.vniox.com/get.php?url=${encodeURIComponent(url)}`;
+      },
+    },
+    get: {},
+    set: {},
   };
 
   const $element = mrf.createNodeElement(`
     <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
-        <header class="header_K0hs3I0 header_XpmKRuK header_RtX3J1X">
 
-            <div class="div_uNg74XS">
-                <a href="#" class="button_lvV6qZu" data-history-back>
-                  ${svg("fi fi-rr-angle-small-left")}
-                </a>
-            </div>
-            <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
-            <div class="div_x0cH0Hq">
-                <button id="favorite" class="button_lvV6qZu" data-action="0" style="visibility:hidden">
-                  ${svg("fi fi-rr-heart")}
-                </button>
-            </div>
+          <header class="header_K0hs3I0 header_RtX3J1X">
 
-        </header>
+              <div class="div_uNg74XS">
+                  <a href="#" class="button_lvV6qZu" data-history-back>
+                    ${svg("fi fi-rr-angle-small-left")}
+                  </a>
+              </div>
 
-        <div id="item" class="div_guZ6yID div_DtSQApy" >
-            <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
-            <div id="itemFalse" class="div_b14S3dH" style="display:none">
-                ${svg("fi fi-rr-search-alt")}
-                <h3>La pelicula no existe</h3>
-            </div>
-            <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
+              <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
 
-                <div class="div_cnJqhFl">
-                  <div class="div_0JOSFlg">
-                    <img id="poster" src="">
-                  </div>
-                  <div class="div_cxFXOaL">
-                    <label class="label_zjZIMnZ" style="pointer-events:none; opacity:.3">
-                      <input type="checkbox" id="inputView">
-                      <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
-                    </label>
-                    <button id="play" class="button_bDfhQ4b" style="display:none">
-                      <small>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-sr-play"><path d="M20.492,7.969,10.954.975A5,5,0,0,0,3,5.005V19a4.994,4.994,0,0,0,7.954,4.03l9.538-6.994a5,5,0,0,0,0-8.062Z"></path></svg>
-                      </small>
-                      <span>Reproducir</span>
-                    </button>
-                  </div>
-                </div>
+              <div class="div_x0cH0Hq">
+                  <button id="favorite" class="button_lvV6qZu">
+                    ${svg("fi fi-rr-heart")}
+                  </button>
+              </div>
 
-                <hr class="hr_nTfcjTI">
-                <div class="div_BIchAsC">
+          </header>
 
-                    <form class="app-form-label-checkbox" id="form-filter-type">
-                      <label>
-                        <input type="radio" name="key" value="information" checked>
-                        <span>Detalles</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="key" value="chapter">
-                        <span>Capitulos</span>
-                      </label>
-                      <label>
-                        <input type="radio" name="key" value="similar">
-                        <span>Otros</span>
-                      </label>
-                    </form>
-                      
-                </div>
-                <hr class="hr_nTfcjTI">
+          <div class="div_guZ6yID div_DtSQApy">
+              <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <div id="itemFalse" class="div_b14S3dH" style="display:none">
+                  ${svg("fi fi-rr-search-alt")}
+                  <h3>La pelicula no existe</h3>
+              </div>
 
-                <div id="itemTrueInformation" class="div_cnJqhFl" >
-                  <div class="div_aSwP0zW">
-                      <span id="genres"></span>
-                      <span id="duration"></span>
-                      <span id="date"></span>
-                  </div>
-                  <p id="overview" style="font-size:14px"></p>
-                </div>
+              <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
 
-                <div id="itemTrueChapter" class="div_rJOqfX3" style="display:none">
-                    <div class="div_mu7pmfs">
-                      <div class="div_xesi90n">
-                        <select id="selectSeason">
-                          <option>Temporada 1</option>
-                        </select>
-                        <button id="buttonSeasonOrder">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-sort-alt"><path d="M11.293,17.707l-3.293,3.293V1c0-.553-.447-1-1-1s-1,.447-1,1V21l-3.293-3.293c-.391-.391-1.023-.391-1.414,0s-.391,1.023,0,1.414l4.293,4.293c.39,.39,.902,.585,1.414,.585s1.024-.195,1.414-.585l4.293-4.293c.391-.391,.391-1.023,0-1.414s-1.023-.391-1.414,0ZM22.707,6.293c.391-.391,.391-1.023,0-1.414L18.414,.586C18.024,.196,17.512,0,17,0s-1.024,.195-1.414,.585l-4.293,4.293c-.391,.391-.391,1.023,0,1.414s1.023,.391,1.414,0l3.293-3.293V23c0,.553,.447,1,1,1s1-.447,1-1V3l3.293,3.293c.391,.391,1.023,.391,1.414,0Z"></path></svg>
-                        </button>
-                      </div>
+                  <div class="div_cnJqhFl">
+                    <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
+                      <img id="poster" src="" style="display:none">
                     </div>
-                    <div id="episodes" class="div_bi3qmqX" data-class="div_2cD7Iqb"></div>
-                </div>
+                    <div class="div_cxFXOaL">
+                      <label class="label_zjZIMnZ">
+                        <input type="checkbox" id="inputView">
+                        <span style="display:flex">
+                          ${svg("fi fi-rr-check")}
+                        </span>
+                      </label>
+                      <button id="play" class="button_bDfhQ4b" style="display:none">
+                        <small></small>
+                        <span>Play</span>
+                      </button>
+                    </div>
+                  </div>
 
-                <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
-                  <div id="similar" class="div_qsNmfP3" style="padding: 0"></div>
-                </div>
-                
+                  <hr class="hr_nTfcjTI">
+                  <div class="div_BIchAsC">
+
+                      <form class="app-form-label-checkbox" id="form-filter-type">
+                        <label>
+                          <input type="radio" name="key" value="information" checked>
+                          <span>Detalles</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="chapter">
+                          <span>Capitulos</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="similar">
+                          <span>Otros</span>
+                        </label>
+                      </form>
+                        
+                  </div>
+                  <hr class="hr_nTfcjTI">
+
+                  <div id="itemTrueInformation" class="div_cnJqhFl" >
+                    <div class="div_aSwP0zW">
+                        <span id="nextEpisode"></span>
+                        <span id="genres"></span>
+                        <span id="duration"></span>
+                        <span id="date"></span>
+                    </div>
+                    <p id="overview" style="font-size:14px"></p>
+                  </div>
+
+                  <div id="itemTrueChapter" class="div_692wB8" style="display:none">
+                      <div class="div_mu7pmfs">
+                        <div class="div_xesi90n">
+                          <select id="selectSeason">
+                            <option>Temporada 1</option>
+                          </select>
+                          <button id="buttonSeasonOrder">
+                            ${svg("fi fi-rr-sort-alt")}
+                          </button>
+                        </div>
+                      </div>
+                      <div id="episodes" class="div_bi3qmqX"></div>
+                  </div>
+
+                  <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
+                    <div id="similar" class="div_qsNmfP3" style="padding: 0"></div>
+                  </div>
+
+              </div>
+          </div>
+
+          <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
+              <div class="div_dsb3nhtCrFmUlSN p-10px">
+                  <div class="div_cXaADrL pointer-on">
+                      <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
+                  </div>
+              </div>
+          </div>
+
+          <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+            <div class="div_x8birmo">
+              <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <span>cargando...</span>
             </div>
-        </div>
-       
-        <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
-            <div class="div_dsb3nhtCrFmUlSN p-10px">
-                <div class="div_cXaADrL pointer-on">
-                    <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-`);
+
+          </div>
+      </div>
+  `);
 
   const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
@@ -5247,159 +4983,212 @@ var iptvSerieId = () => {
     $elements.favorite.innerHTML = svg(
       boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
     );
+
+    $elements.favorite.setAttribute("data-action", boolean ? 1 : 0);
   });
 
   myVal.signals.isView.observe((boolean) => {
     $elements.inputView.checked = boolean;
   });
 
-  myVal.functions.dataRenderTrue = (data) => {
-    try {
-      const thisSerie = data.info;
-
-      $elements.poster.src = myApp.url.img(thisSerie.cover);
-
-      $elements.title.textContent = thisSerie.name;
-      $elements.overview.textContent = thisSerie.plot;
-      $elements.genres.textContent = thisSerie.genre;
-
-      $elements.duration.textContent = `${data.seasons.length} temporadas`;
-      $elements.date.textContent = new Date(
-        thisSerie.releaseDate
-      ).getFullYear();
-
-      $elements.selectSeason.innerHTML = Object.keys(data.episodes)
-        .map((season) => {
-          return `
-          <option value="${season}">Temporada ${season}</option>
-        `;
-        })
-        .join("");
-
-      mrc.MyImage.canvas($elements.poster.src).then((result) => {
-        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
-        const r = pixelData[0];
-        const g = pixelData[1];
-        const b = pixelData[2];
-
-        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
-
-        $elements.itemTrueOptionVideos.parentElement.style.background =
-          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
-
-        myApp.elements.meta.color.setAttribute("content", color);
-        $element.style.background = color;
-        Android.colorSystemBar(color);
+  myVal.functions.updateHistory = (currentTime, duration = 0) => {
+    if (myVal.values.isConnected) {
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "update-history-view",
+        episode: myVal.values.episode,
+        time_view: currentTime,
+        time_duration: duration,
+        datetime: Date.now(),
+        data_id: myVal.values.data_id,
+        type: 1,
       });
 
-      myVal.functions.renderSeason($elements.selectSeason.value);
-
-      $elements.itemNull.style.display = "none";
-      $elements.itemTrue.style.display = "";
-    } catch (error) {
-      alert(error);
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "GET",
+        })
+      );
     }
   };
 
-  myVal.functions.renderSeason = (index = 0) => {
-    // const seasons = myVal.values.thisSerie.seasons.filter(
-    //   (season) => season.episodes.length
-    // );
+  myVal.functions.updateHistoryVideo = () => {
+    myApp.mediaPlayer.video((video) => {
+      let times = {};
+      let status = false;
 
-    // const episodes = seasons[index].episodes;
-    // const season = seasons[index].number;
+      video.src = "";
 
-    const array = myVal.values.data.episodes[index];
+      video.onloadedmetadata = () => {
+        times = {};
+        status = false;
 
-    $elements.episodes.innerHTML = array
-      .map((episode) => {
-        // const episodeInfo =
-        //   myVal.values.streaming?.episodes?.[`${season}-${episode.number}`];
+        const currentTime =
+          parseInt(
+            myVal.values.streaming?.episodes?.[myVal.values.episode]?.time_view
+          ) || 0;
 
-        const dataData = mrc.EncodeTemplateString.toInput(
-          JSON.stringify(episode)
+        video.currentTime = currentTime;
+      };
+
+      video.ontimeupdate = (e) => {
+        if (status) {
+          const num = Math.floor(e.target.currentTime);
+
+          if (num > 0 && num % 30 == 0 && !times[num]) {
+            times[num] = true;
+            myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
+          }
+        }
+      };
+
+      video.onseeked = () => {
+        const currentTime = Math.floor(video.currentTime);
+        myVal.functions.updateHistory(
+          currentTime,
+          Math.ceil(video.duration) || 0
         );
 
-        // const checked = episodeInfo != undefined ? "checked" : "";
-        const displayInput = "display:none";
+        times = {};
+        times[currentTime] = true;
 
-        return `
-          <div data-episode="${episode.number}" class="div_eGwK6I1">
-            <button 
-            class="button_fk0VHgU" 
-              data-data="${dataData}" 
-              data-season="${index}"
-              data-episode="${episode.episode_num}"
-              data-item>
-                <span>
-                  T${index} 
-                  E${episode.episode_num.toString().padStart(2, "0")}
-                </span>
-                <small>
-               
-                </small>
-            </button>
-            <label class="label_zjZIMnZ" style="${displayInput}">
-              <input type="checkbox" 
-                data-season="" 
-                data-episode="">
-              <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
-            </label>
-          </div>
-        `;
-      })
-      .join("");
+        status = true;
+      };
+    });
   };
 
-  myVal.functions.dataTrue = () => {
-    fetch(
-      "https://fetch.vniox.com/get.php?url=" +
-        encodeURIComponent(
-          `${myApp.iptv.server}/player_api.php?username=${myApp.iptv.username}&password=${myApp.iptv.password}&action=get_series_info&series_id=${myVal.params.id}`
-        )
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        // alert(myVal.params.id);
-
-        myVal.values.data = data;
-        myVal.values.thisSerie = data.info;
-        myVal.functions.dataRenderTrue(data);
-      });
-  };
-
-  myVal.functions.unobserve = () => {
-    for (const observe of myVal.values.observes) {
-      myApp.instances.IntersectionObserver.unobserve(observe);
-    }
-
-    myVal.values.observes = [];
-  };
-
-  $elements.selectSeason.addEventListener("change", () => {
-    myVal.functions.renderSeason($elements.selectSeason.value);
-  });
-
-  $elements.buttonSeasonOrder.addEventListener("click", () => {
-    $elements.episodes.append(
-      ...Array.from($elements.episodes.children).reverse()
-    );
-  });
-
-  $elements.episodes.addEventListener("click", (e) => {
+  myApp.events($elements.episodes, "click", (e) => {
     const item = e.target.closest("[data-item]");
-    // const input = e.target.closest("input");
+    const input = e.target.closest("input");
+
     if (item) {
-      const data = JSON.parse(item.getAttribute("data-data"));
+      const [host, user, pass, id, ext] = [
+        myApp.iptv.server,
+        myApp.iptv.username,
+        myApp.iptv.password,
+        myVal.values.data.movie_data.stream_id,
+        myVal.values.data.movie_data.container_extension,
+      ];
 
       Android.openWithDefault(
-        `${myApp.iptv.server}/series/${myApp.iptv.username}/${myApp.iptv.password}/${data.id}.${data.container_extension}`,
+        `${host}/movie/${user}/${pass}/${id}.${ext}`,
         "video/*"
       );
     }
+
+    if (input) {
+      // myVal.values.episode = input.dataset.episode;
+
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "toggle-history-view",
+        episode: input.dataset.episode,
+        datetime: Date.now(),
+        data_id: myVal.values.data_id,
+        type: 1,
+        action: input.checked ? 1 : 0,
+      });
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "GET",
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.status) {
+            input.checked = data.type == 1;
+          }
+        });
+    }
   });
 
-  $elements["form-filter-type"].addEventListener("change", () => {
+  myApp.events($elements.favorite, "click", () => {
+    myVal.signals.isFavorite.value = !myVal.signals.isFavorite.value;
+
+    const encodeQueryString = mrf.encodeQueryObject({
+      route: "toggle-favorites",
+      data_id: myVal.values.data_id,
+      type: 1,
+      action: $elements.favorite.dataset.action,
+    });
+
+    fetch(
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
+        method: "GET",
+      })
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data == null) {
+          location.hash = "#/login";
+          return;
+        }
+
+        if (data?.status) {
+          myVal.signals.isFavorite.value = data.type == 1;
+        }
+      });
+  });
+
+  myApp.events($elements.inputView, "change", () => {
+    const encodeQueryString = mrf.encodeQueryObject({
+      route: "toggle-views",
+      data_id: myVal.values.data_id,
+      type: 1,
+      action: $elements.inputView.checked ? 1 : 0,
+    });
+
+    fetch(
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
+        method: "GET",
+      })
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data == null) {
+          location.hash = "#/login";
+          return;
+        }
+
+        if (data?.status) {
+          myVal.signals.isView.value = data.type == 1;
+        }
+      });
+  });
+
+  myApp.events($elements.itemTrueOptionVideos, "click", (e) => {
+    const button = e.target.closest("button");
+    if (button) {
+      $elements.itemTrueOption.hidePopover();
+      $elements.loaderVideo.style.display = "";
+
+      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
+
+      ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
+        setTimeout(() => {
+          getMediaWeb(url, (res) => {
+            $elements.loaderVideo.style.display = "none";
+            if (res.status) {
+              Android.openWithDefault(res.url, "video/*");
+            } else {
+              alert("El video no esta disponible");
+            }
+          });
+        });
+      });
+    }
+  });
+
+  myApp.events($elements.itemTrueOption, "click", (e) => {
+    if (e.target === e.currentTarget) {
+      $elements.itemTrueOption.hidePopover();
+    }
+  });
+
+  myApp.events($elements["form-filter-type"], "change", () => {
     const value = $elements["form-filter-type"].key.value;
 
     const elements = {
@@ -5413,22 +5202,1053 @@ var iptvSerieId = () => {
     });
   });
 
-  addEventListener(
-    "hashchange",
-    () => {
-      myVal.functions.unobserve();
-    },
-    { once: true }
-  );
+  myApp.events($elements.selectSeason, "change", () => {
+    const [start, end] = $elements.selectSeason.value
+      .split("-")
+      .map((str) => parseInt(str));
+
+    //myVal.signals.episodes.value = mrc.MyArray.range(start, end);
+    myVal.set.dataTrueEpisodes(mrc.MyArray.range(start, end));
+  });
+
+  myApp.events($elements.buttonSeasonOrder, "click", () => {
+    $elements.episodes.append(
+      ...Array.from($elements.episodes.children).reverse()
+    );
+  });
+
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      fetch(
+        "https://fetch.vniox.com/get.php?url=" +
+          encodeURIComponent(
+            `${myApp.iptv.server}/player_api.php?username=${myApp.iptv.username}&password=${myApp.iptv.password}&action=get_vod_info&vod_id=${myVal.params.id}`
+          )
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrue = (data) => {
+    const thisMovie = data.info;
+
+    myVal.values.data = data;
+
+    $elements.itemNull.style.display = "none";
+    $elements.itemTrue.style.display = "";
+
+    $elements.poster.onload = () => {
+      $elements.poster.style.display = "";
+
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
+        const r = pixelData[0];
+        const g = pixelData[1];
+        const b = pixelData[2];
+
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
+
+        $elements.itemTrueOptionVideos.parentElement.style.background =
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
+
+        myApp.elements.meta.color.setAttribute("content", color);
+        $element.style.background = color;
+
+        Android.colorSystemBar(color);
+      });
+    };
+
+    // renderInfo
+    mrf.callbackTryCatch(() => {
+      $elements.poster.src = myApp.url.img(thisMovie.movie_image);
+
+      $elements.title.textContent = thisMovie.name;
+      $elements.overview.textContent = thisMovie.description;
+      $elements.genres.textContent = thisMovie.genre;
+
+      $elements.duration.textContent = `${duration[0]}h ${duration[1]}min`;
+      $elements.date.textContent = thisMovie.releasedate?.split?.("-")[0] ?? "";
+    });
+
+    // renderSeason
+    mrf.callbackTryCatch(() => {
+      $elements.selectSeason.parentElement.style.display = "none";
+      $elements.selectSeason.innerHTML = `<option value="1-1">Temporada 1</option>`;
+
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+    });
+
+    // renderSimiliar
+    mrf.callbackTryCatch(() => {
+      return;
+    });
+
+    // mrf.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
+  };
+
+  myVal.get.dataTrueInfo = (data) => {
+    return new Promise((resolve, reject) => {
+      const data_id = data.props.pageProps.thisMovie.TMDbId;
+      myVal.values.data_id = data_id;
+
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "favorites-one",
+        type: 2,
+        data_id,
+      });
+
+      const body = {
+        data_id: data_id,
+        data_json: JSON.stringify(
+          Object.entries(data).reduce((prev, curr) => {
+            if (["TMDbId", "titles", "url", "images"].includes(curr[0])) {
+              prev[curr[0]] = curr[1];
+            }
+            return prev;
+          }, {})
+        ),
+        type: 2,
+      };
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "POST",
+          body: JSON.stringify(body),
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrueInfo = (data) => {
+    myVal.values.streaming = data;
+    $elements.favorite.style.visibility = "";
+    myVal.values.isConnected = Boolean(data);
+
+    if (myVal.values.isConnected) {
+      myVal.signals.isFavorite.value = Boolean(data?.favorite);
+      myVal.signals.isView.value = Boolean(data?.view);
+      myVal.set.dataTrueEpisodes(myVal.signals.episodes.value);
+    }
+  };
+
+  myVal.set.dataTrueEpisodes = (string = "") => {
+    const [from, to] = string.split("-").map(Number);
+    const array = Array(to - from + 1)
+      .fill()
+      .map((_, i) => i + from);
+
+    $elements.episodes.innerHTML = array
+      .map((episode) => {
+        const episodeInfo = myVal.values.streaming?.episodes?.[episode];
+
+        const checked = episodeInfo != undefined ? "checked" : "";
+
+        const displayInput = myVal.values.isConnected ? "" : "display:none";
+
+        return `
+          <div data-episode="${episode}" class="div_eGwK6I1">
+            <button 
+              class="button_fk0VHgU" 
+              data-slug="${myVal.params.id}-${episode}" 
+              data-title="${myVal.params.id}" 
+              data-description="episodio ${episode}" 
+              data-episode="${episode}"
+              data-item>
+                <span>Episodio ${episode}</span>
+                <small>
+                  ${
+                    parseInt(episodeInfo?.time_view)
+                      ? "visto ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_view)
+                        )
+                      : ""
+                  }
+                  ${
+                    parseInt(episodeInfo?.time_duration)
+                      ? "de ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_duration)
+                        )
+                      : ""
+                  }
+                </small>
+            </button>
+            <label class="label_zjZIMnZ" style="${displayInput}">
+              <input type="checkbox" data-episode="${episode}" ${checked}>
+              <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
+            </label>
+          </div>
+        `;
+      })
+      .join("");
+  };
 
   myApp.functions.historyBack($element.querySelector("[data-history-back]"));
   myApp.elements.meta.color.setAttribute("content", "#000000");
-  myVal.functions.dataTrue();
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   mrf.callbackTryCatch(() => {
     Android.colorSystemBar("#000000");
   });
 
+  $elements.itemNull.style.display = "none";
+  $elements.itemTrue.style.display = "";
+
+  return $element;
+};
+
+var iptvSerieId = () => {
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+    signals: {
+      isFavorite: mrf.observeValue(false),
+      isView: mrf.observeValue(false),
+      episodes: mrf.observeValue([]),
+    },
+    functions: {},
+    values: {
+      video: null,
+      isConnected: false,
+      streaming: {},
+      episode: -1,
+      data_id: "",
+      data: null,
+      thisAnime: {},
+    },
+    url: {
+      fetch: (url) => {
+        return `https://fetch.vniox.com/get.php?url=${encodeURIComponent(url)}`;
+      },
+    },
+    get: {},
+    set: {},
+  };
+
+  const $element = mrf.createNodeElement(`
+    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
+
+          <header class="header_K0hs3I0 header_RtX3J1X">
+
+              <div class="div_uNg74XS">
+                  <a href="#" class="button_lvV6qZu" data-history-back>
+                    ${svg("fi fi-rr-angle-small-left")}
+                  </a>
+              </div>
+
+              <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
+
+              <div class="div_x0cH0Hq">
+                  <button id="favorite" class="button_lvV6qZu">
+                    ${svg("fi fi-rr-heart")}
+                  </button>
+              </div>
+
+          </header>
+
+          <div class="div_guZ6yID div_DtSQApy">
+              <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <div id="itemFalse" class="div_b14S3dH" style="display:none">
+                  ${svg("fi fi-rr-search-alt")}
+                  <h3>La pelicula no existe</h3>
+              </div>
+
+              <div id="itemTrue" class="div_hqzh2NV" style="display:none; padding:15px">
+
+                  <div class="div_cnJqhFl">
+                    <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
+                      <img id="poster" src="" style="display:none">
+                    </div>
+                    <div class="div_cxFXOaL">
+                      <label class="label_zjZIMnZ">
+                        <input type="checkbox" id="inputView">
+                        <span style="display:flex">
+                          ${svg("fi fi-rr-check")}
+                        </span>
+                      </label>
+                      <button id="play" class="button_bDfhQ4b" style="display:none">
+                        <small></small>
+                        <span>Play</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <hr class="hr_nTfcjTI">
+                  <div class="div_BIchAsC">
+
+                      <form class="app-form-label-checkbox" id="form-filter-type">
+                        <label>
+                          <input type="radio" name="key" value="information" checked>
+                          <span>Detalles</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="chapter">
+                          <span>Capitulos</span>
+                        </label>
+                        <label>
+                          <input type="radio" name="key" value="similar">
+                          <span>Otros</span>
+                        </label>
+                      </form>
+                        
+                  </div>
+                  <hr class="hr_nTfcjTI">
+
+                  <div id="itemTrueInformation" class="div_cnJqhFl" >
+                    <div class="div_aSwP0zW">
+                        <span id="nextEpisode"></span>
+                        <span id="genres"></span>
+                        <span id="duration"></span>
+                        <span id="date"></span>
+                    </div>
+                    <p id="overview" style="font-size:14px"></p>
+                  </div>
+
+                  <div id="itemTrueChapter" class="div_692wB8" style="display:none">
+                      <div class="div_mu7pmfs" style="display: flex; justify-content: space-between;">
+                        <div class="div_xesi90n">
+                          <select id="selectSeason" style="padding-right:10px">
+                            <option>Temporada 1</option>
+                          </select>  
+                        </div>
+
+                        <div class="div_xesi90n">
+                          <button id="buttonSeasonOrder">
+                            ${svg("fi fi-rr-sort-alt")}
+                          </button>
+                        </div>
+                      </div>
+                      <div id="episodes" class="div_bi3qmqX"></div>
+                  </div>
+
+                  <div id="itemTrueSimilar" class="div_wNo9gA9" style="display:none; padding: 15px 0">
+                    <div id="similar" class="div_qsNmfP3" style="padding: 0"></div>
+                  </div>
+
+              </div>
+          </div>
+
+          <div id="itemTrueOption" class="div_5Pe946IMjyL1Rs" popover>
+              <div class="div_dsb3nhtCrFmUlSN p-10px">
+                  <div class="div_cXaADrL pointer-on">
+                      <div id="itemTrueOptionVideos" class="div_lm2WViG"></div>
+                  </div>
+              </div>
+          </div>
+
+          <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+            <div class="div_x8birmo">
+              <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+              <span>cargando...</span>
+            </div>
+
+          </div>
+      </div>
+  `);
+
+  const $elements = mrf.createObjectElement(
+    $element.querySelectorAll("[id]"),
+    "id",
+    true
+  );
+
+  myVal.signals.isFavorite.observe((boolean) => {
+    $elements.favorite.innerHTML = svg(
+      boolean ? "fi fi-sr-heart" : "fi fi-rr-heart"
+    );
+
+    $elements.favorite.setAttribute("data-action", boolean ? 1 : 0);
+  });
+
+  myVal.signals.isView.observe((boolean) => {
+    $elements.inputView.checked = boolean;
+  });
+
+  myVal.functions.updateHistory = (currentTime, duration = 0) => {
+    if (myVal.values.isConnected) {
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "update-history-view",
+        episode: myVal.values.episode,
+        time_view: currentTime,
+        time_duration: duration,
+        datetime: Date.now(),
+        data_id: myVal.values.data_id,
+        type: 1,
+      });
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "GET",
+        })
+      );
+    }
+  };
+
+  myVal.functions.updateHistoryVideo = () => {
+    myApp.mediaPlayer.video((video) => {
+      let times = {};
+      let status = false;
+
+      video.src = "";
+
+      video.onloadedmetadata = () => {
+        times = {};
+        status = false;
+
+        const currentTime =
+          parseInt(
+            myVal.values.streaming?.episodes?.[myVal.values.episode]?.time_view
+          ) || 0;
+
+        video.currentTime = currentTime;
+      };
+
+      video.ontimeupdate = (e) => {
+        if (status) {
+          const num = Math.floor(e.target.currentTime);
+
+          if (num > 0 && num % 30 == 0 && !times[num]) {
+            times[num] = true;
+            myVal.functions.updateHistory(num, Math.ceil(video.duration) || 0);
+          }
+        }
+      };
+
+      video.onseeked = () => {
+        const currentTime = Math.floor(video.currentTime);
+        myVal.functions.updateHistory(
+          currentTime,
+          Math.ceil(video.duration) || 0
+        );
+
+        times = {};
+        times[currentTime] = true;
+
+        status = true;
+      };
+    });
+  };
+
+  myApp.events($elements.episodes, "click", (e) => {
+    const item = e.target.closest("[data-item]");
+    const input = e.target.closest("input");
+
+    if (item) {
+      const data = JSON.parse(item.getAttribute("data-data"));
+
+      const [host, user, pass, id, ext] = [
+        myApp.iptv.server,
+        myApp.iptv.username,
+        myApp.iptv.password,
+        data.id,
+        data.container_extension,
+      ];
+
+      Android.openWithDefault(
+        `${host}/movie/${user}/${pass}/${id}.${ext}`,
+        "video/*"
+      );
+    }
+
+    if (input) {
+      // myVal.values.episode = input.dataset.episode;
+
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "toggle-history-view",
+        episode: input.dataset.episode,
+        datetime: Date.now(),
+        data_id: myVal.values.data_id,
+        type: 1,
+        action: input.checked ? 1 : 0,
+      });
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "GET",
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          if (data?.status) {
+            input.checked = data.type == 1;
+          }
+        });
+    }
+  });
+
+  myApp.events($elements.favorite, "click", () => {
+    myVal.signals.isFavorite.value = !myVal.signals.isFavorite.value;
+
+    const encodeQueryString = mrf.encodeQueryObject({
+      route: "toggle-favorites",
+      data_id: myVal.values.data_id,
+      type: 1,
+      action: $elements.favorite.dataset.action,
+    });
+
+    fetch(
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
+        method: "GET",
+      })
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data == null) {
+          location.hash = "#/login";
+          return;
+        }
+
+        if (data?.status) {
+          myVal.signals.isFavorite.value = data.type == 1;
+        }
+      });
+  });
+
+  myApp.events($elements.inputView, "change", () => {
+    const encodeQueryString = mrf.encodeQueryObject({
+      route: "toggle-views",
+      data_id: myVal.values.data_id,
+      type: 1,
+      action: $elements.inputView.checked ? 1 : 0,
+    });
+
+    fetch(
+      myApp.url.server(`/api.php?${encodeQueryString}`),
+      myApp.fetchOptions({
+        method: "GET",
+      })
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data == null) {
+          location.hash = "#/login";
+          return;
+        }
+
+        if (data?.status) {
+          myVal.signals.isView.value = data.type == 1;
+        }
+      });
+  });
+
+  myApp.events($elements.itemTrueOptionVideos, "click", (e) => {
+    const button = e.target.closest("button");
+    if (button) {
+      $elements.itemTrueOption.hidePopover();
+      $elements.loaderVideo.style.display = "";
+
+      myVal.values.episode = $elements.itemTrueOptionVideos.dataset.episode;
+
+      ApiWebCuevana.serverUrl(button.getAttribute("data-url")).then((url) => {
+        setTimeout(() => {
+          getMediaWeb(url, (res) => {
+            $elements.loaderVideo.style.display = "none";
+            if (res.status) {
+              Android.openWithDefault(res.url, "video/*");
+            } else {
+              alert("El video no esta disponible");
+            }
+          });
+        });
+      });
+
+      // setTimeout(() => {
+      //   getMediaWeb(button.getAttribute("data-url"), (res) => {
+      //     $elements.loaderVideo.style.display = "none";
+      //     if (res.status) {
+      //       Android.openWithDefault(res.url, "video/*");
+      //     } else {
+      //       alert("El video no esta disponible");
+      //     }
+      //   });
+      // });
+
+      // myApp.mediaPlayer.element().requestFullscreen();
+      // myVal.functions.updateHistoryVideo();
+
+      return;
+    }
+  });
+
+  myApp.events($elements.itemTrueOption, "click", (e) => {
+    if (e.target === e.currentTarget) {
+      $elements.itemTrueOption.hidePopover();
+    }
+  });
+
+  myApp.events($elements["form-filter-type"], "change", () => {
+    const value = $elements["form-filter-type"].key.value;
+
+    const elements = {
+      information: $elements.itemTrueInformation,
+      chapter: $elements.itemTrueChapter,
+      similar: $elements.itemTrueSimilar,
+    };
+
+    Object.entries(elements).forEach((entries) => {
+      entries[1].style.display = entries[0] == value ? "" : "none";
+    });
+  });
+
+  myApp.events($elements.selectSeason, "change", () => {
+    myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+  });
+
+  myApp.events($elements.buttonSeasonOrder, "click", () => {
+    const svg = $elements.buttonSeasonOrder.children[0];
+    svg.classList.add("transition-rotate");
+    svg.classList.toggle("active");
+
+    $elements.episodes.append(
+      ...Array.from($elements.episodes.children).reverse()
+    );
+  });
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      fetch(
+        "https://fetch.vniox.com/get.php?url=" +
+          encodeURIComponent(
+            `${myApp.iptv.server}/player_api.php?username=${myApp.iptv.username}&password=${myApp.iptv.password}&action=get_series_info&series_id=${myVal.params.id}`
+          )
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrue = (data) => {
+    const thisSerie = data.info;
+    myVal.values.data = data;
+
+    $elements.itemNull.style.display = "none";
+    $elements.itemTrue.style.display = "";
+
+    $elements.poster.onload = () => {
+      $elements.poster.style.display = "";
+
+      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+        const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
+        const r = pixelData[0];
+        const g = pixelData[1];
+        const b = pixelData[2];
+
+        const color = mrc.MyColor.toDark({ rgb: [r, g, b] }, 50);
+
+        $elements.itemTrueOptionVideos.parentElement.style.background =
+          mrc.MyColor.toDark({ rgb: [r, g, b] }, 60);
+
+        myApp.elements.meta.color.setAttribute("content", color);
+        $element.style.background = color;
+
+        Android.colorSystemBar(color);
+      });
+    };
+
+    // renderInfo
+    mrf.callbackTryCatch(() => {
+      $elements.poster.src = myApp.url.img(thisSerie.cover);
+
+      $elements.title.textContent = thisSerie.name;
+      $elements.overview.textContent = thisSerie.plot;
+      $elements.genres.textContent = thisSerie.genre;
+
+      $elements.duration.textContent = `${
+        thisSerie.seasons.at(-1).number
+      } temporadas`;
+
+      $elements.date.textContent = new Date(
+        thisSerie.releaseDate
+      ).getFullYear();
+    });
+
+    // renderSeason
+    mrf.callbackTryCatch(() => {
+      const seasons = thisSerie.seasons.filter(
+        (season) => season.episodes.length
+      );
+
+      $elements.selectSeason.innerHTML = seasons
+        .map((season) => {
+          const value = `1-${season.episodes.length}-${season.number}`;
+
+          return `
+            <option value="${value}">Temporada ${season.number}</option>
+          `;
+        })
+        .join("");
+
+      if ($elements.selectSeason.children.length == 1) {
+        $elements.selectSeason.parentElement.style.pointerEvents = "none";
+        $elements.selectSeason.parentElement.style.opacity = ".7";
+      }
+
+      if (
+        $elements.selectSeason.children.length == 1 &&
+        $elements.selectSeason.value == "1-1"
+      ) {
+        $elements.selectSeason.parentElement.style.display = "none";
+      }
+
+      myVal.set.dataTrueEpisodes($elements.selectSeason.value);
+    });
+
+    // renderSimiliar
+    mrf.callbackTryCatch(() => {
+      return;
+    });
+
+    // mrf.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
+  };
+
+  myVal.get.dataTrueInfo = (data) => {
+    return new Promise((resolve, reject) => {
+      const data_id = data.props.pageProps.thisSerie.TMDbId;
+      myVal.values.data_id = data_id;
+
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "favorites-one",
+        type: 3,
+        data_id,
+      });
+
+      const body = {
+        data_id: data_id,
+        data_json: JSON.stringify(
+          Object.entries(data).reduce((prev, curr) => {
+            if (["TMDbId", "titles", "url", "images"].includes(curr[0])) {
+              prev[curr[0]] = curr[1];
+            }
+            return prev;
+          }, {})
+        ),
+        type: 3,
+      };
+
+      fetch(
+        myApp.url.server(`/api.php?${encodeQueryString}`),
+        myApp.fetchOptions({
+          method: "POST",
+          body: JSON.stringify(body),
+        })
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrueInfo = (data) => {
+    myVal.values.streaming = data;
+    $elements.favorite.style.visibility = "";
+    myVal.values.isConnected = Boolean(data);
+
+    if (myVal.values.isConnected) {
+      myVal.signals.isFavorite.value = Boolean(data?.favorite);
+      myVal.signals.isView.value = Boolean(data?.view);
+      myVal.set.dataTrueEpisodes(myVal.signals.episodes.value);
+    }
+  };
+
+  myVal.set.dataTrueEpisodes = (string = "") => {
+    const [from, to, season] = string.split("-").map(Number);
+    const array = Array(to - from + 1)
+      .fill()
+      .map((_, i) => i + from);
+
+    $elements.episodes.innerHTML = array
+      .map((episode) => {
+        const episodeInfo = myVal.values.streaming?.episodes?.[episode];
+
+        const checked = episodeInfo != undefined ? "checked" : "";
+
+        const displayInput = myVal.values.isConnected ? "" : "display:none";
+
+        return `
+          <div data-episode="${episode}" class="div_eGwK6I1">
+            <button 
+              class="button_fk0VHgU" 
+              data-slug="${myVal.params.id}-${episode}" 
+              data-title="${myVal.params.id}" 
+              data-description="episodio ${episode}" 
+              data-season="${season}"
+              data-episode="${episode}"
+              data-item>
+                <span>Episodio ${episode}</span>
+                <small>
+                  ${
+                    parseInt(episodeInfo?.time_view)
+                      ? "visto ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_view)
+                        )
+                      : ""
+                  }
+                  ${
+                    parseInt(episodeInfo?.time_duration)
+                      ? "de ".concat(
+                          myApp.functions.formatTime(episodeInfo.time_duration)
+                        )
+                      : ""
+                  }
+                </small>
+            </button>
+            <label class="label_zjZIMnZ" style="${displayInput}">
+              <input type="checkbox" data-episode="${episode}" ${checked}>
+              <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
+            </label>
+          </div>
+        `;
+      })
+      .join("");
+
+    $elements.buttonSeasonOrder.parentElement.style.display =
+      array.length > 1 ? "" : "none";
+
+    $elements.buttonSeasonOrder.children[0].classList.toggle("active", false);
+  };
+
+  myApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  myApp.elements.meta.color.setAttribute("content", "#000000");
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
+
+  // mrf.callbackTryCatch(() => {
+  //   Android.colorSystemBar("#000000");
+  // });
+
+  $elements.itemNull.style.display = "none";
+  $elements.itemTrue.style.display = "";
+  return $element;
+};
+
+var passwordRecover = () => {
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+
+  const $element = mrf.createNodeElement(`
+
+    <div class="div_Xu02Xjh" style="position:fixed">
+
+        <header class="header_K0hs3I0">
+
+            <div class="div_uNg74XS">
+                <a href="#/setting" class="button_lvV6qZu" data-history-back>
+                  ${svg("fi fi-rr-angle-small-left")}
+                </a>
+                <h3 id="textTitle"></h3>
+            </div>
+
+        </header>
+
+        <div class="div_IsTCHpN p-10px">
+             
+          <form id="form" class="div_SCqCUTo" autocomplete="off">
+              <h2 style="padding: 0 20px;">Recuperar contraseña</h2>
+              <div class="div_Y85zRC0">
+                  <label class="label_ieXcceLhkyD2WGY label_0BFeKpk">
+                      <input type="text" name="email" placeholder="">
+                      <span>Correo</span>
+                  </label> 
+              </div>
+              <button id="buttonSubmit" class="button_WU25psx">
+                  <span id="spanLoad">Enviar</span>
+                  ${svg("fi fi-rr-arrow-right")}
+              </button>
+              <a href="#/login" class="a_8hzaMUg">
+                  <span>Iniciar sesion</span>
+                  ${svg("fi fi-rr-arrow-right")}
+              </a>
+          </form>
+
+        </div>
+
+        <div id="loaderVideo" class="div_uzuovb5" style="display:none">
+        
+          <div class="div_x8birmo">
+            <div class="loader-i" style="--color:var(--app-color-letter)"></div>
+            <span>cargando...</span>
+          </div>
+
+        </div>
+
+    </div>
+
+`);
+
+  const $elements = mrf.createObjectElement(
+    $element.querySelectorAll("[id]"),
+    "id",
+    true
+  );
+
+  $elements.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const encodeQueryString = mrf.encodeQueryObject({
+      route: "auth.password.recover-get",
+    });
+
+    const body = {
+      email: $elements.form.email.value.trim(),
+    };
+
+    fetch(myApp.url.server(`/api.php?${encodeQueryString}`), {
+      method: "POST",
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(data?.message ?? "Intentelo nuevamente");
+      });
+  }); 
+
+  // myApp.functions.historyBack($element.querySelector("[data-history-back]"));
+  return $element;
+};
+
+var passwordRecoverToken = () => {
+  const mrf = window.MyResourceFunction;
+  const svg = window.iconSVG;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    params: myApp.routes.params(),
+
+    get: {},
+    set: {},
+  };
+
+  const $element = mrf.createNodeElement(`
+
+    <div class="div_Xu02Xjh" style="position:fixed">
+
+        <header class="header_K0hs3I0">
+
+            <div class="div_uNg74XS">
+                <a href="#/setting" class="button_lvV6qZu" data-history-back>
+                  ${svg("fi fi-rr-angle-small-left")}
+                </a>
+                <h3 id="textTitle"></h3>
+            </div>
+
+        </header>
+
+        <div class="div_IsTCHpN p-10px">
+             
+          <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
+          <div id="itemFalse" class="div_b14S3dH" style="display:none">
+              ${svg("fi fi-rr-search-alt")}
+              <h3>El enlace ya no esta disponible</h3>
+          </div>
+          <form id="form" class="div_SCqCUTo" autocomplete="off" style="display:none">
+              <h2 style="padding: 0 20px;">Actualizar contraseña</h2>
+              <div class="div_Y85zRC0">
+                  <label class="label_ieXcceLhkyD2WGY label_0BFeKpk">
+                      <input type="password" name="password1" placeholder="">
+                      <span>Nueva contraseña</span>
+                  </label>
+                  <label class="label_ieXcceLhkyD2WGY label_0BFeKpk">
+                      <input type="password" name="password2" placeholder="">
+                      <span>Repita la contraseña</span>
+                  </label> 
+              </div>
+              <button id="buttonSubmit" class="button_WU25psx">
+                  <span id="spanLoad">Actualizar</span>
+                  ${svg("fi fi-rr-arrow-right")}
+              </button>
+              <a href="#/login" class="a_8hzaMUg">
+                  <span>Iniciar sesion</span>
+                  ${svg("fi fi-rr-arrow-right")}
+              </a>
+          </form>
+
+        </div>
+
+    </div>
+
+`);
+
+  const $elements = mrf.createObjectElement(
+    $element.querySelectorAll("[id]"),
+    "id",
+    true
+  );
+
+  $elements.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const encodeQueryString = mrf.encodeQueryObject({
+      route: "auth.password.recover-set",
+      token: myVal.params.token,
+    });
+
+    const body = {
+      password1: $elements.form.password1.value.trim(),
+      password2: $elements.form.password2.value.trim(),
+    };
+
+    if (body.password1.length < 6) {
+      alert("La contraseña debe contener al menos 6 caracteres.");
+      return;
+    }
+
+    if (body.password1 != body.password2) {
+      alert("Las contraseñas no coinciden. Verifica que ambas sean iguales.");
+      return;
+    }
+
+    fetch(myApp.url.server(`/api.php?${encodeQueryString}`), {
+      method: "POST",
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert(JSON.stringify(data));
+      });
+  });
+
+  myVal.get.dataTrue = () => {
+    return new Promise((resolve, reject) => {
+      const encodeQueryString = mrf.encodeQueryObject({
+        route: "token.password-update",
+        token: myVal.params.token,
+      });
+
+      fetch(myApp.url.server(`/api.php?${encodeQueryString}`))
+        .then((res) => res.json())
+        .then((data) => {
+          resolve(data);
+        });
+    });
+  };
+
+  myVal.set.dataTrue = (boolean) => {
+    $elements.itemNull.style.display = "none";
+    $elements.itemFalse.style.display = boolean ? "none" : "";
+    $elements.form.style.display = boolean ? "" : "none";
+  };
+
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
+
+  // myApp.functions.historyBack($element.querySelector("[data-history-back]"));
   return $element;
 };
 
@@ -5444,6 +6264,7 @@ var routes = () => {
     elements: {
       inicio: inicio(),
       theme: theme(),
+      searchTypeResult: searchTypeResult(),
     },
   };
 
@@ -5451,8 +6272,10 @@ var routes = () => {
     { hash: "/", callback: () => myVal.elements.inicio },
     { hash: "/login", callback: () => routesPublic(login) },
     { hash: "/register", callback: () => routesPublic(register) },
+    { hash: "/password-recover", callback: passwordRecover },
+    { hash: "/password-recover/:token", callback: passwordRecoverToken },
 
-    { hash: "/login/:key/:value", callback: () => routesPublic(loginKeyValue) },
+    // { hash: "/login/:key/:value", callback: () => routesPublic(loginKeyValue) },
     { hash: "/profile", callback: () => routesPrivate(profile) },
 
     { hash: "/pelicula/:id", callback: peliculaId },
@@ -5464,7 +6287,18 @@ var routes = () => {
 
     { hash: "/search", callback: searchType },
     { hash: "/search/:result", callback: searchType },
-    { hash: "/search/:result/result", callback: searchTypeResult },
+    {
+      hash: "/search/:result/result",
+      callback: (p) => {
+        myVal.elements.searchTypeResult.dispatchEvent(
+          new CustomEvent("_result", {
+            detail: p,
+          })
+        );
+
+        return myVal.elements.searchTypeResult;
+      },
+    },
 
     { hash: "/collection", callback: collection },
     { hash: "/historial", callback: historial },
@@ -5477,17 +6311,6 @@ var routes = () => {
   }
 
   addEventListener("hashchange", (e) => {
-    // try {
-    //   myApp.elements.meta.color.setAttribute(
-    //     "content",
-    //     localStorage.getItem("theme") == "light" ? "#F7F7F7" : "#000000"
-    //   );
-
-    //   Android.colorSystemBar(
-    //     localStorage.getItem("theme") == "light" ? "#F7F7F7" : "#000000"
-    //   );
-    // } catch (error) {}
-
     let uuid = history.state?.uuid ?? myApp.functions.generateUUID();
 
     if (!Boolean(e instanceof CustomEvent) && history.state == null) {
@@ -5506,454 +6329,41 @@ var routes = () => {
   return myVal.element.route;
 };
 
-class ElementMakeDrag {
-  constructor(element) {
-    this._element = element;
-    this._events = {};
-  }
-
-  on = (type, callback) => {
-    this._events[type] = callback;
-  };
-
-  start = () => {
-    let draggable = this._element;
-    let element = this._element;
-
-    const startDragging = (e) => {
-      if (typeof this._events.start == "function") {
-        this._events.start({
-          e,
-          target: draggable,
-        });
-      }
-
-      if (e.type === "mousedown") {
-        e.preventDefault();
-      }
-
-      element.addEventListener("touchmove", drag, { passive: false });
-      element.addEventListener("touchend", stopDragging);
-      element.addEventListener("mousemove", drag);
-      element.addEventListener("mouseup", stopDragging);
-      element.addEventListener("mouseleave", stopDragging);
-    };
-
-    const drag = (e) => {
-      if (typeof this._events.move == "function") {
-        this._events.move({
-          e,
-          target: draggable,
-        });
-      }
-    };
-
-    const stopDragging = (e) => {
-      // allowtouchstart = true;
-      if (typeof this._events.end == "function") {
-        this._events.end({
-          e,
-          target: draggable,
-        });
-      }
-
-      if (e.touches && e.touches.length > 0) return;
-      element.removeEventListener("touchmove", drag);
-      element.removeEventListener("touchend", stopDragging);
-      element.removeEventListener("mousemove", drag);
-      element.removeEventListener("mouseup", stopDragging);
-      element.removeEventListener("mouseleave", stopDragging);
-    };
-
-    draggable.addEventListener("touchstart", startDragging, {
-      passive: false,
-    });
-    draggable.addEventListener("mousedown", startDragging);
-  };
-}
-
-function calculateNewPosition(
-  top,
-  left,
-  width,
-  height,
-  newWidth,
-  newHeight
-) {
-  // Calcula la diferencia en tamaño para cada eje
-  const deltaX = (newWidth - width) / 2;
-  const deltaY = (newHeight - height) / 2;
-
-  // Ajusta las posiciones de left y top para mantener el centro
-  const newLeft = left - deltaX;
-  const newTop = top - deltaY;
-
-  return { top: newTop, left: newLeft };
-}
-
-var footerVideoPlayer = () => {
-  const myApp = window.dataApp;
-  const myVal = {
-    elements: {
-      video: myApp.mediaPlayer.element("video"),
-    },
-    classes: {
-      divPreview: null,
-      divPrueba: null,
-    },
-    values: {
-      pinch: {
-        start: false,
-        escala: 1,
-        ultimaDistancia: 0,
-      },
-    },
-  };
-
-  const $element = myApp.MyFunction.createNodeElement(`
-        <footer class="footer_rTzBt2c">
-
-            <div id="divPrueba" class="div_MJ5Ba2C" style="pointer-events:none;">
-              <div id="divPreview" class="div_wPiZgS6" style="display:none;">
-                  <div id="divPreviewContent" class="d-grid">
-                    <canvas id="canvasVideo" style="aspect-ratio: 16/9;"></canvas>
-                    <div class="div_OZ6oAgh"><span id="spanBar"></span></div>
-                    <div class="div_lq8dhAa">
-                        <button id="buttonPlayPause"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-play"><path d="M20.494,7.968l-9.54-7A5,5,0,0,0,3,5V19a5,5,0,0,0,7.957,4.031l9.54-7a5,5,0,0,0,0-8.064Zm-1.184,6.45-9.54,7A3,3,0,0,1,5,19V5A2.948,2.948,0,0,1,6.641,2.328,3.018,3.018,0,0,1,8.006,2a2.97,2.97,0,0,1,1.764.589l9.54,7a3,3,0,0,1,0,4.836Z"></path></svg></button>
-                        <button id="buttonPIP"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-svg-name="fi fi-rr-resize"><path d="m19 0h-8a5.006 5.006 0 0 0 -5 5v6h-1a5.006 5.006 0 0 0 -5 5v3a5.006 5.006 0 0 0 5 5h3a5.006 5.006 0 0 0 5-5v-1h6a5.006 5.006 0 0 0 5-5v-8a5.006 5.006 0 0 0 -5-5zm-8 16a3 3 0 0 1 -3-3 3 3 0 0 1 3 3zm0 3a3 3 0 0 1 -3 3h-3a3 3 0 0 1 -3-3v-3a3 3 0 0 1 3-3h1a5.006 5.006 0 0 0 5 5zm11-6a3 3 0 0 1 -3 3h-6a4.969 4.969 0 0 0 -.833-2.753l5.833-5.833v2.586a1 1 0 0 0 2 0v-3a3 3 0 0 0 -3-3h-3a1 1 0 0 0 0 2h2.586l-5.833 5.833a4.969 4.969 0 0 0 -2.753-.833v-6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3z"></path></svg></button>
-                        <button id="buttonCloseVideo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-cross"><path d="M23.707.293h0a1,1,0,0,0-1.414,0L12,10.586,1.707.293a1,1,0,0,0-1.414,0h0a1,1,0,0,0,0,1.414L10.586,12,.293,22.293a1,1,0,0,0,0,1.414h0a1,1,0,0,0,1.414,0L12,13.414,22.293,23.707a1,1,0,0,0,1.414,0h0a1,1,0,0,0,0-1.414L13.414,12,23.707,1.707A1,1,0,0,0,23.707.293Z"></path></svg></button>
-                    </div>
-                  </div>
-              </div>
-            </div>
-            
-            <div class="div_rFbZYz7">
-                <div id="elementVideo" class="div_DFHkIAJ pointer-on"></div>
-            </div>
-            
-        </footer>
-  `);
-
-  const $elements = myApp.MyFunction.createObjectElement(
-    $element.querySelectorAll("[id]"),
-    "id",
-    true
-  );
-
-  const context = $elements.canvasVideo.getContext("2d");
-
-  const draw = () => {
-    const video = myVal.elements.video;
-    const canvas = $elements.canvasVideo;
-    if (!video.paused && !video.ended) {
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      requestAnimationFrame(draw);
-    }
-  };
-
-  $elements.canvasVideo.addEventListener("click", () => {
-    myApp.mediaPlayer.element().requestFullscreen();
-  });
-
-  $elements.buttonPlayPause.addEventListener("click", () => {
-    if (myVal.elements.video.paused) myVal.elements.video.play();
-    else myVal.elements.video.pause();
-  });
-
-  $elements.buttonPIP.addEventListener("click", () => {
-    myVal.elements.video.requestPictureInPicture();
-  });
-
-  $elements.buttonCloseVideo.addEventListener("click", () => {
-    $elements.divPreview.style.display = "none";
-    myApp.mediaPlayer.video((video) => {
-      video.src = "";
-    });
-  });
-
-  myVal.elements.video.addEventListener("play", () => {
-    $elements.buttonPlayPause.innerHTML =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-pause"><path d="M6.5,0A3.5,3.5,0,0,0,3,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,6.5,0ZM8,20.5a1.5,1.5,0,0,1-3,0V3.5a1.5,1.5,0,0,1,3,0Z"></path><path d="M17.5,0A3.5,3.5,0,0,0,14,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,17.5,0ZM19,20.5a1.5,1.5,0,0,1-3,0V3.5a1.5,1.5,0,0,1,3,0Z"></path></svg>';
-    draw();
-  });
-  myVal.elements.video.addEventListener("pause", () => {
-    $elements.buttonPlayPause.innerHTML =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-play"><path d="M20.494,7.968l-9.54-7A5,5,0,0,0,3,5V19a5,5,0,0,0,7.957,4.031l9.54-7a5,5,0,0,0,0-8.064Zm-1.184,6.45-9.54,7A3,3,0,0,1,5,19V5A2.948,2.948,0,0,1,6.641,2.328,3.018,3.018,0,0,1,8.006,2a2.97,2.97,0,0,1,1.764.589l9.54,7a3,3,0,0,1,0,4.836Z"></path></svg>';
-  });
-
-  myVal.elements.video.addEventListener("timeupdate", () => {
-    $elements.spanBar.style.width =
-      myApp.MyClass.MyInt.percentage(
-        myVal.elements.video.currentTime,
-        myVal.elements.video.duration
-      ) + "%";
-  });
-
-  myVal.elements.video.addEventListener("loadstart", () => {
-    if (myVal.elements.video.getAttribute("src").trim()) {
-      $elements.divPreview.style.display = "";
-    }
-  });
-
-  myVal.elements.video.addEventListener("loadedmetadata", () => {
-    $elements.canvasVideo.width = myVal.elements.video.videoWidth;
-    $elements.canvasVideo.height = myVal.elements.video.videoHeight;
-    $elements.canvasVideo.style.aspectRatio = "";
-  });
-
-  myVal.elements.video.addEventListener("error", (e) => {
-    if (e.target.error.code == 3) {
-      myApp.values.hls.recoverMediaError();
-      e.target.play();
-    }
-  });
-
-  myVal.elements.video.addEventListener("enterpictureinpicture", () => {
-    $elements.divPreview.style.display = "none";
-  });
-
-  myVal.elements.video.addEventListener("leavepictureinpicture", () => {
-    if (document.fullscreenElement) document.exitFullscreen();
-    $elements.divPreview.style.display = "";
-  });
-
-  $elements.elementVideo.append(myApp.mediaPlayer.element());
-
-  const function_pmgnvcdirebja = () => {
-    const elementMakeDrag = new ElementMakeDrag($elements.divPrueba);
-    const draggable = $elements.divPreview;
-
-    const datapinch = {
-      allow: false,
-      startdistance: 0,
-      lastdistance: 0,
-      scale: 1,
-    };
-
-    const datamove = {
-      allow: false,
-      xy: {
-        initial: {
-          x: 0,
-          y: 0,
-        },
-        current: {
-          x: 0,
-          y: 0,
-        },
-      },
-    };
-
-    elementMakeDrag.on("start", ({ e, target }) => {
-      target.style.pointerEvents = "";
-
-      if (e.touches) {
-        if (!draggable.contains(e.touches[0].target)) return;
-      }
-
-      if (draggable.contains(e.target)) {
-        datamove.allow = true;
-
-        if (e.type === "touchstart") {
-          const index = Array.from(e.touches).findIndex((touch) =>
-            draggable.contains(touch.target)
-          );
-
-          datamove.xy.initial.x =
-            e.touches[index].clientX - draggable.offsetLeft;
-          datamove.xy.initial.y =
-            e.touches[index].clientY - draggable.offsetTop;
-        } else {
-          datamove.xy.initial.x = e.clientX - draggable.offsetLeft;
-          datamove.xy.initial.y = e.clientY - draggable.offsetTop;
-        }
-
-        if (e.touches && e.touches.length === 2) {
-          datapinch.allow = true;
-          datapinch.lastdistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-        }
-      }
-    });
-    elementMakeDrag.on("move", ({ e }) => {
-      if (datamove.allow) {
-        $elements.divPreviewContent.style.pointerEvents = "none";
-
-        if (e.type === "touchmove") {
-          e.preventDefault();
-          const index = Array.from(e.touches).findIndex((touch) =>
-            draggable.contains(touch.target)
-          );
-
-          if (index != -1) {
-            datamove.xy.current.x =
-              e.touches[index].clientX - datamove.xy.initial.x;
-            datamove.xy.current.y =
-              e.touches[index].clientY - datamove.xy.initial.y;
-          }
-        } else {
-          datamove.xy.current.x = e.clientX - datamove.xy.initial.x;
-          datamove.xy.current.y = e.clientY - datamove.xy.initial.y;
-        }
-
-        const top = draggable.offsetHeight / 2;
-        const left = draggable.offsetWidth / 2;
-
-        const y = Math.max(
-          top * -1,
-          Math.min(
-            datamove.xy.current.y,
-            window.innerHeight - draggable.offsetHeight + top
-          )
-        );
-
-        const x = Math.max(
-          left * -1,
-          Math.min(
-            datamove.xy.current.x,
-            window.innerWidth - draggable.offsetWidth + left
-          )
-        );
-
-        draggable.style.top = `${y}px`;
-        draggable.style.left = `${x}px`;
-
-        draggable.style.right = "initial";
-        draggable.style.bottom = "initial";
-      }
-
-      if (datapinch.allow) {
-        if (e.touches && e.touches.length === 2) {
-          const currentdistance = Math.hypot(
-            e.touches[0].clientX - e.touches[1].clientX,
-            e.touches[0].clientY - e.touches[1].clientY
-          );
-
-          if (
-            (currentdistance > datapinch.lastdistance &&
-              parseInt(draggable.style.width) == 700) ||
-            (currentdistance < datapinch.lastdistance &&
-              parseInt(draggable.style.width) == 150)
-          )
-            return (datapinch.lastdistance = currentdistance);
-
-          const scalerelative = currentdistance / datapinch.lastdistance;
-          datapinch.scale *= scalerelative;
-
-          datapinch.lastdistance = currentdistance;
-
-          if (!draggable.getAttribute("data-width")) {
-            draggable.setAttribute("data-width", draggable.offsetWidth);
-          }
-
-          draggable.style.width = `${Math.max(
-            150,
-            Math.min(
-              parseInt(draggable.getAttribute("data-width")) * datapinch.scale,
-              700
-            )
-          )}px`;
-        }
-      }
-    });
-    elementMakeDrag.on("end", ({ e, target }) => {
-      if (datamove.allow && ((e.touches && !e.touches.length) || !e.touches)) {
-        datamove.allow = false;
-      }
-
-      if (datapinch.allow && e.touches && e.touches.length != 2) {
-        datapinch.allow = false;
-      }
-
-      if (e.touches && e.touches.length) return;
-
-      target.style.pointerEvents = "none";
-      $elements.divPreviewContent.style.pointerEvents = "";
-    });
-
-    draggable.addEventListener(
-      "wheel",
-      (e) => {
-        e.preventDefault();
-
-        const draggablegetBoundingClientRect =
-          draggable.getBoundingClientRect();
-
-        draggable.style.width = `${Math.max(
-          150,
-          Math.min(draggable.offsetWidth - (e.deltaY > 0 ? 10 : -10), 1000)
-        )}px`;
-
-        const draggablegetBoundingClientRect2 =
-          draggable.getBoundingClientRect();
-
-        const datasss = calculateNewPosition(
-          draggablegetBoundingClientRect.top,
-          draggablegetBoundingClientRect.left,
-          draggablegetBoundingClientRect.width,
-          draggablegetBoundingClientRect.height,
-          draggablegetBoundingClientRect2.width,
-          draggablegetBoundingClientRect2.height
-        );
-
-        draggable.style.left = `${datasss.left}px`;
-        draggable.style.top = `${datasss.top}px`;
-
-        draggable.style.right = "initial";
-        draggable.style.bottom = "initial";
-      },
-      { passive: false }
-    );
-
-    addEventListener("resize", () => {
-      if (draggable.style.left != "" || draggable.style.top != "") {
-        draggable.style.top = "";
-        draggable.style.left = "";
-        draggable.style.right = "20px";
-        draggable.style.bottom = "20px";
-      }
-    });
-
-    elementMakeDrag.start();
-  };
-
-  function_pmgnvcdirebja();
-
-  return $element;
-};
+// import footerVideoPlayer from "./assets/footerVideoPlayer";
 
 addEventListener("contextmenu", (e) => {
   e.preventDefault();
 });
 
 addEventListener("DOMContentLoaded", () => {
-  const myApp = (window.dataApp = dataApp());
+  const mrf = window.MyResourceFunction;
 
+  const myApp = dataApp();
+  window.dataApp = myApp;
+
+  // return;
   document.getElementById("app").append(
-    myApp.MyClass.MyElement.create(
-      `
-      <div class="container">
-        <navigate></navigate>
-        <element-route class="routes" class="routes"></element-route>
-      </div>
-      <navigate-bottom></navigate-bottom>
-      <footer-player></footer-player>
-    `
-    ).fragment((fragment) => {
-      myApp.MyClass.MyElement.replaceChildren(fragment, {
+    ...mrf.replaceNodeChildren(
+      mrf.createNodeElement(
+        `
+          <div>
+            <div class="container">
+              <navigate></navigate>
+              <element-route class="routes" class="routes"></element-route>
+            </div>
+            <navigate-bottom></navigate-bottom>
+            <footer-player></footer-player>
+          </div>
+        `
+      ),
+      {
         navigate: navigate(),
         "navigate-bottom": navigateBottom(),
         "element-route": routes(),
-        "footer-player": footerVideoPlayer(),
-      });
-    })
+        // "footer-player": footerVideoPlayer(),
+      }
+    ).childNodes
   );
 
-  // storageObject();
-  // theme();
-
   dispatchEvent(new CustomEvent("hashchange"));
-  // dispatchEvent(new CustomEvent("_theme"));
 });
