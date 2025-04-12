@@ -1306,7 +1306,7 @@ var serieId = () => {
 
       const encodeQueryString = mrf.encodeQueryObject({
         route: "toggle-history-view",
-        episode: input.dataset.episode,
+        episode: `${input.dataset.season}-${input.dataset.episode}`,
         datetime: Date.now(),
         data_id: myVal.values.data_id,
         type: 3,
@@ -1616,14 +1616,15 @@ var serieId = () => {
 
     $elements.episodes.innerHTML = array
       .map((episode) => {
-        const episodeInfo = myVal.values.streaming?.episodes?.[episode];
+        const episodeInfo =
+          myVal.values.streaming?.episodes?.[`${season}-${episode}`];
 
         const checked = episodeInfo != undefined ? "checked" : "";
 
         const displayInput = myVal.values.isConnected ? "" : "display:none";
 
         return `
-          <div data-episode="${episode}" class="div_eGwK6I1">
+          <div data-season="${season}" data-episode="${episode}" class="div_eGwK6I1">
             <button 
               class="button_fk0VHgU" 
               data-slug="${myVal.params.id}-${episode}" 
@@ -1651,7 +1652,7 @@ var serieId = () => {
                 </small>
             </button>
             <label class="label_zjZIMnZ" style="${displayInput}">
-              <input type="checkbox" data-episode="${episode}" ${checked}>
+              <input type="checkbox" data-season="${season}" data-episode="${episode}" ${checked}>
               <span style="display:flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-check"><path d="M22.319,4.431,8.5,18.249a1,1,0,0,1-1.417,0L1.739,12.9a1,1,0,0,0-1.417,0h0a1,1,0,0,0,0,1.417l5.346,5.345a3.008,3.008,0,0,0,4.25,0L23.736,5.847a1,1,0,0,0,0-1.416h0A1,1,0,0,0,22.319,4.431Z"></path></svg></span>
             </label>
           </div>
@@ -2527,22 +2528,13 @@ var inicio = () => {
     functions: {},
     promises: {
       genderPelicula: new Promise((resolve, reject) => {
-        fetch("https://api.vniox.com/iptv/api.php?route=category-film")
-          .then((res) => res.json())
-          .then(resolve)
-          .catch(reject);
+        return resolve([]);
       }),
       genderSerie: new Promise((resolve, reject) => {
-        fetch("https://api.vniox.com/iptv/api.php?route=category-serie")
-          .then((res) => res.json())
-          .then(resolve)
-          .catch(reject);
+        return resolve([]);
       }),
       genderLive: new Promise((resolve, reject) => {
-        fetch("https://api.vniox.com/iptv/api.php?route=category-live")
-          .then((res) => res.json())
-          .then(resolve)
-          .catch(reject);
+        return resolve([]);
       }),
     },
 
@@ -4139,7 +4131,7 @@ var historial = () => {
 
         const url = data.images.poster.replace("/original/", "/w185/");
 
-        const [season, episode] = data.other.episode.split("-");
+        const [season, episode] = data.other.episode.split("-").concat("1-1");
         const info =
           type == 2
             ? ""
