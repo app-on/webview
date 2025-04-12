@@ -4116,7 +4116,7 @@ var historial = () => {
   };
 
   myVal.set.dataTruePeliculaSerie = (array) => {
-    const type = $elements["form-filter-type"].key.value;
+    $elements["form-filter-type"].key.value;
 
     $elements.itemTrue.append(
       ...array.map((data, index, array) => {
@@ -4130,10 +4130,11 @@ var historial = () => {
             : true;
 
         const url = data.images.poster.replace("/original/", "/w185/");
+        const type = data.url.slug.startsWith("movies/") ? "pelicula" : "serie";
 
         const [season, episode] = data.other.episode.split("-").concat("1-1");
         const info =
-          type == 2
+          type == "pelicula"
             ? ""
             : `
           T${season.padStart(2, "0")}
