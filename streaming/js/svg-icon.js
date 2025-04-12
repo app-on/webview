@@ -66,5 +66,3 @@ window.iconSVG = (function () {
 
   return (name = "") => icons[name] || "";
 })();
-
-console.log(window.svgIcon);

@@ -2,7 +2,6 @@
 
 var dataApp = () => {
   const mrc = window.MyResourceClass;
-  console.log(mrc);
 
   const exp = {
     ta: "ta-019626a1-7528-79cb-9c04-14ee7055d7b4",
@@ -3032,7 +3031,6 @@ var inicio = () => {
   };
 
   myVal.set.dataTrue = (array) => {
-    console.log(array);
     const type = $elements["form-filter-type"].key.value;
 
     const types = {
@@ -3050,7 +3048,7 @@ var inicio = () => {
     myVal.signals.dataNull.value = false;
   };
 
-  // myVal.get.dataTrue().then(myVal.set.dataTrue);
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   return $element;
 };
