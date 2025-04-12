@@ -107,12 +107,11 @@ var dataApp = () => {
         seconds = parseInt(seconds) || 0;
         const h = Math.floor(seconds / 3600); // Calcular horas
         const m = Math.floor((seconds % 3600) / 60); // Calcular minutos
-        const s = seconds % 60; // Calcular segundos restantes
 
         const parts = [];
         if (h > 0) parts.push(`${h}h`);
         if (m > 0 || h > 0) parts.push(`${m}m`); // Mostrar minutos si hay horas
-        if (s > 0) parts.push(`${s}s`); // Mostrar minutos si hay horas
+        // if (s > 0) parts.push(`${s}s`); // Mostrar minutos si hay horas
 
         return parts.join(" ");
       },
@@ -165,6 +164,13 @@ var dataApp = () => {
           return () => {};
         }
       });
+    },
+    callbackIf: (value, callback) => {
+      try {
+        if (value && typeof callback == "function") {
+          callback(value);
+        }
+      } catch (error) {}
     },
   };
 
@@ -677,7 +683,7 @@ var peliculaId = () => {
         episode: input.dataset.episode,
         datetime: Date.now(),
         data_id: myVal.values.data_id,
-        type: 1,
+        type: 2,
         action: input.checked ? 1 : 0,
       });
 
@@ -704,6 +710,7 @@ var peliculaId = () => {
       data_id: myVal.values.data_id,
       type: 2,
       action: $elements.favorite.dataset.action,
+      id_collection: 1,
     });
 
     fetch(
@@ -727,10 +734,11 @@ var peliculaId = () => {
 
   myApp.events($elements.inputView, "change", () => {
     const encodeQueryString = mrf.encodeQueryObject({
-      route: "toggle-views",
+      route: "toggle-favorites",
       data_id: myVal.values.data_id,
       type: 2,
       action: $elements.inputView.checked ? 1 : 0,
+      id_collection: 2,
     });
 
     fetch(
@@ -840,7 +848,9 @@ var peliculaId = () => {
         myApp.elements.meta.color.setAttribute("content", color);
         $element.style.background = color;
 
-        Android.colorSystemBar(color);
+        myApp.callbackIf(window.Android, (Android) => {
+          Android.colorSystemBar(color);
+        });
       });
     };
 
@@ -983,7 +993,7 @@ var peliculaId = () => {
   myApp.elements.meta.color.setAttribute("content", "#000000");
   myVal.get.dataTrue().then(myVal.set.dataTrue);
 
-  mrf.callbackTryCatch(() => {
+  myApp.callbackIf(window.Android, (Android) => {
     Android.colorSystemBar("#000000");
   });
 
@@ -1300,7 +1310,7 @@ var serieId = () => {
         episode: input.dataset.episode,
         datetime: Date.now(),
         data_id: myVal.values.data_id,
-        type: 1,
+        type: 3,
         action: input.checked ? 1 : 0,
       });
 
@@ -1327,6 +1337,7 @@ var serieId = () => {
       data_id: myVal.values.data_id,
       type: 3,
       action: $elements.favorite.dataset.action,
+      id_collection: 1,
     });
 
     fetch(
@@ -1350,10 +1361,11 @@ var serieId = () => {
 
   myApp.events($elements.inputView, "change", () => {
     const encodeQueryString = mrf.encodeQueryObject({
-      route: "toggle-views",
+      route: "toggle-favorites",
       data_id: myVal.values.data_id,
       type: 3,
       action: $elements.inputView.checked ? 1 : 0,
+      id_collection: 2,
     });
 
     fetch(
@@ -1481,7 +1493,9 @@ var serieId = () => {
         myApp.elements.meta.color.setAttribute("content", color);
         $element.style.background = color;
 
-        Android.colorSystemBar(color);
+        myApp.callbackIf(window.Android, (Android) => {
+          Android.colorSystemBar(color);
+        });
       });
     };
 
@@ -1656,9 +1670,9 @@ var serieId = () => {
   myApp.elements.meta.color.setAttribute("content", "#000000");
   myVal.get.dataTrue().then(myVal.set.dataTrue);
 
-  // mrf.callbackTryCatch(() => {
-  //   Android.colorSystemBar("#000000");
-  // });
+  myApp.callbackIf(window.Android, (Android) => {
+    Android.colorSystemBar("#000000");
+  });
 
   $elements.itemNull.style.display = "none";
   $elements.itemTrue.style.display = "";
@@ -2007,6 +2021,7 @@ var animeId = () => {
       data_id: myVal.values.data_id,
       type: 1,
       action: $elements.favorite.dataset.action,
+      id_collection: 1,
     });
 
     fetch(
@@ -2030,10 +2045,11 @@ var animeId = () => {
 
   myApp.events($elements.inputView, "change", () => {
     const encodeQueryString = mrf.encodeQueryObject({
-      route: "toggle-views",
+      route: "toggle-favorites",
       data_id: myVal.values.data_id,
       type: 1,
       action: $elements.inputView.checked ? 1 : 0,
+      id_collection: 2,
     });
 
     fetch(
@@ -2167,7 +2183,9 @@ var animeId = () => {
         myApp.elements.meta.color.setAttribute("content", color);
         $element.style.background = color;
 
-        Android.colorSystemBar(color);
+        myApp.callbackIf(window.Android, (Android) => {
+          Android.colorSystemBar(color);
+        });
       });
     };
 
@@ -2301,7 +2319,6 @@ var animeId = () => {
       myVal.signals.isFavorite.value = Boolean(data?.favorite);
       myVal.signals.isView.value = Boolean(data?.view);
       myVal.set.dataTrueEpisodes($elements.selectSeason.value);
-      
     }
   };
 
@@ -2369,12 +2386,13 @@ var animeId = () => {
     alert(error.message);
   }
 
-  mrf.callbackTryCatch(() => {
+  $elements.itemNull.style.display = "none";
+  $elements.itemTrue.style.display = "";
+
+  myApp.callbackIf(window.Android, (Android) => {
     Android.colorSystemBar("#000000");
   });
 
-  $elements.itemNull.style.display = "none";
-  $elements.itemTrue.style.display = "";
   return $element;
 };
 
@@ -2763,17 +2781,15 @@ var inicio = () => {
       const genreArray = [];
 
       const genreString = $elements.selectGender.value;
-
       if (genreString != "") {
         genreArray.push(genreString);
       }
 
+      //$elements.selectGender.value
+      //["-1", "-2"].includes($elements.selectGender.value)
       if (["-1", "-2"].includes(genreString)) {
         return ApiWebAnimeflv.home().then((object) => {
-          myVal.signals.dataNull.value = true;
-          myVal.signals.dataTrue.value =
-            genreString == "-1" ? object.episodes : object.animes;
-          myVal.signals.dataNull.value = false;
+          resolve(genreString == "-1" ? object.episodes : object.animes);
         });
       }
 
@@ -2865,7 +2881,10 @@ var inicio = () => {
 
     $elements.itemTrueLoad.remove();
 
-    if (array.length == 24) {
+    if (
+      array.length == 24 &&
+      !["-1", "-2"].includes($elements.selectGender.value)
+    ) {
       $elements.itemTrue.append($elements.itemTrueLoad);
       myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
     }
@@ -3013,6 +3032,7 @@ var inicio = () => {
   };
 
   myVal.set.dataTrue = (array) => {
+    console.log(array);
     const type = $elements["form-filter-type"].key.value;
 
     const types = {
@@ -3030,7 +3050,7 @@ var inicio = () => {
     myVal.signals.dataNull.value = false;
   };
 
-  myVal.get.dataTrue().then(myVal.set.dataTrue);
+  // myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   return $element;
 };
@@ -3892,10 +3912,11 @@ var collection = () => {
       const type = $elements["form-filter-type"].key.value;
 
       const encodeQueryString = mrf.encodeQueryObject({
-        route: myVal.values.types[$elements.selectGender.value] ?? "favorites",
+        route: "favorites",
         type: type,
         start: $elements.itemTrue.querySelectorAll("[data-item]").length,
         end: 25,
+        id_collection: $elements.selectGender.value,
       });
 
       fetch(
@@ -4733,7 +4754,10 @@ var theme = () => {
         );
 
         localStorage.setItem("theme", element.getAttribute("data-theme"));
-        Android.colorSystemBar(theme["--app-color-background"]);
+
+        myApp.callbackIf(window.Android, (Android) => {
+          Android.colorSystemBar(theme["--app-color-background"]);
+        });
       });
 
       if (localStorage.getItem("theme") == element.getAttribute("data-theme")) {

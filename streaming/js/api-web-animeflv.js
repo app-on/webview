@@ -1,14 +1,15 @@
 class ApiWebAnimeflv {
   static fetch = (url) => {
     return new Promise((resolve, reject) => {
-      // fetch(url)
-      //   .then((res) => res.text())
-      //   .then(resolve);
-
-      // return;
-      setTimeout(() => {
-        resolve(Android.getPageContent(url));
-      }, 1);
+      if (window.Android) {
+        setTimeout(() => {
+          resolve(Android.getPageContent(url));
+        }, 1);
+      } else {
+        fetch(url)
+          .then((res) => res.text())
+          .then(resolve);
+      }
     });
   };
 
