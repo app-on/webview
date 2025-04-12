@@ -3877,7 +3877,7 @@ var collection = () => {
         const child = itemData({
           href: `#/${type}/${data.TMDbId}`,
           title: data.titles.name,
-          info: type,
+          info: "",
           style: "",
           imgSrc: url,
           intersectionObserver: true,
