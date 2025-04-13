@@ -476,10 +476,6 @@ var peliculaId = () => {
                           <input type="radio" name="key" value="chapter">
                           <span>Capitulos</span>
                         </label>
-                        <label>
-                          <input type="radio" name="key" value="similar">
-                          <span>Otros</span>
-                        </label>
                       </form>
                         
                   </div>
@@ -1094,10 +1090,6 @@ var serieId = () => {
                           <input type="radio" name="key" value="chapter">
                           <span>Capitulos</span>
                         </label>
-                        <label>
-                          <input type="radio" name="key" value="similar">
-                          <span>Otros</span>
-                        </label>
                       </form>
                         
                   </div>
@@ -1406,22 +1398,6 @@ var serieId = () => {
           });
         });
       });
-
-      // setTimeout(() => {
-      //   getMediaWeb(button.getAttribute("data-url"), (res) => {
-      //     $elements.loaderVideo.style.display = "none";
-      //     if (res.status) {
-      //       Android.openWithDefault(res.url, "video/*");
-      //     } else {
-      //       alert("El video no esta disponible");
-      //     }
-      //   });
-      // });
-
-      // myApp.mediaPlayer.element().requestFullscreen();
-      // myVal.functions.updateHistoryVideo();
-
-      return;
     }
   });
 
