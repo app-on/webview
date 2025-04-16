@@ -4966,22 +4966,24 @@ var searchType = () => {
       }
     });
 
-    // setTimeout(() => {
-    //   dispatchEvent(
-    //     new CustomEvent("_keydown", {
-    //       detail: {
-    //         action: "to",
-    //         id: $element
-    //           .querySelector("[data-keydown-listener]")
-    //           .getAttribute("data-keydown-listener"),
-    //       },
-    //     })
-    //   );
-    // });
+    if (Boolean(myVal.params.result)) {
+      setTimeout(() => {
+        dispatchEvent(
+          new CustomEvent("_keydown", {
+            detail: {
+              action: "to",
+              id: $element
+                .querySelector("[data-keydown-listener]")
+                .getAttribute("data-keydown-listener"),
+            },
+          })
+        );
+      });
+    }
   }
 
   // setTimeout(() => $elements.form.search.focus());
-
+ 
   return $element;
 };
 
@@ -5414,19 +5416,20 @@ var searchTypeResult = () => {
       myVal.get.dataTrue().then(myVal.set.dataTrue);
     }
 
-    setTimeout(() => {
-    
-      dispatchEvent(
-        new CustomEvent("_keydown", {
-          detail: {
-            action: "to",
-            id: $element
-              .querySelector("[data-keydown-listener]")
-              .getAttribute("data-keydown-listener"),
-          },
-        })
-      );
-    });
+    if (!$elements.itemTrue.querySelector(".app-keydown-not-focus")) {
+      setTimeout(() => {
+        dispatchEvent(
+          new CustomEvent("_keydown", {
+            detail: {
+              action: "to",
+              id: $element
+                .querySelector("[data-keydown-listener]")
+                .getAttribute("data-keydown-listener"),
+            },
+          })
+        );
+      });
+    }
   });
 
   // myVal.get.dataTrue().then(myVal.set.dataTrue);
@@ -5533,7 +5536,9 @@ var searchTypeResult = () => {
 
       switch (detail.e.key) {
         case "Enter": {
+          children[index].classList.add("app-keydown-not-focus");
           children[index].click();
+          break;
         }
         case "ArrowUp": {
           const count = myApp.functions.getColumnCount(detail.target, 10);
@@ -5642,13 +5647,20 @@ var searchTypeResult = () => {
 
       $focus.classList.remove("app-keydown-not-focus");
       $focus.classList.add("app-keydown-focus");
+
+      $focus.scrollIntoView({
+        block: "center",
+        inline: "center",
+      });
     });
 
     myApp.events($elements.itemTrue, "_blur", ({ detail }) => {
-      const $focus = detail.target.querySelector(".app-keydown-focus");
+      if (!detail.target.querySelector(".app-keydown-not-focus")) {
+        const $focus = detail.target.querySelector(".app-keydown-focus");
 
-      if ($focus) {
-        $focus.classList.add("app-keydown-not-focus");
+        if ($focus) {
+          $focus.classList.add("app-keydown-not-focus");
+        }
       }
     });
   }
@@ -6035,7 +6047,9 @@ var collection = () => {
 
       switch (detail.e.key) {
         case "Enter": {
+          children[index].classList.add("app-keydown-not-focus");
           children[index].click();
+          break;
         }
         case "ArrowUp": {
           const count = myApp.functions.getColumnCount(detail.target, 10);
@@ -6147,10 +6161,12 @@ var collection = () => {
     });
 
     myApp.events($elements.itemTrue, "_blur", ({ detail }) => {
-      const $focus = detail.target.querySelector(".app-keydown-focus");
+      if (!detail.target.querySelector(".app-keydown-not-focus")) {
+        const $focus = detail.target.querySelector(".app-keydown-focus");
 
-      if ($focus) {
-        $focus.classList.add("app-keydown-not-focus");
+        if ($focus) {
+          $focus.classList.add("app-keydown-not-focus");
+        }
       }
     });
   }
