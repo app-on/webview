@@ -1447,12 +1447,14 @@ var peliculaId = () => {
       }
     });
 
-    setTimeout(() => {
+    $element.addEventListener("_rendered", () => {
       dispatchEvent(
         new CustomEvent("_keydown", {
           detail: {
             action: "to",
-            id: "01963acc-dca4-7fed-afe7-04410d48ccc9",
+            id: $element
+              .querySelector("[data-keydown-listener]")
+              .getAttribute("data-keydown-listener"),
           },
         })
       );
@@ -2487,12 +2489,14 @@ var serieId = () => {
       }
     });
 
-    setTimeout(() => {
+    $element.addEventListener("_rendered", () => {
       dispatchEvent(
         new CustomEvent("_keydown", {
           detail: {
             action: "to",
-            id: "01963acc-dca4-7fed-afe7-04410d48ccc9",
+            id: $element
+              .querySelector("[data-keydown-listener]")
+              .getAttribute("data-keydown-listener"),
           },
         })
       );
@@ -3548,12 +3552,14 @@ var animeId = () => {
       }
     });
 
-    setTimeout(() => {
+    $element.addEventListener("_rendered", () => {
       dispatchEvent(
         new CustomEvent("_keydown", {
           detail: {
             action: "to",
-            id: "01963acc-dca4-7fed-afe7-04410d48ccc9",
+            id: $element
+              .querySelector("[data-keydown-listener]")
+              .getAttribute("data-keydown-listener"),
           },
         })
       );
@@ -4355,7 +4361,6 @@ var inicio = () => {
   };
 
   myVal.set.dataTrue = (array) => {
- 
     const type = $elements["form-filter-type"].key.value;
 
     const types = {
@@ -4373,7 +4378,7 @@ var inicio = () => {
     myVal.signals.dataNull.value = false;
   };
 
-  myVal.get.dataTrue().then(myVal.set.dataTrue);
+  // myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   {
     myApp.events($elements["form-filter-type"], "_keydown", ({ detail }) => {
@@ -4665,7 +4670,7 @@ var searchType = () => {
                   href="#/">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-angle-left"><path d="M17.17,24a1,1,0,0,1-.71-.29L8.29,15.54a5,5,0,0,1,0-7.08L16.46.29a1,1,0,1,1,1.42,1.42L9.71,9.88a3,3,0,0,0,0,4.24l8.17,8.17a1,1,0,0,1,0,1.42A1,1,0,0,1,17.17,24Z"></path></svg>
                 </a>
-                <form id="form" class="form_r7mvBNn app-keydown-child" autocomplete="off" data-keydown-listener="01963b2c-e89c-7987-b2d7-9ebcf3aaa17d">
+                <form id="form" class="form_r7mvBNn app-keydown-child" autocomplete="off" data-keydown-listener="01963b2c-e89c-7987-b2d7-9ebcf3aaa17d" data-prevent-default="false">
                     <input 
                       type="search" 
                       name="search"
@@ -5398,42 +5403,6 @@ var searchTypeResult = () => {
     myVal.signals.dataNull.value = false;
   };
 
-  $element.addEventListener("_result", ({ detail }) => {
-    if (detail.result != myVal.params.result) {
-      myVal.params = detail;
-
-      $elements.anchorHref.href = ["#", "search", myVal.params.result].join(
-        "/"
-      );
-
-      $elements.textSearch.textContent = decodeURIComponent(
-        myVal.params.result
-      );
-
-      $elements.itemTrue.innerHTML = "";
-      myVal.signals.dataNull.value = true;
-
-      myVal.get.dataTrue().then(myVal.set.dataTrue);
-    }
-
-    if (!$elements.itemTrue.querySelector(".app-keydown-not-focus")) {
-      setTimeout(() => {
-        dispatchEvent(
-          new CustomEvent("_keydown", {
-            detail: {
-              action: "to",
-              id: $element
-                .querySelector("[data-keydown-listener]")
-                .getAttribute("data-keydown-listener"),
-            },
-          })
-        );
-      });
-    }
-  });
-
-  // myVal.get.dataTrue().then(myVal.set.dataTrue);
-
   {
     myApp.events($elements["form-filter-type"], "_keydown", ({ detail }) => {
       const children = Array.from(
@@ -5663,8 +5632,42 @@ var searchTypeResult = () => {
         }
       }
     });
-  }
 
+    $element.addEventListener("_rendered", () => {
+      const params = myApp.routes.params();
+
+      if (params.result != myVal.params.result) {
+        myVal.params = params;
+
+        $elements.anchorHref.href = ["#", "search", myVal.params.result].join(
+          "/"
+        );
+
+        $elements.textSearch.textContent = decodeURIComponent(
+          myVal.params.result
+        );
+
+        $elements.itemTrue.innerHTML = "";
+        myVal.signals.dataNull.value = true;
+
+        myVal.get.dataTrue().then(myVal.set.dataTrue);
+      }
+
+      if (!$elements.itemTrue.querySelector(".app-keydown-not-focus")) {
+        dispatchEvent(
+          new CustomEvent("_keydown", {
+            detail: {
+              action: "to",
+              id: $element
+                .querySelector("[data-keydown-listener]")
+                .getAttribute("data-keydown-listener"),
+            },
+          })
+        );
+      }
+    });
+  }
+ 
   return $element;
 };
 
@@ -6513,7 +6516,7 @@ var login = () => {
 
   const $element = mrf.createNodeElement(`
 
-    <div class="div_Xu02Xjh" style="position:fixed" data-keydown-listener="01963be2-9115-73c4-811e-56be78365cc6">
+    <div class="div_Xu02Xjh" style="position:fixed" data-keydown-listener="01963be2-9115-73c4-811e-56be78365cc6" data-prevent-default="false">
 
         <header class="header_K0hs3I0">
 
@@ -6784,7 +6787,7 @@ var profile = () => {
 
   const $element = mrf.createNodeElement(`
 
-        <div class="div_Xu02Xjh" data-keydown-listener="01963be2-9115-73c4-811e-56be78365cc6">
+        <div class="div_Xu02Xjh" data-keydown-listener="01963be2-9115-73c4-811e-56be78365cc6" data-prevent-default="false">
 
             <header class="header_K0hs3I0">
 
@@ -7037,7 +7040,7 @@ var theme = () => {
             <header class="header_K0hs3I0">
 
                 <div class="div_uNg74XS">
-                    <a href="#/setting" class="button_lvV6qZu button_YWxwK2P" style="display:none">
+                    <a href="#/setting" class="button_lvV6qZu button_YWxwK2P app-keydown-child">
                         ${svg("fi fi-rr-angle-small-left")}
                     </a>
                     <h3 id="textTitle">Tema</h3>
@@ -7187,8 +7190,6 @@ var theme = () => {
 
   {
     myApp.events($element, "_keydown", ({ detail }) => {
-      detail.e.preventDefault();
-
       const children = Array.from(
         detail.target.querySelectorAll(".app-keydown-child")
       );
@@ -7197,9 +7198,12 @@ var theme = () => {
         child.classList.contains("app-keydown-focus")
       );
 
+      console.log("mundo");
+
       switch (detail.e.key) {
         case "Enter": {
           children[index].click();
+          break;
         }
 
         case "ArrowUp": {
@@ -7207,8 +7211,6 @@ var theme = () => {
             children,
             children[index - 1],
             (childIndex) => {
-              childIndex.click();
-
               childIndex.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
@@ -7223,12 +7225,11 @@ var theme = () => {
         }
 
         case "ArrowDown": {
+          console.log(children[index + 1]);
           myApp.functions.childClickFocus(
             children,
             children[index + 1],
             (childIndex) => {
-              childIndex.click();
-
               childIndex.scrollIntoView({
                 behavior: "smooth",
                 block: "center",
@@ -7274,6 +7275,17 @@ var theme = () => {
         $focus.classList.add("app-keydown-not-focus");
       }
     });
+
+    $element.addEventListener("_rendered", () => {
+      dispatchEvent(
+        new CustomEvent("_keydown", {
+          detail: {
+            action: "to",
+            id: $element.getAttribute("data-keydown-listener"),
+          },
+        })
+      );
+    });
   }
   return $element;
 };
@@ -7298,8 +7310,8 @@ var setting = () => {
           </header>
           <div class="div_guZ6yID" style="padding:10px;">
             <div class="div_gVQO1KR">
-                <div id="options" class="div_cq16fYP" style="overflow:initial" data-keydown-listener="01963c18-468d-7c51-80a6-1092cb21cc1a">
-                  <a 
+                <div id="options" class="div_cq16fYP" data-keydown-listener="01963c18-468d-7c51-80a6-1092cb21cc1a">
+                  <a  
                   href="#/profile"
                   class="app-style-var d-flex-center-y app-keydown-child" style="--pd:10px; --g:10px; --h:60px;">
                     <small class="app-square-var d-flex-center">
@@ -7324,6 +7336,19 @@ var setting = () => {
     "id",
     true
   );
+
+  $element.addEventListener("_rendered", () => {
+    dispatchEvent(
+      new CustomEvent("_keydown", {
+        detail: {
+          action: "to",
+          id: $element
+            .querySelector("[data-keydown-listener]")
+            .getAttribute("data-keydown-listener"),
+        },
+      })
+    );
+  });
 
   {
     myApp.events($elements.options, "_keydown", ({ detail }) => {
@@ -7424,7 +7449,7 @@ var setting = () => {
       );
     });
   }
-
+ 
   return $element;
 };
 
@@ -8864,6 +8889,11 @@ var routes = () => {
     values: {
       pages: {},
     },
+
+    customEvent: {
+      _rendered: new CustomEvent("_rendered"),
+    },
+
     element: {
       route: document.createElement("div"),
     },
@@ -8895,15 +8925,7 @@ var routes = () => {
     { hash: "/search/:result", callback: searchType },
     {
       hash: "/search/:result/result",
-      callback: (p) => {
-        myVal.elements.searchTypeResult.dispatchEvent(
-          new CustomEvent("_result", {
-            detail: p,
-          })
-        );
-
-        return myVal.elements.searchTypeResult;
-      },
+      callback: () => myVal.elements.searchTypeResult,
     },
 
     { hash: "/collection", callback: collection },
@@ -8926,7 +8948,12 @@ var routes = () => {
     myVal.element.route.innerHTML = "";
 
     if (navigator.onLine) {
-      myVal.element.route.append(myApp.routes.get() || "");
+      const child = myApp.routes.get();
+
+      if (child instanceof Node) {
+        myVal.element.route.append(child);
+        child.dispatchEvent(myVal.customEvent._rendered);
+      }
     } else {
       myVal.element.route.append(offline());
     }
@@ -9006,8 +9033,10 @@ addEventListener("DOMContentLoaded", () => {
       document.querySelector(`[data-keydown-listener="${KEYDOWN_DATA.id}"]`) ||
       document.querySelector("[data-keydown-listener]");
 
+    console.log($element);
+
     if ($element) {
-      if ($element.getAttribute("data-prevent-default") == "true") {
+      if ($element.getAttribute("data-prevent-default") != "false") {
         e.preventDefault();
       }
 

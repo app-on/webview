@@ -97,7 +97,7 @@ input {
     all: unset;
     display: flex;
     padding: 10px 20px;
-    border-radius: 20px;
+    border-radius: 5px;
 
     cursor: pointer;
     pointer-events: initial;
@@ -109,10 +109,6 @@ input {
       background: var(--app-color-letter);
       color: var(--app-color-item);
     }
-
-    /* &:has(input.focus) {
-      outline: 3px solid purple;
-    } */
   }
 
   & input {
@@ -135,7 +131,7 @@ input {
     /* all: unset; */
     display: flex;
     padding: 10px 20px;
-    border-radius: 20px;
+    border-radius: 5px;
 
     cursor: pointer;
     pointer-events: initial;
@@ -172,10 +168,10 @@ input {
 .app-keydown-child {
   &.app-keydown-focus,
   & .app-keydown-focus {
-    outline: 3px solid peru;
+    box-shadow: 0 0 0 3px peru;
 
     &.app-keydown-not-focus {
-      outline: initial;
+      box-shadow: initial;
     }
   }
 }
@@ -703,7 +699,7 @@ input {
   border: none;
   outline: none;
 
-  border-radius: 15px;
+  border-radius: 5px;
 
   display: flex;
   justify-content: center;
@@ -972,7 +968,7 @@ input {
   justify-content: center;
   align-items: center;
 
-  border-radius: 15px;
+  border-radius: 5px;
   outline: none;
 
   &.active {
@@ -1625,6 +1621,14 @@ input {
   gap: 10px;
 
   border-bottom: 1px solid rgb(181 178 178 / 0.2);
+  border-radius: 5px;
+
+  padding-left: 20px;
+
+  & label,
+  & small {
+    display: none;
+  }
 }
 
 /* ----- PAGE -- INICIO.CSS ----- */
@@ -2401,12 +2405,7 @@ input {
 
 .div_ywmleK1 {
   display: flex;
-  border-top: 1px solid rgb(181 178 178 / 0.3);
   color: var(--app-color-letter);
-
-  &:first-child {
-    border-top: none;
-  }
 }
 
 .button_YqF7ZuC {
@@ -2419,6 +2418,8 @@ input {
   align-items: center;
 
   cursor: pointer;
+
+  border-radius: 5px;
 }
 
 .a_UrjAwYX {
@@ -2431,6 +2432,10 @@ input {
   color: inherit;
 
   outline: none;
+
+  padding: 10px;
+  border-radius: 5px;
+
   & svg {
     margin: auto;
   }
@@ -2704,10 +2709,7 @@ input {
   margin: auto;
   display: grid;
   width: 100%;
-  gap: 3px;
-
-  border-radius: 15px;
-  overflow: hidden;
+  gap: 10px;
 
   & a {
     all: unset;
@@ -2722,6 +2724,7 @@ input {
     gap: 10px;
 
     cursor: pointer;
+    border-radius: 5px;
   }
 
   & span {
@@ -2743,6 +2746,8 @@ input {
   display: grid;
   text-align: center;
   width: 100%;
+
+  background: orange;
 }
 
 /* ----- PAGE -- THEME.CSS ----- */
@@ -2765,11 +2770,15 @@ input {
   width: min(100%, 750px);
 
   display: grid;
+
+  padding: 10px;
+  gap: 10px;
 }
 
 .div_0p76jdM {
   display: grid;
-  border-bottom: 1.25px solid rgb(181 178 178 / 0.2);
+  background: var(--app-color-item);
+  border-radius: 5px;
 }
 
 .label_2F1ZTtw {
@@ -2780,6 +2789,8 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  border-radius: inherit;
 
   &:has(input:checked) + div {
     display: initial;
