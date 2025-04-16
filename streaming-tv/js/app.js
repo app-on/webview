@@ -4378,7 +4378,7 @@ var inicio = () => {
     myVal.signals.dataNull.value = false;
   };
 
-  // myVal.get.dataTrue().then(myVal.set.dataTrue);
+  myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   {
     myApp.events($elements["form-filter-type"], "_keydown", ({ detail }) => {
