@@ -24,7 +24,7 @@ const access = [
   {
     id: Date.now(),
     icon: "./img/icon/movie-tv.png",
-    url: "https://m-vnio.github.io/webview/",
+    url: "https://app-on.github.io/webview/streaming-tv/",
     name: "Movies TV",
   },
   {
