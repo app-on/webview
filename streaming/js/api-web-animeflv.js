@@ -5,23 +5,22 @@ class ApiWebAnimeflv {
         setTimeout(() => {
           const result = Android.getPageContent(url);
 
-          alert(result);
-          alert(result == "Error: Connection reset");
-
-          resolve(result);
-        }, 1);
-      } else {
-        fetch(url)
-          .then((res) => res.text())
-          .then(resolve)
-          .catch(() => {
+          if (result.startsWith("Error:")) {
             fetch(
               `https://fetch.vniox.com/index.php?url=${encodeURIComponent(url)}`
             )
               .then((res) => res.text())
               .then(resolve)
               .catch(reject);
-          });
+            return;
+          }
+
+          resolve(result);
+        }, 1);
+      } else {
+        fetch(url)
+          .then((res) => res.text())
+          .then(resolve);
       }
     });
   };
