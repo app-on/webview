@@ -464,10 +464,9 @@ var peliculaId = () => {
                     </div>
                   </div>
 
-                  <hr class="hr_nTfcjTI">
                   <div class="div_BIchAsC">
 
-                      <form class="app-form-label-checkbox" id="form-filter-type">
+                      <form class="app-form-label-checkbox" id="form-filter-type" style="border-radius:20px; background:rgb(255,255,255, 0.1)">
                         <label>
                           <input type="radio" name="key" value="information" checked>
                           <span>Detalles</span>
@@ -479,8 +478,7 @@ var peliculaId = () => {
                       </form>
                         
                   </div>
-                  <hr class="hr_nTfcjTI">
-
+  
                   <div id="itemTrueInformation" class="div_cnJqhFl" >
                     <div class="div_aSwP0zW">
                         <span id="nextEpisode"></span>
@@ -1078,10 +1076,9 @@ var serieId = () => {
                     </div>
                   </div>
 
-                  <hr class="hr_nTfcjTI">
                   <div class="div_BIchAsC">
 
-                      <form class="app-form-label-checkbox" id="form-filter-type">
+                      <form class="app-form-label-checkbox" id="form-filter-type" style="border-radius:20px; background:rgb(255,255,255, 0.1)">
                         <label>
                           <input type="radio" name="key" value="information" checked>
                           <span>Detalles</span>
@@ -1093,7 +1090,6 @@ var serieId = () => {
                       </form>
                         
                   </div>
-                  <hr class="hr_nTfcjTI">
 
                   <div id="itemTrueInformation" class="div_cnJqhFl" >
                     <div class="div_aSwP0zW">
@@ -1735,10 +1731,9 @@ var animeId = () => {
                     </div>
                   </div>
 
-                  <hr class="hr_nTfcjTI">
                   <div class="div_BIchAsC">
 
-                      <form class="app-form-label-checkbox" id="form-filter-type">
+                      <form class="app-form-label-checkbox" id="form-filter-type" style="border-radius:20px; background:rgb(255,255,255, 0.1)">
                         <label>
                           <input type="radio" name="key" value="information" checked>
                           <span>Detalles</span>
@@ -1754,7 +1749,6 @@ var animeId = () => {
                       </form>
                         
                   </div>
-                  <hr class="hr_nTfcjTI">
 
                   <div id="itemTrueInformation" class="div_cnJqhFl" >
                     <div class="div_aSwP0zW">
@@ -2472,7 +2466,6 @@ var itemData = (p = {}) => {
 };
 
 var inicio = () => {
-  const mrc = window.MyResourceClass;
   const mrf = window.MyResourceFunction;
   const svg = window.iconSVG;
 
@@ -2497,10 +2490,13 @@ var inicio = () => {
     },
     values: {
       observes: [],
+      activeIntersectionObserver: false,
+      scrollTop: 0,
     },
     function: {
       dataLoad: () => {},
     },
+
     functions: {},
     promises: {
       genderPelicula: new Promise((resolve, reject) => {
@@ -2587,7 +2583,7 @@ var inicio = () => {
             </div>
             <div id="itemTrue" class="div_qsNmfP3" style="display:none">
                 <div id="itemTrueLoad" class="div_Qm4cPUn">
-                    <div class="loader-i" style="--color:var(--color-letter)"></div>
+                    <div class="loader-i" style="--color:var(--app-color-letter)"></div>
                 </div>
             </div>
         </div>
@@ -2745,23 +2741,38 @@ var inicio = () => {
           $elements.itemTrue.querySelectorAll("[data-item]").length / 24
         ) + 1;
 
-      const genreArray = [];
+      const gender = $elements.selectGender.value;
+      const genres = [gender].filter(Boolean);
 
-      const genreString = $elements.selectGender.value;
-      if (genreString != "") {
-        genreArray.push(genreString);
-      }
-
-      //$elements.selectGender.value
-      //["-1", "-2"].includes($elements.selectGender.value)
-      if (["-1", "-2"].includes(genreString)) {
+      if (["-1", "-2"].includes(gender)) {
         return ApiWebAnimeflv.home().then((object) => {
-          resolve(genreString == "-1" ? object.episodes : object.animes);
+          const array = gender == "-1" ? object.episodes : object.animes;
+          resolve(
+            array.map((data) => {
+              return {
+                href: `#/anime/${data.identifier}`,
+                title: data.title,
+                info: gender == "-1" ? `episodio ${data.episode}` : data.type,
+                image: data.poster,
+                style: gender == "-1" ? "aspect-ratio:3/2" : "",
+              };
+            })
+          );
         });
       }
 
-      ApiWebAnimeflv.search({ page, genre: genreArray }).then((array) => {
-        resolve(array);
+      ApiWebAnimeflv.search({ page, genre: genres }).then((array) => {
+        resolve(
+          array.map((data) => {
+            return {
+              href: `#/anime/${data.identifier}`,
+              title: data.title,
+              info: data.type,
+              image: data.poster,
+              style: "",
+            };
+          })
+        );
       });
     });
   };
@@ -2770,13 +2781,31 @@ var inicio = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
-          $elements.itemTrue.querySelectorAll("[data-item]").length / 23
+          $elements.itemTrue.querySelectorAll("[data-item]").length / 24
         ) + 1;
 
       const gender = $elements.selectGender.value;
 
       ApiWebCuevana.pelicula(page, gender).then((data) => {
-        resolve(data?.props?.pageProps?.movies ?? []);
+        const array = data?.props?.pageProps?.movies ?? [];
+
+        resolve(
+          array.map((data) => {
+            const image = data.images.poster
+              ? data.images.poster.replace("/original/", "/w185/")
+              : "";
+
+            const type = "pelicula";
+
+            return {
+              href: `#/${type}/${data.TMDbId}`,
+              title: data.titles.name,
+              info: "",
+              image: image,
+              style: "",
+            };
+          })
+        );
       });
     });
   };
@@ -2789,7 +2818,25 @@ var inicio = () => {
         ) + 1;
 
       ApiWebCuevana.serie(page).then((data) => {
-        resolve(data?.props?.pageProps?.movies ?? []);
+        const array = data?.props?.pageProps?.movies ?? [];
+
+        resolve(
+          array.map((data) => {
+            const image = data.images.poster
+              ? data.images.poster.replace("/original/", "/w185/")
+              : "";
+
+            const type = "serie";
+
+            return {
+              href: `#/${type}/${data.TMDbId}`,
+              title: data.titles.name,
+              info: "",
+              image: image,
+              style: "",
+            };
+          })
+        );
       });
     });
   };
@@ -2803,12 +2850,12 @@ var inicio = () => {
       };
 
       const gender = $elements.selectGender.value;
-      const type = types[$elements["form-filter-type"].key.value];
+      const type = $elements["form-filter-type"].key.value;
 
       const length = $elements.itemTrue.querySelectorAll("[data-item]").length;
 
       const encodeQueryString = mrf.encodeQueryObject({
-        route: type,
+        route: types[type],
         category: gender,
         start: length,
         end: 50,
@@ -2817,170 +2864,12 @@ var inicio = () => {
       fetch(`https://api.vniox.com/iptv/api.php?${encodeQueryString}`)
         .then((res) => res.json())
         .then((data) => {
-          resolve(data ?? []);
+          resolve(Array.isArray(data) ? data : []);
         });
     });
   };
 
   /** SET */
-  myVal.set.dataTrueAnime = (array) => {
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        const url = data.poster;
-        const episode = `episodio ${data.episode}`;
-
-        const aspectRatio = data.episode ? "aspect-ratio:3/2" : "";
-
-        const child = itemData({
-          href: `#/anime/${data.identifier}`,
-          title: data.title,
-          info: data.type ?? episode,
-          style: aspectRatio,
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (
-      array.length == 24 &&
-      !["-1", "-2"].includes($elements.selectGender.value)
-    ) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
-  myVal.set.dataTruePeliculaSerie = (array) => {
-    const type =
-      $elements["form-filter-type"].key.value == "2" ? "pelicula" : "serie";
-
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        if (data.images.poster == null) {
-          return "";
-        }
-
-        const url = data.images.poster.replace("/original/", "/w185/");
-
-        const child = itemData({
-          href: `#/${type}/${data.TMDbId}`,
-          title: data.titles.name,
-          info: "",
-          style: "",
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 24) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
-  myVal.set.dataTrueIptv = (array) => {
-    const types = {
-      4: "pelicula-ii",
-      5: "serie-ii",
-    };
-
-    const type = types[$elements["form-filter-type"].key.value];
-
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        const url = data.stream_icon ?? data.cover;
-
-        const child = itemData({
-          href: `#/${type}/${data.stream_id ?? data.series_id}`,
-          title: data.name,
-          info: "",
-          style: "",
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 50) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
-  myVal.set.dataTrueIptvChannel = (array) => {
-    const template = document.createElement("div");
-
-    template.innerHTML = array
-      .map((data) => {
-        const url = data.stream_icon ?? data.cover;
-
-        const dataInput = mrc.EncodeTemplateString.toInput(
-          JSON.stringify(data)
-        );
-
-        return `
-          <button
-            class="div_SQpqup7" 
-            data-data="${dataInput}"
-            data-item>
-              <div class="div_fMC1uk6" style="aspect-ratio:1/1">
-                <img src="" alt="" data-src="${url}" style="display:none">
-                <span style="display:none"></span>
-              </div>
-              <div class="div_9nWIRZE">
-                <p>${data.name}</p>
-              </div>
-          </button>
-        `;
-      })
-      .join("");
-
-    $elements.itemTrue.append(
-      ...Array.from(template.children).map((child) => {
-        child.addEventListener("_IntersectionObserver", ({ detail }) => {
-          if (detail.entry.isIntersecting) {
-            detail.observer.unobserve(detail.entry.target);
-            const img = child.querySelector("img");
-            img.onload = () => (img.style.display = "");
-            img.src = img.dataset.src;
-          }
-        });
-
-        myApp.instances.IntersectionObserver.observe(child);
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 50) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
   myVal.get.dataTrue = () => {
     return new Promise((resolve, reject) => {
       const type = $elements["form-filter-type"].key.value;
@@ -2994,53 +2883,76 @@ var inicio = () => {
         6: myVal.get.dataTrueIptv,
       };
 
-      types?.[type]?.()?.then(resolve);
+      if (typeof types[type] == "function") {
+        types[type]().then(resolve);
+      }
     });
   };
 
   myVal.set.dataTrue = (array) => {
     const type = $elements["form-filter-type"].key.value;
+    const gender = $elements.selectGender.value;
 
-    const types = {
-      1: myVal.set.dataTrueAnime,
-      2: myVal.set.dataTruePeliculaSerie,
-      3: myVal.set.dataTruePeliculaSerie,
-      4: myVal.set.dataTrueIptv,
-      5: myVal.set.dataTrueIptv,
-      6: myVal.set.dataTrueIptvChannel,
-    };
+    myVal.values.activeIntersectionObserver = ((type) => {
+      if (type == 1) {
+        return array.length == 24 && !["-1", "-2"].includes(gender);
+      }
 
-    types?.[type]?.(array);
+      if (type == 2 || type == 3) {
+        return array.length == 24;
+      }
 
+      return false;
+    })(type);
+
+    myVal.set.dataTrueBase(array);
     myVal.signals.dataNull.value = true;
     myVal.signals.dataNull.value = false;
   };
 
-  myVal.get.dataTrue().then(myVal.set.dataTrue);
+  myVal.set.dataTrueBase = (array) => {
+    $elements.itemTrue.append(
+      ...array.map((data) => {
+        const child = itemData({
+          href: data.href,
+          title: data.title,
+          info: data.info,
+          style: data.style,
+          imgSrc: data.image,
+          intersectionObserver: true,
+        });
+
+        myVal.values.observes.push(child);
+
+        return child;
+      })
+    );
+
+    $elements.itemTrueLoad.remove();
+
+    if (myVal.values.activeIntersectionObserver) {
+      $elements.itemTrue.append($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+    }
+  };
+
+  $element.addEventListener("_unmounting", () => {
+    myVal.values.scrollTop = $elements.itemTrue.parentElement.scrollTop;
+  });
+
+  $element.addEventListener("_mounted", () => {
+    $elements.itemTrue.parentElement.scrollTop = myVal.values.scrollTop;
+  });
+
+  $element.addEventListener(
+    "_mounting",
+    () => {
+      myVal.get.dataTrue().then(myVal.set.dataTrue);
+    },
+    { once: true }
+  );
 
   return $element;
-};
-
-var offline = ()=>{
-    const $element  = createNodeElement(`
-        <div class="offline">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="512" height="512"><path d="M14,19c0,1.1-.9,2-2,2s-2-.9-2-2,.9-2,2-2,2,.9,2,2ZM1.33,7.07c-.37,.33-.73,.69-1.07,1.05-.38,.4-.35,1.04,.05,1.41,.19,.18,.44,.27,.68,.27,.27,0,.54-.11,.73-.32,.3-.32,.61-.63,.93-.92,.41-.37,.45-1,.08-1.41-.37-.41-1-.45-1.41-.08Zm5.05,4.84c-.4,.31-.77,.65-1.11,1.02-.38,.41-.35,1.04,.05,1.41,.19,.18,.44,.27,.68,.27,.27,0,.54-.11,.73-.32,.27-.29,.56-.56,.87-.8,.44-.34,.52-.97,.18-1.4-.34-.44-.97-.52-1.4-.18Zm7.21,.26c1.39,.32,2.68,1.06,3.66,2.11,.2,.21,.46,.32,.73,.32,.24,0,.49-.09,.68-.27,.4-.38,.43-1.01,.05-1.41-1.84-1.99-4.54-3.06-7.22-2.92-.02,0-.05,0-.07,0L7.24,5.83c1.52-.55,3.12-.83,4.76-.83,3.88,0,7.62,1.63,10.27,4.48,.2,.21,.46,.32,.73,.32,.24,0,.49-.09,.68-.27,.4-.38,.43-1.01,.05-1.41-3.02-3.25-7.3-5.12-11.73-5.12-2.19,0-4.31,.43-6.3,1.29L1.71,.29C1.32-.1,.68-.1,.29,.29S-.1,1.32,.29,1.71L22.29,23.71c.2,.2,.45,.29,.71,.29s.51-.1,.71-.29c.39-.39,.39-1.02,0-1.41L13.6,12.18Z"></path></svg>
-            <h3>No hay conexión a internet</h3>
-        </div>
-    `);
- 
-    let active = true;
-    
-    addEventListener('online', () => {
-        if( !active ) return
-        dispatchEvent( new CustomEvent('hashchange') );
-    }, { once : true });
-
-    addEventListener('hashchange', ()=> {
-        active = false;
-    }, { once : true });
-
-    return $element
 };
 
 var searchType = () => {
@@ -3089,7 +3001,7 @@ var searchType = () => {
 
             </header>
             <div class="div_IsTCHpN" style="padding:10px">
-                <div id="itemNull" class="loader-i" style="--color:var(--color-letter)"></div>
+                <div id="itemNull" class="loader-i" style="--color:var(--app-color-letter)"></div>
                 <div id="itemFalse" class="div_b14S3dH">
                     ${svg("fi fi-rr-search-alt")}
                     <h3></h3>
@@ -3204,7 +3116,6 @@ var searchType = () => {
 };
 
 var searchTypeResult = () => {
-  const mrc = window.MyResourceClass;
   const mrf = window.MyResourceFunction;
   const svg = window.iconSVG;
 
@@ -3228,6 +3139,8 @@ var searchTypeResult = () => {
     },
     values: {
       observes: [],
+      activeIntersectionObserver: false,
+      scrollTop: 0,
     },
     function: {
       dataLoad: () => {},
@@ -3289,7 +3202,7 @@ var searchTypeResult = () => {
             </div>
             <div id="itemTrue" class="div_qsNmfP3" style="display:none">
                 <div id="itemTrueLoad" class="div_Qm4cPUn">
-                    <div class="loader-i" style="--color:var(--color-letter)"></div>
+                    <div class="loader-i" style="--color:var(--app-color-letter)"></div>
                 </div>
             </div>
         </div>
@@ -3369,7 +3282,17 @@ var searchTypeResult = () => {
         page,
         search: decodeURIComponent(myVal.params.result),
       }).then((array) => {
-        resolve(array);
+        resolve(
+          array.map((data) => {
+            return {
+              href: `#/anime/${data.identifier}`,
+              title: data.title,
+              info: data.type,
+              image: data.poster,
+              style: "",
+            };
+          })
+        );
       });
     });
   };
@@ -3378,7 +3301,27 @@ var searchTypeResult = () => {
     return new Promise((resolve, reject) => {
       ApiWebCuevana.search(decodeURIComponent(myVal.params.result)).then(
         (datas) => {
-          resolve(datas?.props?.pageProps?.movies || []);
+          const array = datas?.props?.pageProps?.movies || [];
+
+          resolve(
+            array.map((data) => {
+              const image = data.images.poster
+                ? data.images.poster.replace("/original/", "/w185/")
+                : "";
+
+              const type = data.url.slug.startsWith("movies/")
+                ? "pelicula"
+                : "serie";
+
+              return {
+                href: `#/${type}/${data.TMDbId}`,
+                title: data.titles.name,
+                info: type,
+                image: image,
+                style: "",
+              };
+            })
+          );
         }
       );
     });
@@ -3386,14 +3329,7 @@ var searchTypeResult = () => {
 
   myVal.get.dataTrueSerie = () => {
     return new Promise((resolve, reject) => {
-      const page =
-        Math.floor(
-          $elements.itemTrue.querySelectorAll("[data-item]").length / 24
-        ) + 1;
-
-      ApiWebCuevana.serie(page).then((data) => {
-        resolve(data?.props?.pageProps?.movies ?? []);
-      });
+      resolve([]);
     });
   };
 
@@ -3426,158 +3362,6 @@ var searchTypeResult = () => {
   };
 
   /** SET */
-  myVal.set.dataTrueAnime = (array) => {
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        const url = data.poster;
-        const episode = `episodio ${data.episode}`;
-
-        const aspectRatio = data.episode ? "aspect-ratio:3/2" : "";
-
-        const child = itemData({
-          href: `#/anime/${data.identifier}`,
-          title: data.title,
-          info: data.type ?? episode,
-          style: aspectRatio,
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 24) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
-  myVal.set.dataTruePeliculaSerie = (array) => {
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        if (data.images.poster == null) {
-          return "";
-        }
-
-        const url = data.images.poster.replace("/original/", "/w185/");
-        const type = data.url.slug.startsWith("movies/") ? "pelicula" : "serie";
-
-        const child = itemData({
-          href: `#/${type}/${data.TMDbId}`,
-          title: data.titles.name,
-          info: type,
-          style: "",
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    // if (array.length == 24) {
-    //   $elements.itemTrue.append($elements.itemTrueLoad);
-    //   myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    // }
-  };
-
-  myVal.set.dataTrueIptv = (array) => {
-    const types = {
-      4: "pelicula-ii",
-      5: "serie-ii",
-    };
-
-    const type = types[$elements["form-filter-type"].key.value];
-
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        const url = data.stream_icon ?? data.cover;
-
-        const child = itemData({
-          href: `#/${type}/${data.stream_id ?? data.series_id}`,
-          title: data.name,
-          info: "",
-          style: "",
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myApp.instances.IntersectionObserver.observe(child);
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 50) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
-  myVal.set.dataTrueIptvChannel = (array) => {
-    const template = document.createElement("div");
-
-    template.innerHTML = array
-      .map((data) => {
-        const url = data.stream_icon ?? data.cover;
-
-        const dataInput = mrc.EncodeTemplateString.toInput(
-          JSON.stringify(data)
-        );
-
-        return `
-            <button
-              class="div_SQpqup7" 
-              data-data="${dataInput}"
-              data-item>
-                <div class="div_fMC1uk6" style="aspect-ratio:1/1">
-                  <img src="" alt="" data-src="${url}" style="display:none">
-                  <span style="display:none"></span>
-                </div>
-                <div class="div_9nWIRZE">
-                  <p>${data.name}</p>
-                </div>
-            </button>
-          `;
-      })
-      .join("");
-
-    $elements.itemTrue.append(
-      ...Array.from(template.children).map((child) => {
-        child.addEventListener("_IntersectionObserver", ({ detail }) => {
-          if (detail.entry.isIntersecting) {
-            detail.observer.unobserve(detail.entry.target);
-            const img = child.querySelector("img");
-            img.onload = () => (img.style.display = "");
-            img.src = img.dataset.src;
-          }
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 50) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
 
   myVal.get.dataTrue = () => {
     return new Promise((resolve, reject) => {
@@ -3598,26 +3382,53 @@ var searchTypeResult = () => {
 
   myVal.set.dataTrue = (array) => {
     const type = $elements["form-filter-type"].key.value;
+    myVal.values.activeIntersectionObserver = type == 1 && array.length == 24;
+    console.log(myVal.values.activeIntersectionObserver);
 
-    const types = {
-      1: myVal.set.dataTrueAnime,
-      2: myVal.set.dataTruePeliculaSerie,
-      3: myVal.set.dataTruePeliculaSerie,
-      4: myVal.set.dataTrueIptv,
-      5: myVal.set.dataTrueIptv,
-      6: myVal.set.dataTrueIptvChannel,
-    };
-
-    types?.[type]?.(array);
-
+    myVal.set.dataTrueBase(array);
     myVal.signals.dataNull.value = true;
     myVal.signals.dataNull.value = false;
   };
 
-  $element.addEventListener("_result", ({ detail }) => {
-    // return;
-    if (detail.result != myVal.params.result) {
-      myVal.params = detail;
+  myVal.set.dataTrueBase = (array) => {
+    $elements.itemTrue.append(
+      ...array.map((data) => {
+        const child = itemData({
+          href: data.href,
+          title: data.title,
+          info: data.info,
+          style: data.style,
+          imgSrc: data.image,
+          intersectionObserver: true,
+        });
+
+        myVal.values.observes.push(child);
+
+        return child;
+      })
+    );
+
+    $elements.itemTrueLoad.remove();
+
+    if (myVal.values.activeIntersectionObserver) {
+      $elements.itemTrue.append($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+    }
+  };
+
+  $element.addEventListener("_unmounting", () => {
+    myVal.values.scrollTop = $elements.itemTrue.parentElement.scrollTop;
+  });
+
+  $element.addEventListener("_mounted", () => {
+    $elements.itemTrue.parentElement.scrollTop = myVal.values.scrollTop;
+  });
+
+  $element.addEventListener("_mounting", () => {
+    const params = myApp.routes.params();
+
+    if (params.result != myVal.params.result) {
+      myVal.params = params;
 
       $elements.anchorHref.href = ["#", "search", myVal.params.result].join(
         "/"
@@ -3633,8 +3444,6 @@ var searchTypeResult = () => {
       myVal.get.dataTrue().then(myVal.set.dataTrue);
     }
   });
-
-  // myVal.get.dataTrue().then(myVal.set.dataTrue);
 
   return $element;
 };
@@ -3665,6 +3474,8 @@ var collection = () => {
         2: "views",
         3: "history",
       },
+      activeIntersectionObserver: false,
+      scrollTop: 0,
     },
     function: {
       dataLoad: () => {},
@@ -3733,7 +3544,7 @@ var collection = () => {
             </div>
             <div id="itemTrue" class="div_qsNmfP3" style="display:none">
                 <div id="itemTrueLoad" class="div_Qm4cPUn">
-                    <div class="loader-i" style="--color:var(--color-letter)"></div>
+                    <div class="loader-i" style="--color:var(--app-color-letter)"></div>
                 </div>
             </div>
         </div>
@@ -3807,81 +3618,15 @@ var collection = () => {
       $elements.selectGender.selectedOptions[0].innerText;
   });
 
-  myVal.set.dataTrueAnime = (array) => {
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        const url = myApp.url.img(data.poster);
-        const episode = `episodio ${data.episode}`;
-
-        const aspectRatio = data.episode ? "aspect-ratio:3/2" : "";
-
-        const child = itemData({
-          href: `#/anime/${data.identifier}`,
-          title: data.title,
-          info: data.type ?? episode,
-          style: aspectRatio,
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 25) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
-  myVal.set.dataTruePeliculaSerie = (array) => {
-    const type =
-      $elements["form-filter-type"].key.value == "2" ? "pelicula" : "serie";
-
-    $elements.itemTrue.append(
-      ...array.map((data) => {
-        if (data.images.poster == null) {
-          return "";
-        }
-
-        const url = data.images.poster.replace("/original/", "/w185/");
-
-        const child = itemData({
-          href: `#/${type}/${data.TMDbId}`,
-          title: data.titles.name,
-          info: "",
-          style: "",
-          imgSrc: url,
-          intersectionObserver: true,
-        });
-
-        myVal.values.observes.push(child);
-
-        return child;
-      })
-    );
-
-    $elements.itemTrueLoad.remove();
-
-    if (array.length == 25) {
-      $elements.itemTrue.append($elements.itemTrueLoad);
-      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
-    }
-  };
-
   myVal.get.dataTrue = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const type = $elements["form-filter-type"].key.value;
 
       const encodeQueryString = mrf.encodeQueryObject({
         route: "favorites",
         type: type,
         start: $elements.itemTrue.querySelectorAll("[data-item]").length,
-        end: 25,
+        end: 30,
         id_collection: $elements.selectGender.value,
       });
 
@@ -3895,7 +3640,35 @@ var collection = () => {
         .then((data) => {
           resolve(
             Array.isArray(data)
-              ? data.map((data) => JSON.parse(data.data_json))
+              ? data.map((_) => {
+                  const data = JSON.parse(_.data_json);
+
+                  if (type == 1) {
+                    return {
+                      href: `#/anime/${data.identifier}`,
+                      title: data.title,
+                      info: data.type,
+                      image: data.poster,
+                      style: "",
+                    };
+                  }
+
+                  const image = data.images.poster
+                    ? data.images.poster.replace("/original/", "/w185/")
+                    : "";
+
+                  const type_ = data.url.slug.startsWith("movies/")
+                    ? "pelicula"
+                    : "serie";
+
+                  return {
+                    href: `#/${type_}/${data.TMDbId}`,
+                    title: data.titles.name,
+                    info: "",
+                    image: image,
+                    style: "",
+                  };
+                })
               : []
           );
         });
@@ -3903,21 +3676,54 @@ var collection = () => {
   };
 
   myVal.set.dataTrue = (array) => {
-    const type = $elements["form-filter-type"].key.value;
+    myVal.values.activeIntersectionObserver = array.length == 30;
 
-    const types = {
-      1: myVal.set.dataTrueAnime,
-      2: myVal.set.dataTruePeliculaSerie,
-      3: myVal.set.dataTruePeliculaSerie,
-    };
-
-    types?.[type]?.(array);
-
+    myVal.set.dataTrueBase(array);
     myVal.signals.dataNull.value = true;
     myVal.signals.dataNull.value = false;
   };
 
-  myVal.get.dataTrue().then(myVal.set.dataTrue);
+  myVal.set.dataTrueBase = (array) => {
+    $elements.itemTrue.append(
+      ...array.map((data) => {
+        const child = itemData({
+          href: data.href,
+          title: data.title,
+          info: data.info,
+          style: data.style,
+          imgSrc: data.image,
+          intersectionObserver: true,
+        });
+
+        myVal.values.observes.push(child);
+
+        return child;
+      })
+    );
+
+    $elements.itemTrueLoad.remove();
+
+    if (myVal.values.activeIntersectionObserver) {
+      $elements.itemTrue.append($elements.itemTrueLoad);
+      myApp.instances.IntersectionObserver.observe($elements.itemTrueLoad);
+    }
+  };
+
+  $element.addEventListener("_unmounting", () => {
+    myVal.values.scrollTop = $elements.itemTrue.parentElement.scrollTop;
+  });
+
+  $element.addEventListener("_mounted", () => {
+    $elements.itemTrue.parentElement.scrollTop = myVal.values.scrollTop;
+  });
+
+  $element.addEventListener(
+    "_mounting",
+    () => {
+      myVal.get.dataTrue().then(myVal.set.dataTrue);
+    },
+    { once: true }
+  );
 
   return $element;
 };
@@ -4017,7 +3823,7 @@ var historial = () => {
 
                 <div id="itemTrue" class="div_qsNmfP3" style="display:none">
                     <div id="itemTrueLoad" class="div_Qm4cPUn">
-                        <div class="loader-i" style="--color:var(--color-letter)"></div>
+                        <div class="loader-i" style="--color:var(--app-color-letter)"></div>
                     </div>
                 </div>
                 
@@ -6256,7 +6062,15 @@ var routes = () => {
       inicio: inicio(),
       theme: theme(),
       searchTypeResult: searchTypeResult(),
+      collection: collection(),
     },
+    customEvent: {
+      _mounting: new CustomEvent("_mounting"),
+      _mounted: new CustomEvent("_mounted"),
+      _unmounting: new CustomEvent("_unmounting"),
+      _unmounted: new CustomEvent("_unmounted"),
+    },
+    node: null,
   };
 
   myApp.routes.set([
@@ -6280,18 +6094,10 @@ var routes = () => {
     { hash: "/search/:result", callback: searchType },
     {
       hash: "/search/:result/result",
-      callback: (p) => {
-        myVal.elements.searchTypeResult.dispatchEvent(
-          new CustomEvent("_result", {
-            detail: p,
-          })
-        );
-
-        return myVal.elements.searchTypeResult;
-      },
+      callback: () => myVal.elements.searchTypeResult,
     },
 
-    { hash: "/collection", callback: collection },
+    { hash: "/collection", callback: () => myVal.elements.collection },
     { hash: "/historial", callback: historial },
     { hash: "/theme", callback: () => myVal.elements.theme },
     { hash: "/setting", callback: setting },
@@ -6308,12 +6114,19 @@ var routes = () => {
       history.replaceState({ start: false, uuid }, null, location.href);
     }
 
+    if (myVal.node instanceof Node) {
+      myVal.node.dispatchEvent(myVal.customEvent._unmounting);
+      myVal.element.route.innerHTML = "";
+      myVal.node.dispatchEvent(myVal.customEvent._unmounted);
+    }
+
+    myVal.node = myApp.routes.get();
     myVal.element.route.innerHTML = "";
 
-    if (navigator.onLine) {
-      myVal.element.route.append(myApp.routes.get() || "");
-    } else {
-      myVal.element.route.append(offline());
+    if (myVal.node instanceof Node) {
+      myVal.node.dispatchEvent(myVal.customEvent._mounting);
+      myVal.element.route.append(myVal.node);
+      myVal.node.dispatchEvent(myVal.customEvent._mounted);
     }
   });
 
