@@ -2458,7 +2458,7 @@ var itemData = (p = {}) => {
         if (Boolean(img.dataset.src)) {
           img.onerror = () => {
             img.onerror = null;
-            img.src = `https://image.com/index.php?url=${img.dataset.src}`;
+            img.src = `https://img.vniox.com/index.php?url=${img.dataset.src}`;
           };
 
           img.onload = () => {
