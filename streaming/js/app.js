@@ -2454,7 +2454,18 @@ var itemData = (p = {}) => {
       if (detail.entry.isIntersecting) {
         detail.observer.unobserve(detail.entry.target);
         const img = $element.querySelector("img");
-        img.onload = () => (img.style.display = "");
+
+        img.onerror = () => {
+          img.onerror = null;
+          img.src = `https://image.com/index.php?url=${img.dataset.src}`;
+        };
+
+        img.onload = () => {
+          img.onload = null;
+          img.onerror = null;
+          img.style.display = "";
+        };
+
         img.src = img.dataset.src;
       }
     });
