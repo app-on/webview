@@ -2455,18 +2455,20 @@ var itemData = (p = {}) => {
         detail.observer.unobserve(detail.entry.target);
         const img = $element.querySelector("img");
 
-        img.onerror = () => {
-          img.onerror = null;
-          img.src = `https://image.com/index.php?url=${img.dataset.src}`;
-        };
+        if (Boolean(img.dataset.src)) {
+          img.onerror = () => {
+            img.onerror = null;
+            img.src = `https://image.com/index.php?url=${img.dataset.src}`;
+          };
 
-        img.onload = () => {
-          img.onload = null;
-          img.onerror = null;
-          img.style.display = "";
-        };
+          img.onload = () => {
+            img.onload = null;
+            img.onerror = null;
+            img.style.display = "";
+          };
 
-        img.src = img.dataset.src;
+          img.src = img.dataset.src;
+        }
       }
     });
 
