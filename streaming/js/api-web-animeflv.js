@@ -8,7 +8,15 @@ class ApiWebAnimeflv {
       } else {
         fetch(url)
           .then((res) => res.text())
-          .then(resolve);
+          .then(resolve)
+          .catch(() => {
+            fetch(
+              `https://fetch.vniox.com/index.php?url=${encodeURIComponent(url)}`
+            )
+              .then((res) => res.text())
+              .then(resolve)
+              .catch(reject);
+          });
       }
     });
   };
