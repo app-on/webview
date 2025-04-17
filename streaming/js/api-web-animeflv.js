@@ -6,7 +6,7 @@ class ApiWebAnimeflv {
           const result = Android.getPageContent(url);
 
           alert(result);
-          alert(result == "");
+          alert(result == "Error: Connection reset");
 
           resolve(result);
         }, 1);
