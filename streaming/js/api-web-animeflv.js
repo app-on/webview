@@ -3,7 +3,12 @@ class ApiWebAnimeflv {
     return new Promise((resolve, reject) => {
       if (window.Android) {
         setTimeout(() => {
-          resolve(Android.getPageContent(url));
+          const result = Android.getPageContent(url);
+
+          alert(result);
+          alert(result == "");
+
+          resolve(result);
         }, 1);
       } else {
         fetch(url)
