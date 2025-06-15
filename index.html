@@ -3,39 +3,34 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
     <meta id="meta-theme-color" name="theme-color" content="#000000">
-    <title>Webview</title>
-    <link rel="stylesheet" href="style.css?nv=1741644038050">
+    <title>Streaming</title>
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="./img/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="./css/app.css?nv=1744926292320">
+
+    <style id="style-app"></style>
 </head>
 
 <body>
+    <div id="app"></div>
 
-    <div id="app">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-        <form class="form_v823x1l" autocomplete="off">
-            <input type="search" name="search" placeholder="buscar" data-key-focus="" data-not-keydown>
-            <button>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-search">
-                    <path
-                        d="M23.707,22.293l-5.969-5.969a10.016,10.016,0,1,0-1.414,1.414l5.969,5.969a1,1,0,0,0,1.414-1.414ZM10,18a8,8,0,1,1,8-8A8.009,8.009,0,0,1,10,18Z">
-                    </path>
-                </svg>
-            </button>
-        </form>
-        <hr class="hr_j8ry8nv">
-        <div class="div_dtxhy4m">
+    <script src="https://use-resources.github.io/js/v3/cdn/functions.js?nv=1744926292320"></script>
+    <script src="https://use-resources.github.io/js/v3/cdn/classes.js?nv=1744926292320"></script>
 
-            <div id="itemTrueBase" class="div_suhyjvh"></div>
-            <hr class="hr_j8ry8nv">
-            <div id="itemTrue" class="div_suhyjvh"></div>
+    <script src="./js/media-web-url.js?nv=1744926292320"></script>
+    <script src="https://use-resources.github.io/js/v2/cdn/media-player.js?nv=1744926292320"></script>
 
-        </div>
+    <script src="./js/api-web-animeflv.js?nv=1744926292320"></script>
+    <script src="./js/api-web-cuevana.js?nv=1744926292320"></script>
 
-    </div>
+    <script src="./js/svg-icon.js"></script>
+    <script src="./js/app.js?nv=1744926292322"></script>
 
-
-    <script src="script.js?nv=1741644038051"></script>
 </body>
 
 </html>
