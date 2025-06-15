@@ -2438,10 +2438,10 @@ var itemData = (p = {}) => {
       class="div_SQpqup7"style="margin-bottom:auto" data-item>
         <div class="div_fMC1uk6" style="${p.style}">
           <img src="" alt="" data-src="${p.imgSrc}" style="display:none">
-          ${Boolean(p.info) ? `<span>${p.info}</span>` : ""}
+          ${Boolean(p.info) ? `<span style="font-size:11px">${p.info}</span>` : ""}
         </div>
-        <div class="div_9nWIRZE" style="display:none">
-          <p>${p.title}</p>
+        <div class="div_9nWIRZE scroll-h">
+          <p class="text-overflow-ellipsis" style="font-size:12px">${p.title}</p>
         </div>
     </a>
   `);
