@@ -83,13 +83,10 @@ var dataApp = () => {
       },
       historyBack: ($element) => {
         $element?.addEventListener("click", (e) => {
-          const start = Boolean(history.state?.start);
-          if (start) {
-            return;
+          if (!Boolean(history.state?.start)) {
+            e.preventDefault();
+            history.back();
           }
-
-          e.preventDefault();
-          history.back();
         });
       },
       generateUUID: () => {
@@ -825,6 +822,8 @@ var peliculaId = () => {
     $elements.itemTrue.style.display = "";
 
     $elements.poster.onload = () => {
+      if (!$element.parentElement) return;
+      
       $elements.poster.style.display = "";
 
       mrc.MyImage.canvas($elements.poster.src).then((result) => {
@@ -1448,6 +1447,8 @@ var serieId = () => {
     $elements.itemTrue.style.display = "";
 
     $elements.poster.onload = () => {
+      if (!$element.parentElement) return;
+      
       $elements.poster.style.display = "";
 
       mrc.MyImage.canvas($elements.poster.src).then((result) => {
@@ -2137,6 +2138,8 @@ var animeId = () => {
     $elements.itemTrue.style.display = "";
 
     $elements.poster.onload = () => {
+      if (!$element.parentElement) return;
+
       $elements.poster.style.display = "";
 
       mrc.MyImage.canvas($elements.poster.src).then((result) => {
@@ -2429,15 +2432,15 @@ var itemData = (p = {}) => {
 
   const myApp = window.dataApp;
 
-  const $element = f.createNodeElement(`
+  const $element = f.createNodeElement(/*html*/`
     <a
       href="${p.href}"
-      class="div_SQpqup7" data-item>
+      class="div_SQpqup7"style="margin-bottom:auto" data-item>
         <div class="div_fMC1uk6" style="${p.style}">
           <img src="" alt="" data-src="${p.imgSrc}" style="display:none">
           ${Boolean(p.info) ? `<span>${p.info}</span>` : ""}
         </div>
-        <div class="div_9nWIRZE">
+        <div class="div_9nWIRZE" style="display:none">
           <p>${p.title}</p>
         </div>
     </a>
@@ -6121,9 +6124,8 @@ var routes = () => {
   }
 
   addEventListener("hashchange", (e) => {
-    let uuid = history.state?.uuid ?? myApp.functions.generateUUID();
-
     if (!Boolean(e instanceof CustomEvent) && history.state == null) {
+      const uuid = history.state?.uuid ?? myApp.functions.generateUUID();
       history.replaceState({ start: false, uuid }, null, location.href);
     }
 
