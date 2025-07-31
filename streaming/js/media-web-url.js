@@ -1,7 +1,13 @@
 class MediaWebUrl {
   static fetch = (url) => {
     return new Promise((resolve, reject) => {
-      resolve(Android.getPageContent(url));
+      if (window.Android) {
+        resolve(Android.getPageContent(url));
+      } else {
+        fetch(url)
+          .then((res) => res.text())
+          .then(resolve);
+      }
     });
   };
 

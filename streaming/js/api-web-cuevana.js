@@ -112,11 +112,12 @@ class ApiWebCuevana {
               Array.from($text.querySelectorAll("script")).forEach((script) => {
                 if (script.textContent.includes("var url =")) {
                   const callback = [
-                    script.textContent.split(";").slice(0, 3).join(";"),
+                    script.textContent.split(";").slice(0, 2).join(";"),
                     "return url",
                   ].join(";");
 
                   const fnctn = new Function(callback);
+                  console.log(fnctn())
                   resolve(fnctn());
                 }
               });

@@ -763,7 +763,24 @@ var peliculaId = () => {
           getMediaWeb(url, (res) => {
             $elements.loaderVideo.style.display = "none";
             if (res.status) {
-              Android.openWithDefault(res.url, "video/*");
+              // Android.openWithDefault(res.url, "video/*");
+              myApp.mediaPlayer.element().requestFullscreen();
+              myApp.mediaPlayer.video((video) => {
+                const $video = video;
+                const videoSrc = res.url;
+
+                if (Hls.isSupported()) {
+                  const hls = (myApp.values.hls = new Hls());
+
+                  hls.loadSource(videoSrc);
+                  hls.attachMedia($video);
+                  hls.on(Hls.Events.MANIFEST_PARSED, function () {});
+                } else if (
+                  $video.canPlayType("application/vnd.apple.mpegurl")
+                ) {
+                  $video.src = videoSrc;
+                }
+              });
             } else {
               alert("El video no esta disponible");
             }
@@ -823,7 +840,7 @@ var peliculaId = () => {
 
     $elements.poster.onload = () => {
       if (!$element.parentElement) return;
-      
+
       $elements.poster.style.display = "";
 
       mrc.MyImage.canvas($elements.poster.src).then((result) => {
@@ -1386,7 +1403,25 @@ var serieId = () => {
           getMediaWeb(url, (res) => {
             $elements.loaderVideo.style.display = "none";
             if (res.status) {
-              Android.openWithDefault(res.url, "video/*");
+              // Android.openWithDefault(res.url, "video/*");
+
+              myApp.mediaPlayer.element().requestFullscreen();
+              myApp.mediaPlayer.video((video) => {
+                const $video = video;
+                const videoSrc = res.url;
+
+                if (Hls.isSupported()) {
+                  const hls = (myApp.values.hls = new Hls());
+
+                  hls.loadSource(videoSrc);
+                  hls.attachMedia($video);
+                  hls.on(Hls.Events.MANIFEST_PARSED, function () {});
+                } else if (
+                  $video.canPlayType("application/vnd.apple.mpegurl")
+                ) {
+                  $video.src = videoSrc;
+                }
+              });
             } else {
               alert("El video no esta disponible");
             }
@@ -1448,7 +1483,7 @@ var serieId = () => {
 
     $elements.poster.onload = () => {
       if (!$element.parentElement) return;
-      
+
       $elements.poster.style.display = "";
 
       mrc.MyImage.canvas($elements.poster.src).then((result) => {
@@ -2055,7 +2090,23 @@ var animeId = () => {
         getMediaWeb(button.getAttribute("data-url"), (res) => {
           $elements.loaderVideo.style.display = "none";
           if (res.status) {
-            Android.openWithDefault(res.url, "video/*");
+            // Android.openWithDefault(res.url, "video/*");
+
+            myApp.mediaPlayer.element().requestFullscreen();
+            myApp.mediaPlayer.video((video) => {
+              const $video = video;
+              const videoSrc = res.url;
+
+              if (Hls.isSupported()) {
+                const hls = (myApp.values.hls = new Hls());
+
+                hls.loadSource(videoSrc);
+                hls.attachMedia($video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {});
+              } else if ($video.canPlayType("application/vnd.apple.mpegurl")) {
+                $video.src = videoSrc;
+              }
+            });
           } else {
             alert("El video no esta disponible");
           }
@@ -6148,7 +6199,428 @@ var routes = () => {
   return myVal.element.route;
 };
 
-// import footerVideoPlayer from "./assets/footerVideoPlayer";
+class ElementMakeDrag {
+  constructor(element) {
+    this._element = element;
+    this._events = {};
+  }
+
+  on = (type, callback) => {
+    this._events[type] = callback;
+  };
+
+  start = () => {
+    let draggable = this._element;
+    let element = this._element;
+
+    const startDragging = (e) => {
+      if (typeof this._events.start == "function") {
+        this._events.start({
+          e,
+          target: draggable,
+        });
+      }
+
+      if (e.type === "mousedown") {
+        e.preventDefault();
+      }
+
+      element.addEventListener("touchmove", drag, { passive: false });
+      element.addEventListener("touchend", stopDragging);
+      element.addEventListener("mousemove", drag);
+      element.addEventListener("mouseup", stopDragging);
+      element.addEventListener("mouseleave", stopDragging);
+    };
+
+    const drag = (e) => {
+      if (typeof this._events.move == "function") {
+        this._events.move({
+          e,
+          target: draggable,
+        });
+      }
+    };
+
+    const stopDragging = (e) => {
+      // allowtouchstart = true;
+      if (typeof this._events.end == "function") {
+        this._events.end({
+          e,
+          target: draggable,
+        });
+      }
+
+      if (e.touches && e.touches.length > 0) return;
+      element.removeEventListener("touchmove", drag);
+      element.removeEventListener("touchend", stopDragging);
+      element.removeEventListener("mousemove", drag);
+      element.removeEventListener("mouseup", stopDragging);
+      element.removeEventListener("mouseleave", stopDragging);
+    };
+
+    draggable.addEventListener("touchstart", startDragging, {
+      passive: false,
+    });
+    draggable.addEventListener("mousedown", startDragging);
+  };
+}
+
+function calculateNewPosition(
+  top,
+  left,
+  width,
+  height,
+  newWidth,
+  newHeight
+) {
+  // Calcula la diferencia en tamaño para cada eje
+  const deltaX = (newWidth - width) / 2;
+  const deltaY = (newHeight - height) / 2;
+
+  // Ajusta las posiciones de left y top para mantener el centro
+  const newLeft = left - deltaX;
+  const newTop = top - deltaY;
+
+  return { top: newTop, left: newLeft };
+}
+
+var footerVideoPlayer = () => {
+  const mrc = window.MyResourceClass;
+  const mrf = window.MyResourceFunction;
+
+  const myApp = window.dataApp;
+  const myVal = {
+    elements: {
+      video: myApp.mediaPlayer.element("video"),
+    },
+    classes: {
+      divPreview: null,
+      divPrueba: null,
+    },
+    values: {
+      pinch: {
+        start: false,
+        escala: 1,
+        ultimaDistancia: 0,
+      },
+    },
+  };
+
+  console.log(mrf);
+
+  const $element = mrf.createNodeElement(`
+        <footer class="footer_rTzBt2c">
+
+            <div id="divPrueba" class="div_MJ5Ba2C" style="pointer-events:none;">
+              <div id="divPreview" class="div_wPiZgS6" style="display:none;">
+                  <div id="divPreviewContent" class="d-grid">
+                    <canvas id="canvasVideo" style="aspect-ratio: 16/9;"></canvas>
+                    <div class="div_OZ6oAgh"><span id="spanBar"></span></div>
+                    <div class="div_lq8dhAa">
+                        <button id="buttonPlayPause"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-play"><path d="M20.494,7.968l-9.54-7A5,5,0,0,0,3,5V19a5,5,0,0,0,7.957,4.031l9.54-7a5,5,0,0,0,0-8.064Zm-1.184,6.45-9.54,7A3,3,0,0,1,5,19V5A2.948,2.948,0,0,1,6.641,2.328,3.018,3.018,0,0,1,8.006,2a2.97,2.97,0,0,1,1.764.589l9.54,7a3,3,0,0,1,0,4.836Z"></path></svg></button>
+                        <button id="buttonPIP"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" data-svg-name="fi fi-rr-resize"><path d="m19 0h-8a5.006 5.006 0 0 0 -5 5v6h-1a5.006 5.006 0 0 0 -5 5v3a5.006 5.006 0 0 0 5 5h3a5.006 5.006 0 0 0 5-5v-1h6a5.006 5.006 0 0 0 5-5v-8a5.006 5.006 0 0 0 -5-5zm-8 16a3 3 0 0 1 -3-3 3 3 0 0 1 3 3zm0 3a3 3 0 0 1 -3 3h-3a3 3 0 0 1 -3-3v-3a3 3 0 0 1 3-3h1a5.006 5.006 0 0 0 5 5zm11-6a3 3 0 0 1 -3 3h-6a4.969 4.969 0 0 0 -.833-2.753l5.833-5.833v2.586a1 1 0 0 0 2 0v-3a3 3 0 0 0 -3-3h-3a1 1 0 0 0 0 2h2.586l-5.833 5.833a4.969 4.969 0 0 0 -2.753-.833v-6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3z"></path></svg></button>
+                        <button id="buttonCloseVideo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-cross"><path d="M23.707.293h0a1,1,0,0,0-1.414,0L12,10.586,1.707.293a1,1,0,0,0-1.414,0h0a1,1,0,0,0,0,1.414L10.586,12,.293,22.293a1,1,0,0,0,0,1.414h0a1,1,0,0,0,1.414,0L12,13.414,22.293,23.707a1,1,0,0,0,1.414,0h0a1,1,0,0,0,0-1.414L13.414,12,23.707,1.707A1,1,0,0,0,23.707.293Z"></path></svg></button>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            
+            <div class="div_rFbZYz7">
+                <div id="elementVideo" class="div_DFHkIAJ pointer-on"></div>
+            </div>
+            
+        </footer>
+  `);
+
+  const $elements = mrf.createObjectElement(
+    $element.querySelectorAll("[id]"),
+    "id",
+    true
+  );
+
+  const context = $elements.canvasVideo.getContext("2d");
+
+  const draw = () => {
+    const video = myVal.elements.video;
+    const canvas = $elements.canvasVideo;
+    if (!video.paused && !video.ended) {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      requestAnimationFrame(draw);
+    }
+  };
+
+  $elements.canvasVideo.addEventListener("click", () => {
+    myApp.mediaPlayer.element().requestFullscreen();
+  });
+
+  $elements.buttonPlayPause.addEventListener("click", () => {
+    if (myVal.elements.video.paused) myVal.elements.video.play();
+    else myVal.elements.video.pause();
+  });
+
+  $elements.buttonPIP.addEventListener("click", () => {
+    myVal.elements.video.requestPictureInPicture();
+  });
+
+  $elements.buttonCloseVideo.addEventListener("click", () => {
+    $elements.divPreview.style.display = "none";
+    myApp.mediaPlayer.video((video) => {
+      video.src = "";
+    });
+  });
+
+  myVal.elements.video.addEventListener("play", () => {
+    $elements.buttonPlayPause.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-pause"><path d="M6.5,0A3.5,3.5,0,0,0,3,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,6.5,0ZM8,20.5a1.5,1.5,0,0,1-3,0V3.5a1.5,1.5,0,0,1,3,0Z"></path><path d="M17.5,0A3.5,3.5,0,0,0,14,3.5v17a3.5,3.5,0,0,0,7,0V3.5A3.5,3.5,0,0,0,17.5,0ZM19,20.5a1.5,1.5,0,0,1-3,0V3.5a1.5,1.5,0,0,1,3,0Z"></path></svg>';
+    draw();
+  });
+  myVal.elements.video.addEventListener("pause", () => {
+    $elements.buttonPlayPause.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-play"><path d="M20.494,7.968l-9.54-7A5,5,0,0,0,3,5V19a5,5,0,0,0,7.957,4.031l9.54-7a5,5,0,0,0,0-8.064Zm-1.184,6.45-9.54,7A3,3,0,0,1,5,19V5A2.948,2.948,0,0,1,6.641,2.328,3.018,3.018,0,0,1,8.006,2a2.97,2.97,0,0,1,1.764.589l9.54,7a3,3,0,0,1,0,4.836Z"></path></svg>';
+  });
+
+  myVal.elements.video.addEventListener("timeupdate", () => {
+    $elements.spanBar.style.width =
+      mrc.MyInt.percentage(
+        myVal.elements.video.currentTime,
+        myVal.elements.video.duration
+      ) + "%";
+  });
+
+  myVal.elements.video.addEventListener("loadstart", () => {
+    if (myVal.elements.video.getAttribute("src").trim()) {
+      $elements.divPreview.style.display = "";
+    }
+  });
+
+  myVal.elements.video.addEventListener("loadedmetadata", () => {
+    $elements.canvasVideo.width = myVal.elements.video.videoWidth;
+    $elements.canvasVideo.height = myVal.elements.video.videoHeight;
+    $elements.canvasVideo.style.aspectRatio = "";
+  });
+
+  myVal.elements.video.addEventListener("error", (e) => {
+    if (e.target.error.code == 3) {
+      myApp.values.hls.recoverMediaError();
+      e.target.play();
+    }
+  });
+
+  myVal.elements.video.addEventListener("enterpictureinpicture", () => {
+    $elements.divPreview.style.display = "none";
+  });
+
+  myVal.elements.video.addEventListener("leavepictureinpicture", () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    $elements.divPreview.style.display = "";
+  });
+
+  $elements.elementVideo.append(myApp.mediaPlayer.element());
+
+  const function_pmgnvcdirebja = () => {
+    const elementMakeDrag = new ElementMakeDrag($elements.divPrueba);
+    const draggable = $elements.divPreview;
+
+    const datapinch = {
+      allow: false,
+      startdistance: 0,
+      lastdistance: 0,
+      scale: 1,
+    };
+
+    const datamove = {
+      allow: false,
+      xy: {
+        initial: {
+          x: 0,
+          y: 0,
+        },
+        current: {
+          x: 0,
+          y: 0,
+        },
+      },
+    };
+
+    elementMakeDrag.on("start", ({ e, target }) => {
+      target.style.pointerEvents = "";
+
+      if (e.touches) {
+        if (!draggable.contains(e.touches[0].target)) return;
+      }
+
+      if (draggable.contains(e.target)) {
+        datamove.allow = true;
+
+        if (e.type === "touchstart") {
+          const index = Array.from(e.touches).findIndex((touch) =>
+            draggable.contains(touch.target)
+          );
+
+          datamove.xy.initial.x =
+            e.touches[index].clientX - draggable.offsetLeft;
+          datamove.xy.initial.y =
+            e.touches[index].clientY - draggable.offsetTop;
+        } else {
+          datamove.xy.initial.x = e.clientX - draggable.offsetLeft;
+          datamove.xy.initial.y = e.clientY - draggable.offsetTop;
+        }
+
+        if (e.touches && e.touches.length === 2) {
+          datapinch.allow = true;
+          datapinch.lastdistance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+        }
+      }
+    });
+    elementMakeDrag.on("move", ({ e }) => {
+      if (datamove.allow) {
+        $elements.divPreviewContent.style.pointerEvents = "none";
+
+        if (e.type === "touchmove") {
+          e.preventDefault();
+          const index = Array.from(e.touches).findIndex((touch) =>
+            draggable.contains(touch.target)
+          );
+
+          if (index != -1) {
+            datamove.xy.current.x =
+              e.touches[index].clientX - datamove.xy.initial.x;
+            datamove.xy.current.y =
+              e.touches[index].clientY - datamove.xy.initial.y;
+          }
+        } else {
+          datamove.xy.current.x = e.clientX - datamove.xy.initial.x;
+          datamove.xy.current.y = e.clientY - datamove.xy.initial.y;
+        }
+
+        const top = draggable.offsetHeight / 2;
+        const left = draggable.offsetWidth / 2;
+
+        const y = Math.max(
+          top * -1,
+          Math.min(
+            datamove.xy.current.y,
+            window.innerHeight - draggable.offsetHeight + top
+          )
+        );
+
+        const x = Math.max(
+          left * -1,
+          Math.min(
+            datamove.xy.current.x,
+            window.innerWidth - draggable.offsetWidth + left
+          )
+        );
+
+        draggable.style.top = `${y}px`;
+        draggable.style.left = `${x}px`;
+
+        draggable.style.right = "initial";
+        draggable.style.bottom = "initial";
+      }
+
+      if (datapinch.allow) {
+        if (e.touches && e.touches.length === 2) {
+          const currentdistance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+
+          if (
+            (currentdistance > datapinch.lastdistance &&
+              parseInt(draggable.style.width) == 700) ||
+            (currentdistance < datapinch.lastdistance &&
+              parseInt(draggable.style.width) == 150)
+          )
+            return (datapinch.lastdistance = currentdistance);
+
+          const scalerelative = currentdistance / datapinch.lastdistance;
+          datapinch.scale *= scalerelative;
+
+          datapinch.lastdistance = currentdistance;
+
+          if (!draggable.getAttribute("data-width")) {
+            draggable.setAttribute("data-width", draggable.offsetWidth);
+          }
+
+          draggable.style.width = `${Math.max(
+            150,
+            Math.min(
+              parseInt(draggable.getAttribute("data-width")) * datapinch.scale,
+              700
+            )
+          )}px`;
+        }
+      }
+    });
+    elementMakeDrag.on("end", ({ e, target }) => {
+      if (datamove.allow && ((e.touches && !e.touches.length) || !e.touches)) {
+        datamove.allow = false;
+      }
+
+      if (datapinch.allow && e.touches && e.touches.length != 2) {
+        datapinch.allow = false;
+      }
+
+      if (e.touches && e.touches.length) return;
+
+      target.style.pointerEvents = "none";
+      $elements.divPreviewContent.style.pointerEvents = "";
+    });
+
+    draggable.addEventListener(
+      "wheel",
+      (e) => {
+        e.preventDefault();
+
+        const draggablegetBoundingClientRect =
+          draggable.getBoundingClientRect();
+
+        draggable.style.width = `${Math.max(
+          150,
+          Math.min(draggable.offsetWidth - (e.deltaY > 0 ? 10 : -10), 1000)
+        )}px`;
+
+        const draggablegetBoundingClientRect2 =
+          draggable.getBoundingClientRect();
+
+        const datasss = calculateNewPosition(
+          draggablegetBoundingClientRect.top,
+          draggablegetBoundingClientRect.left,
+          draggablegetBoundingClientRect.width,
+          draggablegetBoundingClientRect.height,
+          draggablegetBoundingClientRect2.width,
+          draggablegetBoundingClientRect2.height
+        );
+
+        draggable.style.left = `${datasss.left}px`;
+        draggable.style.top = `${datasss.top}px`;
+
+        draggable.style.right = "initial";
+        draggable.style.bottom = "initial";
+      },
+      { passive: false }
+    );
+
+    addEventListener("resize", () => {
+      if (draggable.style.left != "" || draggable.style.top != "") {
+        draggable.style.top = "";
+        draggable.style.left = "";
+        draggable.style.right = "20px";
+        draggable.style.bottom = "20px";
+      }
+    });
+
+    elementMakeDrag.start();
+  };
+
+  function_pmgnvcdirebja();
+
+  return $element;
+};
 
 addEventListener("contextmenu", (e) => {
   e.preventDefault();
@@ -6179,7 +6651,7 @@ addEventListener("DOMContentLoaded", () => {
         navigate: navigate(),
         "navigate-bottom": navigateBottom(),
         "element-route": routes(),
-        // "footer-player": footerVideoPlayer(),
+        "footer-player": footerVideoPlayer(),
       }
     ).childNodes
   );
