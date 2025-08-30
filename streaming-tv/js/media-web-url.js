@@ -1,7 +1,13 @@
 class MediaWebUrl {
   static fetch = (url) => {
     return new Promise((resolve, reject) => {
-      resolve(Android.getPageContent(url));
+      if (window.Android) {
+        resolve(Android.getPageContent(url));
+      } else {
+        fetch(url)
+          .then((res) => res.text())
+          .then(resolve);
+      }
     });
   };
 
@@ -57,7 +63,9 @@ class MediaWebUrl {
   };
   static streamwish = ({ url }) => {
     return new Promise((resolve) => {
-      this.fetch(url)
+      const urlModify = `https://habetar.com/e/${url.split("/").pop()}`;
+
+      this.fetch(urlModify)
         .then((text) => {
           const $text = document.createElement("div");
           $text.innerHTML = text;
