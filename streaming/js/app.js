@@ -251,18 +251,10 @@ var navigateBottom = () => {
   const $element = mrf.createNodeElement(`
         <div class="div_U1rCCk1">
             <div id="links" class="div_ZnL3gfK">
-                <a id="inicio" href="#/">
-                  ${svg("fi fi-rr-house-blank")}
-                </a>
-                <a id="search" href="#/search" class="button_vz3gd83JzdjM7pt">
-                  ${svg("fi fi-rr-search")}
-                </a>
-                <a id="collection" href="#/collection" class="button_vz3gd83JzdjM7pt">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" data-svg-name="fi fi-rr-books"><path d="M23.786,19.492L16.713,1.836c-.624-1.529-2.376-2.269-3.911-1.645l-.925,.378c-.249,.102-.472,.244-.68,.402-.548-.594-1.326-.972-2.196-.972H3C1.346,0,0,1.346,0,3V21c0,1.654,1.346,3,3,3h6c1.654,0,3-1.346,3-3V8.895l5.304,13.242c.625,1.543,2.417,2.26,3.909,1.641l.926-.378c1.505-.574,2.286-2.434,1.647-3.907ZM13.574,7.446l2.778-1.132,4.171,10.412-2.778,1.132L13.574,7.446Zm-.942-5.025l.925-.378c.496-.206,1.097,.031,1.302,.543l.75,1.871-2.777,1.132-.747-1.866c-.208-.51,.038-1.095,.549-1.303ZM2,7h3v10H2V7Zm5,0h3v10h-3V7Zm3-4v2h-3V2h2c.551,0,1,.448,1,1ZM3,2h2v3H2V3c0-.552,.449-1,1-1Zm-1,19v-2h3v3H3c-.551,0-1-.448-1-1Zm7,1h-2v-3h3v2c0,.552-.449,1-1,1Zm12.929-.991c-.104,.247-.297,.438-.544,.539h0l-.926,.378c-.511,.206-1.095-.037-1.3-.54l-.669-1.671,2.778-1.132,.665,1.661c.102,.247,.101,.52-.003,.766Z"></path></svg>
-                </a>
-                <a id="profile" href="#/setting" class="button_vz3gd83JzdjM7pt">
-                  ${svg("fi fi-rr-user")}
-                </a>
+                <a id="inicio" href="#/" data-icon="fi fi-rr-house-blank|fi fi-sr-house-blank"></a>
+                <a id="search" href="#/search" data-icon="fi fi-rr-search|fi fi-sr-search"></a>
+                <a id="collection" href="#/collection" data-icon="fi fi-rr-books|fi fi-sr-books"></a>
+                <a id="profile" href="#/setting" data-icon="fi fi-rr-user|fi fi-sr-user"></a>
             </div>
         </div>
   `);
@@ -286,6 +278,16 @@ var navigateBottom = () => {
   ]);
 
   addEventListener("hashchange", () => {
+    Array.from($elements.links.querySelectorAll("a")).forEach((a) => {
+      a.innerHTML = svg(a.dataset.icon.split("|")[0]);
+    });
+
+    // const anchor = myVal.routes.get();
+
+    // if (anchor) {
+    //   anchor.innerHTML = svg(anchor.dataset.icon.split("|")[1]);
+    // }
+
     Array.from($elements.links.querySelectorAll("a.active")).forEach((a) =>
       a.classList.remove("active")
     );
@@ -2803,6 +2805,7 @@ var inicio = () => {
   /** GET */
   myVal.get.dataTrueAnime = () => {
     return new Promise((resolve, reject) => {
+      // return resolve([]);
       const page =
         Math.floor(
           $elements.itemTrue.querySelectorAll("[data-item]").length / 24
@@ -2848,32 +2851,60 @@ var inicio = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
-          $elements.itemTrue.querySelectorAll("[data-item]").length / 24
+          $elements.itemTrue.querySelectorAll("[data-item]").length / 20
         ) + 1;
 
-      const gender = $elements.selectGender.value;
+      // const gender = $elements.selectGender.value;
 
-      ApiWebCuevana.pelicula(page, gender).then((data) => {
-        const array = data?.props?.pageProps?.movies ?? [];
-
-        resolve(
-          array.map((data) => {
-            const image = data.images.poster
-              ? data.images.poster.replace("/original/", "/w185/")
-              : "";
-
-            const type = "pelicula";
-
-            return {
-              href: `#/${type}/${data.TMDbId}`,
-              title: data.titles.name,
-              info: "",
-              image: image,
-              style: "",
-            };
-          })
-        );
+      const queries = mrf.encodeQueryObject({
+        api_key: "ec4ff1b6182572d3e74735e74ca3a8ef",
+        language: "es-ES",
+        include_adult: "false",
+        page,
       });
+
+      fetch(`https://api.themoviedb.org/3/movie/popular?${queries}`)
+        .then((res) => res.json())
+        .then((json) => {
+          resolve(
+            json.results.map((data) => {
+              const image = `https://image.tmdb.org/t/p/w185${data.poster_path}`;
+              const type = "pelicula";
+
+              return {
+                href: `#/${type}/${data.id}`,
+                title: data.title,
+                info: "",
+                image: image,
+                style: "",
+              };
+            })
+          );
+        });
+
+      // return;
+
+      // ApiWebCuevana.pelicula(page, gender).then((data) => {
+      //   const array = data?.props?.pageProps?.movies ?? [];
+
+      //   resolve(
+      //     array.map((data) => {
+      //       const image = data.images.poster
+      //         ? data.images.poster.replace("/original/", "/w185/")
+      //         : "";
+
+      //       const type = "pelicula";
+
+      //       return {
+      //         href: `#/${type}/${data.TMDbId}`,
+      //         title: data.titles.name,
+      //         info: "",
+      //         image: image,
+      //         style: "",
+      //       };
+      //     })
+      //   );
+      // });
     });
   };
 
@@ -2881,30 +2912,56 @@ var inicio = () => {
     return new Promise((resolve, reject) => {
       const page =
         Math.floor(
-          $elements.itemTrue.querySelectorAll("[data-item]").length / 24
+          $elements.itemTrue.querySelectorAll("[data-item]").length / 20
         ) + 1;
 
-      ApiWebCuevana.serie(page).then((data) => {
-        const array = data?.props?.pageProps?.movies ?? [];
-
-        resolve(
-          array.map((data) => {
-            const image = data.images.poster
-              ? data.images.poster.replace("/original/", "/w185/")
-              : "";
-
-            const type = "serie";
-
-            return {
-              href: `#/${type}/${data.TMDbId}`,
-              title: data.titles.name,
-              info: "",
-              image: image,
-              style: "",
-            };
-          })
-        );
+      const queries = mrf.encodeQueryObject({
+        api_key: "ec4ff1b6182572d3e74735e74ca3a8ef",
+        language: "es-ES",
+        include_adult: "false",
+        page,
       });
+
+      fetch(`https://api.themoviedb.org/3/tv/popular?${queries}`)
+        .then((res) => res.json())
+        .then((json) => {
+          resolve(
+            json.results.map((data) => {
+              const image = `https://image.tmdb.org/t/p/w185${data.poster_path}`;
+              const type = "serie";
+
+              return {
+                href: `#/${type}/${data.id}`,
+                title: data.name,
+                info: "",
+                image: image,
+                style: "",
+              };
+            })
+          );
+        });
+
+      // ApiWebCuevana.serie(page).then((data) => {
+      //   const array = data?.props?.pageProps?.movies ?? [];
+
+      //   resolve(
+      //     array.map((data) => {
+      //       const image = data.images.poster
+      //         ? data.images.poster.replace("/original/", "/w185/")
+      //         : "";
+
+      //       const type = "serie";
+
+      //       return {
+      //         href: `#/${type}/${data.TMDbId}`,
+      //         title: data.titles.name,
+      //         info: "",
+      //         image: image,
+      //         style: "",
+      //       };
+      //     })
+      //   );
+      // });
     });
   };
 
@@ -2966,7 +3023,7 @@ var inicio = () => {
       }
 
       if (type == 2 || type == 3) {
-        return array.length == 24;
+        return array.length == 20;
       }
 
       return false;
@@ -3019,6 +3076,7 @@ var inicio = () => {
     { once: true }
   );
 
+  // $elements.itemTrueLoad.remove();
   return $element;
 };
 
@@ -3218,8 +3276,7 @@ var searchTypeResult = () => {
     set: {},
   };
 
-  const $element = mrf.createNodeElement(
-    `
+  const $element = mrf.createNodeElement(/*html*/ `
       <div class="div_Xu02Xjh">
 
         <header class="header_LOF628f">
@@ -3243,7 +3300,11 @@ var searchTypeResult = () => {
               </label>
               <label>
                 <input type="radio" name="key" value="2">
-                <span>Peliculas y Series</span>
+                <span>Peliculas</span>
+              </label>
+              <label>
+                <input type="radio" name="key" value="3">
+                <span>Series</span>
               </label>
               <label style="display:none">
                 <input type="radio" name="key" value="4">
@@ -3276,8 +3337,7 @@ var searchTypeResult = () => {
 
       </div>
 
-    `
-  );
+    `);
 
   const $elements = mrf.createObjectElement(
     $element.querySelectorAll("[id]"),
@@ -3366,37 +3426,101 @@ var searchTypeResult = () => {
 
   myVal.get.dataTruePelicula = () => {
     return new Promise((resolve, reject) => {
-      ApiWebCuevana.search(decodeURIComponent(myVal.params.result)).then(
-        (datas) => {
-          const array = datas?.props?.pageProps?.movies || [];
+      const page =
+        Math.floor(
+          $elements.itemTrue.querySelectorAll("[data-item]").length / 20
+        ) + 1;
 
+      // const gender = $elements.selectGender.value;
+
+      const queries = mrf.encodeQueryObject({
+        api_key: "ec4ff1b6182572d3e74735e74ca3a8ef",
+        language: "es-ES",
+        include_adult: "false",
+        query: myVal.params.result,
+        page,
+      });
+
+      fetch(`https://api.themoviedb.org/3/search/movie?${queries}`)
+        .then((res) => res.json())
+        .then((json) => {
           resolve(
-            array.map((data) => {
-              const image = data.images.poster
-                ? data.images.poster.replace("/original/", "/w185/")
-                : "";
-
-              const type = data.url.slug.startsWith("movies/")
-                ? "pelicula"
-                : "serie";
+            json.results.map((data) => {
+              const image = `https://image.tmdb.org/t/p/w185${data.poster_path}`;
+              const type = "pelicula";
 
               return {
-                href: `#/${type}/${data.TMDbId}`,
-                title: data.titles.name,
-                info: type,
+                href: `#/${type}/${data.id}`,
+                title: data.title,
+                info: "",
                 image: image,
                 style: "",
               };
             })
           );
-        }
-      );
+        });
+
+      // ApiWebCuevana.search(decodeURIComponent(myVal.params.result)).then(
+      //   (datas) => {
+      //     const array = datas?.props?.pageProps?.movies || [];
+
+      //     resolve(
+      //       array.map((data) => {
+      //         const image = data.images.poster
+      //           ? data.images.poster.replace("/original/", "/w185/")
+      //           : "";
+
+      //         const type = data.url.slug.startsWith("movies/")
+      //           ? "pelicula"
+      //           : "serie";
+
+      //         return {
+      //           href: `#/${type}/${data.TMDbId}`,
+      //           title: data.titles.name,
+      //           info: type,
+      //           image: image,
+      //           style: "",
+      //         };
+      //       })
+      //     );
+      //   }
+      // );
     });
   };
 
   myVal.get.dataTrueSerie = () => {
     return new Promise((resolve, reject) => {
-      resolve([]);
+      const page =
+        Math.floor(
+          $elements.itemTrue.querySelectorAll("[data-item]").length / 20
+        ) + 1;
+
+      const queries = mrf.encodeQueryObject({
+        api_key: "ec4ff1b6182572d3e74735e74ca3a8ef",
+        language: "es-ES",
+        include_adult: "false",
+        query: myVal.params.result,
+        page,
+      });
+
+      fetch(`https://api.themoviedb.org/3/search/tv?${queries}`)
+        .then((res) => res.json())
+        .then((json) => {
+          resolve(
+            json.results.map((data) => {
+              const image = `https://image.tmdb.org/t/p/w185${data.poster_path}`;
+              const type = "serie";
+
+              return {
+                href: `#/${type}/${data.id}`,
+                title: data.name,
+                info: "",
+                image: image,
+                style: "",
+              };
+            })
+          );
+        });
     });
   };
 
@@ -3449,8 +3573,20 @@ var searchTypeResult = () => {
 
   myVal.set.dataTrue = (array) => {
     const type = $elements["form-filter-type"].key.value;
-    myVal.values.activeIntersectionObserver = type == 1 && array.length == 24;
-    console.log(myVal.values.activeIntersectionObserver);
+    // myVal.values.activeIntersectionObserver = type == 1 && array.length == 24;
+    // console.log(myVal.values.activeIntersectionObserver);
+
+    myVal.values.activeIntersectionObserver = ((type) => {
+      if (type == 1) {
+        return array.length == 24 && !["-1", "-2"].includes(gender);
+      }
+
+      if (type == 2 || type == 3) {
+        return array.length == 20;
+      }
+
+      return false;
+    })(type);
 
     myVal.set.dataTrueBase(array);
     myVal.signals.dataNull.value = true;
@@ -6305,8 +6441,6 @@ var footerVideoPlayer = () => {
       },
     },
   };
-
-  console.log(mrf);
 
   const $element = mrf.createNodeElement(`
         <footer class="footer_rTzBt2c">
