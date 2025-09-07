@@ -415,8 +415,8 @@ var peliculaId = () => {
     set: {},
   };
 
-  const $element = mrf.createNodeElement(`
-    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
+  const $element = mrf.createNodeElement(/*html*/ `
+    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed; transition: background .3s ease;">
 
           <header class="header_K0hs3I0 header_RtX3J1X">
 
@@ -425,14 +425,7 @@ var peliculaId = () => {
                     ${svg("fi fi-rr-angle-small-left")}
                   </a>
               </div>
-
-              <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
-
-              <div class="div_x0cH0Hq">
-                  <button id="favorite" class="button_lvV6qZu">
-                    ${svg("fi fi-rr-heart")}
-                  </button>
-              </div>
+          
 
           </header>
 
@@ -449,32 +442,47 @@ var peliculaId = () => {
                     <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
                       <img id="poster" src="" style="display:none">
                     </div>
-                    <div class="div_cxFXOaL">
+                    <div class="div_cxFXOaL" style="display:none">
                       <label class="label_zjZIMnZ">
                         <input type="checkbox" id="inputView">
                         <span style="display:flex">
                           ${svg("fi fi-rr-check")}
                         </span>
                       </label>
-                      <button id="play" class="button_bDfhQ4b" style="display:none">
+                      <button id="play" class="button_bDfhQ4b" >
                         <small></small>
                         <span>Play</span>
                       </button>
                     </div>
+
+                    <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
                   </div>
 
-                  <div class="div_BIchAsC">
+                  <div class="div_BIchAsC" style="display:flex; justify-content:center; align-items:center; overflow:initial; gap: 10px">
 
-                      <form class="app-form-label-checkbox" id="form-filter-type" style="border-radius:20px; background:rgb(255,255,255, 0.1)">
+                      <label class="label_zjZIMnZ" style="width:50px;height:50px">
+                          <input type="checkbox" id="inputView">
+                          <span style="display:flex">
+                            ${svg("fi fi-rr-plus")}
+                          </span>
+                        </label>
+                      <form 
+                        class="app-form-label-checkbox" 
+                        id="form-filter-type" 
+                        style="border-radius:60px; background:rgb(255,255,255, 0.1); padding: 7px; gap:7px">
                         <label>
                           <input type="radio" name="key" value="information" checked>
                           <span>Detalles</span>
-                        </label>
+                        </label> 
                         <label>
                           <input type="radio" name="key" value="chapter">
                           <span>Capitulos</span>
                         </label>
                       </form>
+
+                      <button id="favorite" class="label_zjZIMnZ" style="width:50px;height:50px">
+                        ${svg("fi fi-rr-heart")}
+                      </button>
                         
                   </div>
   
@@ -485,6 +493,7 @@ var peliculaId = () => {
                         <span id="duration"></span>
                         <span id="date"></span>
                     </div>
+                    <hr style="border-color:rgb(181,178,178,0.2)">
                     <p id="overview" style="font-size:14px"></p>
                   </div>
 
@@ -624,25 +633,25 @@ var peliculaId = () => {
         item.dataset.episode
       );
 
-      // $elements.itemTrueOptionVideos.innerHTML =
-      //   '<div class="loader-i m-auto g-col-full" style="--color:#fff; padding: 20px 0"></div>';
+      $elements.itemTrueOptionVideos.innerHTML =
+        '<div class="loader-i m-auto g-col-full" style="--color:#fff; padding: 20px 0"></div>';
 
-      const videos =
-        myVal.values.data?.props?.pageProps?.thisMovie?.videos ?? {};
+      ApiWebCuevana.peliculaId(myVal.params.id).then((data) => {
+        const videos = data?.props?.pageProps?.thisMovie?.videos ?? {};
 
-      $elements.itemTrueOptionVideos.innerHTML = Object.entries(videos)
-        .map((data) => {
-          let show = true;
+        $elements.itemTrueOptionVideos.innerHTML = Object.entries(videos)
+          .map((data) => {
+            let show = true;
 
-          return data[1]
-            .map((video) => {
-              if (video.result == "") return "";
-              if (!["streamwish"].includes(video.cyberlocker)) return "";
+            return data[1]
+              .map((video) => {
+                if (video.result == "") return "";
+                if (!["streamwish"].includes(video.cyberlocker)) return "";
 
-              const visibility = show ? "" : "display:none";
-              show = false;
+                const visibility = show ? "" : "display:none";
+                show = false;
 
-              return `
+                return `
                 <span 
                   class="span_eNUkEzu" 
                   style="${visibility}">
@@ -661,10 +670,16 @@ var peliculaId = () => {
                     
                 </button>
               `;
-            })
-            .join("");
-        })
-        .join("");
+              })
+              .join("");
+          })
+          .join("");
+
+        if ($elements.itemTrueOptionVideos.innerHTML == "") {
+          $elements.itemTrueOptionVideos.innerHTML =
+            '<div class="g-col-full" style="--color:#fff; padding: 20px 0; text-align:center">~ Servidores no disponibles ~</div>';
+        }
+      });
     }
 
     if (input) {
@@ -824,18 +839,27 @@ var peliculaId = () => {
 
   myVal.get.dataTrue = () => {
     return new Promise((resolve, reject) => {
-      ApiWebCuevana.peliculaId(myVal.params.id).then((data) => {
-        resolve(data);
-      });
+      fetch(
+        `https://api.themoviedb.org/3/movie/${myVal.params.id}?api_key=ec4ff1b6182572d3e74735e74ca3a8ef&language=es-ES`
+        // `/public/json/data.json`
+      )
+        .then((res) => res.json())
+        .then((json) => {
+          resolve(json);
+        });
+
+      // ApiWebCuevana.peliculaId(myVal.params.id).then((data) => {
+      //   resolve(data);
+      // });
     });
   };
 
   myVal.set.dataTrue = (data) => {
-    const thisMovie = data.props.pageProps.thisMovie;
+    const thisMovie = data;
     const fromSecondsToTime = mrf.fromSecondsToTime(thisMovie.runtime * 60);
 
     myVal.values.data = data;
-    myVal.values.data_id = thisMovie.TMDbId;
+    myVal.values.data_id = thisMovie.id;
 
     $elements.itemNull.style.display = "none";
     $elements.itemTrue.style.display = "";
@@ -845,7 +869,7 @@ var peliculaId = () => {
 
       $elements.poster.style.display = "";
 
-      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+      mrc.MyImage.canvas(myApp.url.img($elements.poster.src)).then((result) => {
         const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
         const r = pixelData[0];
         const g = pixelData[1];
@@ -867,20 +891,22 @@ var peliculaId = () => {
 
     // renderInfo
     mrf.callbackTryCatch(() => {
-      $elements.poster.src = myApp.url.img(
-        thisMovie.images.poster.replace("/original/", "/w342/")
-      );
+      // $elements.poster.src = myApp.url.img(
+      //   thisMovie.images.poster.replace("/original/", "/w342/")
+      // );
 
-      $elements.title.textContent = thisMovie.titles.name;
+      $elements.poster.src = `https://image.tmdb.org/t/p/w342${data.poster_path}`;
+
+      $elements.title.textContent = thisMovie.title;
       $elements.overview.textContent = thisMovie.overview;
       $elements.genres.textContent = thisMovie.genres
         .map((genre) => genre.name)
         .join(", ");
 
       $elements.duration.textContent = `${fromSecondsToTime.hours}h ${fromSecondsToTime.minutes}min`;
-      $elements.date.textContent = new Date(
-        thisMovie.releaseDate
-      ).getFullYear();
+      $elements.date.textContent = data.release_date;
+
+      new Date(thisMovie.releaseDate).getFullYear();
     });
 
     // renderSeason
@@ -896,7 +922,7 @@ var peliculaId = () => {
       return;
     });
 
-    myVal.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
+    // myVal.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
   };
 
   myVal.get.dataTrueInfo = () => {
@@ -1046,8 +1072,8 @@ var serieId = () => {
     set: {},
   };
 
-  const $element = mrf.createNodeElement(`
-    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
+  const $element = mrf.createNodeElement(/*html*/ `
+    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed; transition: background .3s ease;">
 
           <header class="header_K0hs3I0 header_RtX3J1X">
 
@@ -1056,15 +1082,7 @@ var serieId = () => {
                     ${svg("fi fi-rr-angle-small-left")}
                   </a>
               </div>
-
-              <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
-
-              <div class="div_x0cH0Hq">
-                  <button id="favorite" class="button_lvV6qZu">
-                    ${svg("fi fi-rr-heart")}
-                  </button>
-              </div>
-
+          
           </header>
 
           <div class="div_guZ6yID div_DtSQApy">
@@ -1080,7 +1098,7 @@ var serieId = () => {
                     <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
                       <img id="poster" src="" style="display:none">
                     </div>
-                    <div class="div_cxFXOaL">
+                    <div class="div_cxFXOaL" style="display:none">
                       <label class="label_zjZIMnZ">
                         <input type="checkbox" id="inputView">
                         <span style="display:flex">
@@ -1092,20 +1110,36 @@ var serieId = () => {
                         <span>Play</span>
                       </button>
                     </div>
+
+                    <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
                   </div>
 
-                  <div class="div_BIchAsC">
+                 
+                  <div class="div_BIchAsC" style="display:flex; justify-content:center; align-items:center; overflow:initial; gap: 10px">
 
-                      <form class="app-form-label-checkbox" id="form-filter-type" style="border-radius:20px; background:rgb(255,255,255, 0.1)">
+                      <label class="label_zjZIMnZ" style="width:50px;height:50px">
+                          <input type="checkbox" id="inputView">
+                          <span style="display:flex">
+                            ${svg("fi fi-rr-plus")}
+                          </span>
+                        </label>
+                      <form 
+                        class="app-form-label-checkbox" 
+                        id="form-filter-type" 
+                        style="border-radius:60px; background:rgb(255,255,255, 0.1); padding: 7px; gap:7px">
                         <label>
                           <input type="radio" name="key" value="information" checked>
                           <span>Detalles</span>
-                        </label>
+                        </label> 
                         <label>
                           <input type="radio" name="key" value="chapter">
                           <span>Capitulos</span>
                         </label>
                       </form>
+
+                      <button id="favorite" class="label_zjZIMnZ" style="width:50px;height:50px">
+                        ${svg("fi fi-rr-heart")}
+                      </button>
                         
                   </div>
 
@@ -1116,6 +1150,7 @@ var serieId = () => {
                         <span id="duration"></span>
                         <span id="date"></span>
                     </div>
+                    <hr style="border-color:rgb(181,178,178,0.2)">
                     <p id="overview" style="font-size:14px"></p>
                   </div>
 
@@ -1468,17 +1503,28 @@ var serieId = () => {
   });
   myVal.get.dataTrue = () => {
     return new Promise((resolve, reject) => {
-      ApiWebCuevana.serieId(myVal.params.id).then((data) => {
-        resolve(data);
-      });
+      fetch(
+        `https://api.themoviedb.org/3/tv/${myVal.params.id}?api_key=ec4ff1b6182572d3e74735e74ca3a8ef&language=es-ES`
+      )
+        .then((res) => res.json())
+        .then((json) => {
+          console.log(json);
+          resolve(json);
+        });
+
+      // ApiWebCuevana.serieId(myVal.params.id).then((data) => {
+      //   resolve(data);
+      // });
     });
   };
 
   myVal.set.dataTrue = (data) => {
-    const thisSerie = data.props.pageProps.thisSerie;
+    // return data;
+
+    const thisSerie = data;
 
     myVal.values.data = data;
-    myVal.values.data_id = thisSerie.TMDbId;
+    myVal.values.data_id = myVal.params.id;
 
     $elements.itemNull.style.display = "none";
     $elements.itemTrue.style.display = "";
@@ -1488,7 +1534,7 @@ var serieId = () => {
 
       $elements.poster.style.display = "";
 
-      mrc.MyImage.canvas($elements.poster.src).then((result) => {
+      mrc.MyImage.canvas(myApp.url.img($elements.poster.src)).then((result) => {
         const pixelData = result.ctx.getImageData(0, 0, 1, 1).data;
         const r = pixelData[0];
         const g = pixelData[1];
@@ -1510,38 +1556,46 @@ var serieId = () => {
 
     // renderInfo
     mrf.callbackTryCatch(() => {
-      $elements.poster.src = myApp.url.img(
-        thisSerie.images.poster.replace("/original/", "/w342/")
-      );
+      // $elements.poster.src = myApp.url.img(
+      //   thisSerie.images.poster.replace("/original/", "/w342/")
+      // );
 
-      $elements.title.textContent = thisSerie.titles.name;
+      $elements.poster.src = `https://image.tmdb.org/t/p/w342${data.poster_path}`;
+
+      $elements.title.textContent = thisSerie.name;
       $elements.overview.textContent = thisSerie.overview;
       $elements.genres.textContent = thisSerie.genres
         .map((genre) => genre.name)
         .join(", ");
 
-      $elements.duration.textContent = `${
-        thisSerie.seasons.at(-1).number
-      } temporadas`;
+      $elements.duration.textContent = `${data.seasons.length} temporadas`;
 
-      $elements.date.textContent = new Date(
-        thisSerie.releaseDate
-      ).getFullYear();
+      $elements.date.textContent = thisSerie.first_air_date;
+
+      // new Date(thisSerie.first_air_date).getFullYear();
     });
 
     // renderSeason
     mrf.callbackTryCatch(() => {
-      const seasons = thisSerie.seasons.filter(
-        (season) => season.episodes.length
-      );
+      const seasons = data.seasons;
+
+      // const seasons = thisSerie.seasons.filter(
+      //   (season) => season.episodes.length
+      // );
 
       $elements.selectSeason.innerHTML = seasons
         .map((season) => {
-          const value = `1-${season.episodes.length}-${season.number}`;
+          const value = `1-${season.episode_count}-${season.season_number}`;
 
           return `
-            <option value="${value}">Temporada ${season.number}</option>
+            <option value="${value}">Temporada ${season.season_number}</option>
           `;
+
+          // const value = `1-${season.episodes.length}-${season.number}`;
+
+          // return `
+          //   <option value="${value}">Temporada ${season.number}</option>
+          // `;
         })
         .join("");
 
@@ -1565,7 +1619,7 @@ var serieId = () => {
       return;
     });
 
-    myVal.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
+    // myVal.get.dataTrueInfo().then(myVal.set.dataTrueInfo);
   };
 
   myVal.get.dataTrueInfo = (data) => {
@@ -1686,6 +1740,7 @@ var serieId = () => {
 
   $elements.itemNull.style.display = "none";
   $elements.itemTrue.style.display = "";
+
   return $element;
 };
 
@@ -1721,8 +1776,8 @@ var animeId = () => {
     set: {},
   };
 
-  const $element = mrf.createNodeElement(`
-    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed">
+  const $element = mrf.createNodeElement(/*html*/ `
+    <div class="div_Xu02Xjh div_mrXVL9t" style="position:fixed; transition: background .3s ease;">
 
           <header class="header_K0hs3I0 header_RtX3J1X">
 
@@ -1730,14 +1785,6 @@ var animeId = () => {
                   <a href="#" class="button_lvV6qZu" data-history-back>
                     ${svg("fi fi-rr-angle-small-left")}
                   </a>
-              </div>
-
-              <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
-
-              <div class="div_x0cH0Hq">
-                  <button id="favorite" class="button_lvV6qZu">
-                    ${svg("fi fi-rr-heart")}
-                  </button>
               </div>
 
           </header>
@@ -1755,36 +1802,51 @@ var animeId = () => {
                     <div class="div_0JOSFlg" style="background: rgb(255 255 255 / .3)">
                       <img id="poster" src="" style="display:none">
                     </div>
-                    <div class="div_cxFXOaL">
+                    <div class="div_cxFXOaL" style="display:none">
                       <label class="label_zjZIMnZ">
                         <input type="checkbox" id="inputView">
                         <span style="display:flex">
                           ${svg("fi fi-rr-check")}
                         </span>
                       </label>
-                      <button id="play" class="button_bDfhQ4b" style="display:none">
+                      <button id="play" class="button_bDfhQ4b" >
                         <small></small>
                         <span>Play</span>
                       </button>
                     </div>
+
+                    <h2 id="title" style="flex: 1; text-align:center; font-size: clamp(1rem, 2vw, 2rem);"></h2>
                   </div>
 
-                  <div class="div_BIchAsC">
+                  <div class="div_BIchAsC" style="display:flex; justify-content:center; align-items:center; overflow:initial; gap: 10px">
 
-                      <form class="app-form-label-checkbox" id="form-filter-type" style="border-radius:20px; background:rgb(255,255,255, 0.1)">
+                      <label class="label_zjZIMnZ" style="width:50px;height:50px">
+                          <input type="checkbox" id="inputView">
+                          <span style="display:flex">
+                            ${svg("fi fi-rr-plus")}
+                          </span>
+                        </label>
+                      <form 
+                        class="app-form-label-checkbox" 
+                        id="form-filter-type" 
+                        style="border-radius:60px; background:rgb(255,255,255, 0.1); padding: 7px; gap:7px">
                         <label>
                           <input type="radio" name="key" value="information" checked>
                           <span>Detalles</span>
-                        </label>
+                        </label> 
                         <label>
                           <input type="radio" name="key" value="chapter">
                           <span>Capitulos</span>
                         </label>
-                        <label>
+                        <label style="display:none">
                           <input type="radio" name="key" value="similar">
                           <span>Otros</span>
                         </label>
                       </form>
+
+                      <button id="favorite" class="label_zjZIMnZ" style="width:50px;height:50px">
+                        ${svg("fi fi-rr-heart")}
+                      </button>
                         
                   </div>
 
@@ -1795,6 +1857,7 @@ var animeId = () => {
                         <span id="duration"></span>
                         <span id="date"></span>
                     </div>
+                     <hr style="border-color:rgb(181,178,178,0.2)">
                     <p id="overview" style="font-size:14px"></p>
                   </div>
 
